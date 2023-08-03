@@ -1,0 +1,292 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="App_Data\Fanex.Data\NAPAdminSpNames.xml" />
+    <None Remove="App_Data\Fanex.Data\NAPCommonSpNames.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="App_Data\Fanex.Data\NAPAdminSpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\Fanex.Data\NAPCommonSpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+    <None Include="Views\Auth\AccessDenied.cshtml" />
+    <None Include="Views\Auth\ChangePassword.cshtml" />
+    <None Include="Views\Auth\Error.cshtml" />
+    <None Include="Views\Auth\Index.cshtml" />
+    <None Include="Views\Auth\NotFound.cshtml" />
+    <None Include="Views\Auth\Offline.cshtml" />
+    <None Include="Views\Auth\OtpLoginFlow.cshtml" />
+    <None Include="Views\Common\Error.cshtml" />
+    <None Include="Views\Common\NotFound.cshtml" />
+    <None Include="Views\Common\Unauthorize.cshtml" />
+    <None Include="Views\Function\AddNew.cshtml" />
+    <None Include="Views\Function\CopyPermission.cshtml" />
+    <None Include="Views\Function\Duplicate.cshtml" />
+    <None Include="Views\Function\Edit.cshtml" />
+    <None Include="Views\Function\Manage.cshtml" />
+    <None Include="Views\Function\PrivilegedGroups.cshtml" />
+    <None Include="Views\Function\PrivilegedGroupsAndUsers.cshtml" />
+    <None Include="Views\Function\PrivilegedUsers.cshtml" />
+    <None Include="Views\Group\AddNew.cshtml" />
+    <None Include="Views\Group\AssignPermission.cshtml" />
+    <None Include="Views\Group\Edit.cshtml" />
+    <None Include="Views\Group\GroupInfo.cshtml" />
+    <None Include="Views\Group\Manage.cshtml" />
+    <None Include="Views\Home\ExpiredSession.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Test.cshtml" />
+    <None Include="Views\Menu.cshtml" />
+    <None Include="Views\Menu\AddNewMenuItem.cshtml" />
+    <None Include="Views\Menu\EditMenuItem.cshtml" />
+    <None Include="Views\Menu\Manage.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Site\AddNew.cshtml" />
+    <None Include="Views\Site\Edit.cshtml" />
+    <None Include="Views\Site\EditUrl.cshtml" />
+    <None Include="Views\Site\Manage.cshtml" />
+    <None Include="Views\Trace\GetLogInsertDetail.cshtml" />
+    <None Include="Views\Trace\LogExecSp.cshtml" />
+    <None Include="Views\Trace\LogFunction.cshtml" />
+    <None Include="Views\Trace\LogUserLogin.cshtml" />
+    <None Include="Views\Trace\_NAPLogInsert.cshtml" />
+    <None Include="Views\Trace\_NAPLogUpdate.cshtml" />
+    <None Include="Views\Trace\_NAP_Assign_New_Site.cshtml" />
+    <None Include="Views\Trace\_NAP_Assign_Permission.cshtml" />
+    <None Include="Views\Trace\_NAP_Assign_Site.cshtml" />
+    <None Include="Views\Trace\_NAP_Function_AssignToGroups.cshtml" />
+    <None Include="Views\Trace\_NAP_Function_AssignToUsers.cshtml" />
+    <None Include="Views\Trace\_NAP_Site_InsertWithSiteURL.cshtml" />
+    <None Include="Views\Trace\_NAP_Site_Url.cshtml" />
+    <None Include="Views\Trace\_NAP_Update_Site.cshtml" />
+    <None Include="Views\Trace\_Task_NAP_RevokeUserPermission.cshtml" />
+    <None Include="Views\User\AddExisting.cshtml" />
+    <None Include="Views\User\AddExisting_UserList.cshtml" />
+    <None Include="Views\User\AddNew.cshtml" />
+    <None Include="Views\User\AssignNewSite.cshtml" />
+    <None Include="Views\User\AssignPermission.cshtml" />
+    <None Include="Views\User\AssignSite.cshtml" />
+    <None Include="Views\User\AssignSiteFunction.cshtml" />
+    <None Include="Views\User\ChangePassword.cshtml" />
+    <None Include="Views\User\Edit.cshtml" />
+    <None Include="Views\User\Manage.cshtml" />
+    <None Include="Views\User\ResetPassword.cshtml" />
+    <None Include="Views\User\SetupOTP.cshtml" />
+    <None Include="Views\User\UserInfo.cshtml" />
+    <None Include="Views\User\UserLevelList.cshtml" />
+    <None Include="Views\User\UserList.cshtml" />
+    <None Include="Views\User\UserProfile.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\nap-auth\cryptojs.js" />
+    <None Include="wwwroot\nap-auth\jquery-1.8.0.min.js" />
+    <None Include="wwwroot\scripts\Function\AddNew.js" />
+    <None Include="wwwroot\scripts\Function\Duplicate.js" />
+    <None Include="wwwroot\scripts\Function\Edit.js" />
+    <None Include="wwwroot\scripts\Function\Manage.js" />
+    <None Include="wwwroot\scripts\Function\PrivilegedGroupsAndUsers.js" />
+    <None Include="wwwroot\scripts\Group\AssignPermission.js" />
+    <None Include="wwwroot\scripts\Group\Manage.js" />
+    <None Include="wwwroot\scripts\lib\chosen\chosen.jquery.js" />
+    <None Include="wwwroot\scripts\lib\chosen\chosen.jquery.min.js" />
+    <None Include="wwwroot\scripts\lib\chosen\chosen.proto.js" />
+    <None Include="wwwroot\scripts\lib\chosen\chosen.proto.min.js" />
+    <None Include="wwwroot\scripts\lib\crypto\CryptoJS.js" />
+    <None Include="wwwroot\scripts\lib\easyui\jquery.datagrid.js" />
+    <None Include="wwwroot\scripts\lib\easyui\jquery.pagination.js" />
+    <None Include="wwwroot\scripts\lib\easyui\jquery.panel.js" />
+    <None Include="wwwroot\scripts\lib\easyui\jquery.parser.js" />
+    <None Include="wwwroot\scripts\lib\easyui\jquery.resizable.js" />
+    <None Include="wwwroot\scripts\lib\easyui\jquery.treegrid.js" />
+    <None Include="wwwroot\scripts\lib\html5shiv.js" />
+    <None Include="wwwroot\scripts\lib\html5shiv.min.js" />
+    <None Include="wwwroot\scripts\lib\jPages\highlight.pack.js" />
+    <None Include="wwwroot\scripts\lib\jPages\jPages.js" />
+    <None Include="wwwroot\scripts\lib\jPages\jPages.min.js" />
+    <None Include="wwwroot\scripts\lib\jPages\jquery.lazyload.js" />
+    <None Include="wwwroot\scripts\lib\jPages\js.js" />
+    <None Include="wwwroot\scripts\lib\jPages\tabifier.js" />
+    <None Include="wwwroot\scripts\lib\jquery-1.12.4.js" />
+    <None Include="wwwroot\scripts\lib\jquery-1.8.0.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery-1.8.2.js" />
+    <None Include="wwwroot\scripts\lib\jquery-1.8.2.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery-ui-1.8.24.js" />
+    <None Include="wwwroot\scripts\lib\jquery-ui-1.8.24.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery.cookie.js" />
+    <None Include="wwwroot\scripts\lib\jquery.cookie.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery.easing.1.3.js" />
+    <None Include="wwwroot\scripts\lib\jquery.numeric-1.3.js" />
+    <None Include="wwwroot\scripts\lib\jquery.numeric-1.3.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery.unobtrusive-ajax.js" />
+    <None Include="wwwroot\scripts\lib\jquery.unobtrusive-ajax.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery.validate-1.10.0.js" />
+    <None Include="wwwroot\scripts\lib\jquery.validate-1.10.0.min.js" />
+    <None Include="wwwroot\scripts\lib\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\scripts\lib\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\scripts\lib\jsrender.js" />
+    <None Include="wwwroot\scripts\lib\less-1.3.0.min.js" />
+    <None Include="wwwroot\scripts\lib\modernizr-2.6.2.js" />
+    <None Include="wwwroot\scripts\lib\modernizr-2.6.2.min.js" />
+    <None Include="wwwroot\scripts\lib\msgbox\msgbox-0.0.1.js" />
+    <None Include="wwwroot\scripts\lib\msgbox\msgbox-0.0.1.min.js" />
+    <None Include="wwwroot\scripts\lib\respond.min.js" />
+    <None Include="wwwroot\scripts\lib\tipsy\tipsy-1.0.0.js" />
+    <None Include="wwwroot\scripts\lib\tipsy\tipsy-1.0.0.min.js" />
+    <None Include="wwwroot\scripts\Menu\AddNewMenuItem.js" />
+    <None Include="wwwroot\scripts\Menu\EditMenuItem.js" />
+    <None Include="wwwroot\scripts\Menu\Manage.js" />
+    <None Include="wwwroot\scripts\NAP.js" />
+    <None Include="wwwroot\scripts\NAPIndex.js" />
+    <None Include="wwwroot\scripts\Site\AddNew.js" />
+    <None Include="wwwroot\scripts\Site\Edit.js" />
+    <None Include="wwwroot\scripts\Site\EditUrl.js" />
+    <None Include="wwwroot\scripts\Site\Manage.js" />
+    <None Include="wwwroot\scripts\Trace\LogExecSp.js" />
+    <None Include="wwwroot\scripts\Trace\LogUserLogin.js" />
+    <None Include="wwwroot\scripts\User\AddExisting.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\.editorconfig" />
+    <None Include="wwwroot\scripts\User\assign-site-function\.prettierrc" />
+    <None Include="wwwroot\scripts\User\assign-site-function\config\helpers.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.base.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.dev.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.prod.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.test.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css.map" />
+    <None Include="wwwroot\scripts\User\assign-site-function\dist\main.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\dist\main.js.map" />
+    <None Include="wwwroot\scripts\User\assign-site-function\dist\main.min.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\dist\main.min.js.gz" />
+    <None Include="wwwroot\scripts\User\assign-site-function\environment\dev.env.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\environment\prod.env.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\README.md" />
+    <None Include="wwwroot\scripts\User\assign-site-function\test\karma.conf.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\test\libs\jquery.js" />
+    <None Include="wwwroot\scripts\User\assign-site-function\webpack.config.js" />
+    <None Include="wwwroot\scripts\User\AssignNewSite.js" />
+    <None Include="wwwroot\scripts\User\AssignPermission.js" />
+    <None Include="wwwroot\scripts\User\AssignSite.js" />
+    <None Include="wwwroot\scripts\User\ChangePassword.js" />
+    <None Include="wwwroot\scripts\User\Manage.js" />
+    <None Include="wwwroot\scripts\User\ResetPassword.js" />
+    <None Include="wwwroot\scripts\User\SetupOTP.js" />
+    <None Include="wwwroot\scripts\_Layout.js" />
+    <None Include="wwwroot\themes\bootstrap\css\bootstrap-theme.css.map" />
+    <None Include="wwwroot\themes\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\themes\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\themes\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\themes\bootstrap\js\bootstrap.js" />
+    <None Include="wwwroot\themes\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\themes\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\themes\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\themes\nap\common.less" />
+    <None Include="wwwroot\themes\nap\fonts.less" />
+    <None Include="wwwroot\themes\nap\function\edit.less" />
+    <None Include="wwwroot\themes\nap\function\PrivilegedGroupsAndUsers.less" />
+    <None Include="wwwroot\themes\nap\grid.less" />
+    <None Include="wwwroot\themes\nap\group\assign-permission.less" />
+    <None Include="wwwroot\themes\nap\otp\manage.less" />
+    <None Include="wwwroot\themes\nap\site\add-new.less" />
+    <None Include="wwwroot\themes\nap\site\edit-url.less" />
+    <None Include="wwwroot\themes\nap\site\edit.less" />
+    <None Include="wwwroot\themes\nap\site\manage.less" />
+    <None Include="wwwroot\themes\nap\style.less" />
+    <None Include="wwwroot\themes\nap\themes.less" />
+    <None Include="wwwroot\themes\nap\trace\logexecsp.less" />
+    <None Include="wwwroot\themes\nap\user\add-existing.less" />
+    <None Include="wwwroot\themes\nap\user\assign-new-site.less" />
+    <None Include="wwwroot\themes\nap\user\assign-site.less" />
+    <None Include="wwwroot\themes\nap\user\manage.less" />
+    <None Include="wwwroot\themes\nap\variables.less" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fanex.Common" Version="1.1.1" />
+    <PackageReference Include="Fanex.Data" Version="4.2.2" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.2.2" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.2" />
+    <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.1-beta1" />
+    <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8" />
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1" />
+    <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.0.9" />
+    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="2.0.0.3" />
+    <PackageReference Include="Fanex.NAP.Signin.AspNetCore" Version="2.0.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.5" />
+    <PackageReference Include="ONEbook.OTP" Version="2.0.0" />
+    <PackageReference Include="ONEbook.UM" Version="3.1.4" />
+    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.0" />
+    <PackageReference Include="ONEbook.UM.AspNetCore.Filters" Version="3.1.0" />
+    <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.111" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\NapAdminCore\NapAdminCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\edit-field\edit-field.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\edit-field\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\expired-date\expired-date.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\expired-date\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\function-name\function-name.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\function-name\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\header-row\header-row.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\header-row\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\save-all-row\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\save-all-row\save-all-row.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-level\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-level\site-level.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-list\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-list\site-list.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-status\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-status\site-status.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\configs\configs.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\main.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\model\function.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\model\site.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\service\function-service.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\service\site-service.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\actions.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\getters.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\mutations.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\state.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\types.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\datetime.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\function.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\log.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\message-box.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\site.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\test\index.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\test\specs\components\header-row\header-row.spec.ts" />
+    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\test\utils\component-test.ts" />
+  </ItemGroup>
+
+</Project>

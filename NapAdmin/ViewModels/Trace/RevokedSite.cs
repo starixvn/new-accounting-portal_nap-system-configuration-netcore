@@ -1,0 +1,12 @@
+﻿namespace NapAdmin.ViewModels.Trace;
+
+public class RevokedSite
+{
+    public int UserId { get; set; }
+
+    public string UserName { get; set; }
+
+    public int SiteId { get; set; }
+
+    public string SiteName { get; set; }
+}

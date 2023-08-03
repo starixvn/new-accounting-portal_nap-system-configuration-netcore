@@ -1,0 +1,368 @@
+
+namespace NapAdminCore.Service;
+
+using System.Collections.Generic;
+using System.Linq;
+using Command;
+using Criteria.Function;
+using Criteria.Site;
+using Criteria.User;
+using Domain;
+using Fanex.Data.Repository;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Models;
+using Models.ValueObject;
+using Repository;
+using Constant = Business.Constant;
+
+public interface ISiteService : IBaseService
+{
+    ISite GetById(int id);
+
+    ISite GetByName(string name);
+
+    ISite GetByKey(string key);
+
+    bool GetStatusById(int id);
+
+    SiteLevel GetUserSiteLevel(int userId, int siteId);
+
+    IEnumerable<SiteLevel> GetSiteLevelByUser(int userId, string env = Constant.Uat, bool? isActive = null);
+
+    IEnumerable<ISite> GetAvailableSitesForUser(int userId, string env = Constant.Uat, bool? isActive = null);
+
+    IEnumerable<ISite> GetAll(string env = Constant.Uat, bool? isActive = null);
+
+    IList<SelectListItem> GetAllSelectListItem(
+        string env = Constant.Uat,
+        bool? isActive = null,
+        int selectedSiteId = 0);
+
+    IEnumerable<ISite> GetAllWithNumOfUsers(string env = Constant.Uat, bool? isActive = null);
+
+    IEnumerable<ISite> GetByUserAndFunctionKeyIncludeGroup(
+        int userId,
+        string functionKey,
+        string env = Constant.Uat,
+        Constant.Policy policy = Constant.Policy.Read);
+
+    IList<SelectListItem> GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+        int userId,
+        string functionKey,
+        string env = Constant.Uat,
+        Constant.Policy policy = Constant.Policy.Read,
+        int selectedSiteId = 0);
+
+    ICommandResult Insert(InsertSiteCriteria criteria);
+
+    ICommandResult Update(UpdateSiteCriteria criteria);
+
+    ICommandResult UpdateStatus(UpdateStatusSiteCriteria criteria);
+
+    #region SiteUrl services
+
+    IEnumerable<SiteUrl> GetAllSiteUrl(string env);
+
+    IEnumerable<SiteUrl> GetSiteUrlByUser(int userId, string env);
+
+    IEnumerable<SiteUrl> GetSiteUrlBySiteId(int siteId, string env);
+
+    SiteUrl GetSiteUrlById(int siteUrlId);
+
+    ICommandResult UpdateSiteUrl(UpdateSiteUrlCriteria criteria);
+
+    ICommandResult UpdateDefaultSiteUrl(UpdateDefaultSiteUrlCriteria criteria);
+
+    ICommandResult InsertSiteUrl(InsertSiteUrlCriteria criteria);
+
+    #endregion
+}
+public class SiteService : BaseService, ISiteService
+{
+    #region members
+
+    private readonly ISiteRepository siteRepository;
+    private readonly IFunctionRepository functionRepository;
+    private readonly IDynamicRepository dynamicRepository;
+
+    #endregion
+
+    #region ctors
+    
+    public SiteService(ISiteRepository siteRepository, IFunctionRepository functionRepository, IDynamicRepository dynamicRepository)
+    {
+        this.siteRepository = siteRepository;
+        this.functionRepository = functionRepository;
+        this.dynamicRepository = dynamicRepository;
+    }
+
+    #endregion
+
+    #region get
+
+    public ISite GetById(int id)
+    {
+        var criteria = new GetByIdSiteCriteria
+        {
+            SiteId = id
+        };
+
+        return dynamicRepository.Get<ISite>(criteria);
+    }
+
+    public ISite GetByName(string name)
+    {
+        var criteria = new GetByNameSiteCriteria
+        {
+            SiteName = name
+        };
+
+        return dynamicRepository.Get<ISite>(criteria);
+    }
+
+    public ISite GetByKey(string key)
+    {
+        var criteria = new GetBySiteKeyCriteria
+        {
+            SiteKey = key
+        };
+
+        return dynamicRepository.Get<ISite>(criteria);
+    }
+
+    public bool GetStatusById(int id)
+    {
+        var criteria = new GetByIdSiteCriteria
+        {
+            SiteId = id
+        };
+
+        return dynamicRepository.Get<ISite>(criteria)?.IsActive == true;
+    }
+
+    public IEnumerable<SiteLevel> GetSiteLevelByUser(int userId, string env = Constant.Uat, bool? isActive = null)
+    {
+        var criteria = new GetByUserSiteCriteria
+        {
+            UserId = userId,
+            Environment = env,
+            IsActive = isActive
+        };
+
+        return siteRepository.FetchSiteLevel(criteria).OrderBy(sl => sl.Site.Name);
+    }
+
+    public IEnumerable<ISite> GetAvailableSitesForUser(int userId, string env = Constant.Uat, bool? isActive = null)
+    {
+        var criteria = new GetAvailableSitesCriteria
+        {
+            UserId = userId,
+            Environment = env,
+            IsActive = isActive
+        };
+
+        return dynamicRepository.Fetch<ISite>(criteria).OrderBy(site => site.Name);
+    }
+
+    public IEnumerable<ISite> GetAll(string env = Constant.Uat, bool? isActive = null)
+    {
+        var criteria = new GetAllSiteCriteria
+        {
+            Environment = env,
+            IsActive = isActive
+        };
+
+        return dynamicRepository.Fetch<ISite>(criteria).OrderBy(site => site.Name);
+    }
+
+    public IList<SelectListItem> GetAllSelectListItem(
+        string env = Constant.Uat,
+        bool? isActive = null,
+        int selectedSiteId = 0)
+    {
+        var criteria = new GetAllSiteCriteria
+        {
+            Environment = env,
+            IsActive = isActive
+        };
+
+        IEnumerable<ISite> siteList = dynamicRepository.Fetch<ISite>(criteria).OrderBy(s => s.Name);
+
+        return siteList.Select(s => new SelectListItem
+        {
+            Text = s.Name,
+            Value = s.Id.ToString(),
+            Selected = s.Id == selectedSiteId
+        }).ToList();
+    }
+
+    public IEnumerable<ISite> GetAllWithNumOfUsers(string env = Constant.Uat, bool? isActive = null)
+    {
+        var criteria = new GetAllSiteWithNumOfUserCriteria
+        {
+            Environment = env,
+            IsActive = isActive
+        };
+
+        return dynamicRepository.Fetch<ISite>(criteria).OrderBy(site => site.Name);
+    }
+
+    public IEnumerable<ISite> GetByUserAndFunctionKeyIncludeGroup(
+        int userId,
+        string functionKey,
+        string env = Constant.Uat,
+        Constant.Policy policy = Constant.Policy.Read)
+    {
+        var criteria = new GetByUserAndFunctionKeyIncludeGroupFunctionCriteria
+        {
+            UserId = userId,
+            FunctionKey = functionKey,
+            Environment = env
+        };
+
+        var functionPolicyList = functionRepository.FetchFunctionPolicy(criteria).OrderBy(s => s.Site.Name);
+
+        return functionPolicyList.Where(f => f.Policy >= (int)policy)
+            .Select(s => new Site
+            {
+                Id = s.Site.Id,
+                Name = s.Site.Name
+            }).ToList();
+    }
+
+    public IList<SelectListItem> GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+        int userId,
+        string functionKey,
+        string env = Constant.Uat,
+        Constant.Policy policy = Constant.Policy.Read,
+        int selectedSiteId = 0)
+    {
+        var criteria = new GetByUserAndFunctionKeyIncludeGroupFunctionCriteria
+        {
+            UserId = userId,
+            FunctionKey = functionKey,
+            Environment = env
+        };
+
+
+        IEnumerable<FunctionPolicy> functionPolicyList = functionRepository.FetchFunctionPolicy(criteria).OrderBy(s => s.Site.Name);
+
+        return functionPolicyList.Where(f => f.Policy >= (int)policy)
+            .Select(s => new SelectListItem
+            {
+                Text = s.Site.Name,
+                Value = s.Site.Id.ToString(),
+                Selected = s.Site.Id == selectedSiteId
+            }).ToList();
+    }
+
+    #endregion
+
+    #region insert/update
+
+    public ICommandResult Insert(InsertSiteCriteria criteria)
+    {
+        var logCriteria = GetLogExecSpCriteria();
+
+        return siteRepository.Insert(criteria, logCriteria);
+    }
+
+    public ICommandResult Update(UpdateSiteCriteria criteria)
+    {
+        var logCriteria = GetLogExecSpCriteria();
+
+        return siteRepository.Update(criteria, logCriteria);
+    }
+
+    public ICommandResult UpdateStatus(UpdateStatusSiteCriteria criteria)
+    {
+        var logCriteria = GetLogExecSpCriteria();
+
+        return siteRepository.Update(criteria, logCriteria);
+    }
+
+    #endregion
+
+    #region SiteLevel services
+
+    public SiteLevel GetUserSiteLevel(int userId, int siteId)
+    {
+        var criteria = new GetUserSiteLevelSiteCriteria
+        {
+            UserId = userId,
+            SiteId = siteId
+        };
+
+        return siteRepository.FetchSiteLevel(criteria).FirstOrDefault<SiteLevel>();
+    }
+
+    #endregion
+
+    #region SiteUrl services
+
+    public IEnumerable<SiteUrl> GetAllSiteUrl(string env)
+    {
+        var criteria = new GetAllSiteUrlCriteria
+        {
+            Environment = env
+        };
+
+        return siteRepository.FetchSiteUrl(criteria);
+    }
+
+    public IEnumerable<SiteUrl> GetSiteUrlByUser(int userId, string env)
+    {
+        var criteria = new GetSiteUrlByUserCriteria
+        {
+            UserId = userId,
+            Environment = env
+        };
+
+        return siteRepository.FetchSiteUrl(criteria).OrderBy(su => su.Site.Name).ToList();
+    }
+
+    public IEnumerable<SiteUrl> GetSiteUrlBySiteId(int siteId, string env)
+    {
+        var criteria = new GetSiteUrlBySiteIdCriteria
+        {
+            SiteId = siteId,
+            Environment = env
+        };
+
+
+        return siteRepository.FetchSiteUrl(criteria).OrderBy(su => su.Site.Name).ToList();
+    }
+
+    public SiteUrl GetSiteUrlById(int siteUrlId)
+    {
+        var criteria = new GetSiteUrlByIdCriteria
+        {
+            SiteUrlId = siteUrlId
+        };
+        
+        return siteRepository.GetSiteUrl(criteria);
+    }
+
+    public ICommandResult UpdateSiteUrl(UpdateSiteUrlCriteria criteria)
+    {
+        var logCriteria = GetLogExecSpCriteria();
+
+        return siteRepository.Update(criteria, logCriteria);
+    }
+
+    public ICommandResult UpdateDefaultSiteUrl(UpdateDefaultSiteUrlCriteria criteria)
+    {
+        var logCriteria = GetLogExecSpCriteria();
+
+        return siteRepository.Update(criteria, logCriteria);
+    }
+
+    public ICommandResult InsertSiteUrl(InsertSiteUrlCriteria criteria)
+    {
+        var logCriteria = GetLogExecSpCriteria();
+
+        return siteRepository.InsertSiteUrl(criteria, logCriteria);
+    }
+
+    #endregion
+}
