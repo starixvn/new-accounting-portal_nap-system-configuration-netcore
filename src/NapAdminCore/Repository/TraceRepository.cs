@@ -24,6 +24,14 @@ public interface ITraceRepository : IDynamicRepository
 }
 public class TraceRepository : DynamicRepository, ITraceRepository
 {
+    private readonly IDynamicRepository dynamicRepository;
+
+    public TraceRepository(IDynamicRepository dynamicRepository)
+    {
+        this.dynamicRepository = dynamicRepository;
+    }
+
+
     public IQueryable<LogExecSp> SearchLogExecSp(GetAllLogCriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
@@ -56,31 +64,11 @@ public class TraceRepository : DynamicRepository, ITraceRepository
 
     public IQueryable<LogUserLogin> SearchLogUserLogin(GetAllLogUserLoginCriteria criteria)
     {
-        using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        var hashtable = HashtableExtensions.ToHashtable(criteria);
-
-        var logList = db.Query<LogUserLogin, User, Site, LogUserLogin>(
-            (l, u, s) => { l.User = u; l.Site = s; return l; },
-            "UserId,SiteId",
-            hashtable);
-
-        criteria.TotalRows = Convert.ToInt32(hashtable["totalrows"]);
-
-        return logList.AsQueryable();
+        return dynamicRepository.Fetch<LogUserLogin>(criteria).AsQueryable();
     }
 
     public IQueryable<LogFunction> SearchLogFunction(GetAllLogFunctionCriteria criteria)
     {
-        using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        var hashtable = HashtableExtensions.ToHashtable(criteria);
-
-        var logList = db.Query<LogFunction, Function, User, Site, LogFunction>(
-            (l, f, u, s) => { l.Function = f; l.User = u; l.Site = s; return l; },
-            "FunctionId,UserId,SiteId",
-            hashtable);
-
-        criteria.TotalRows = Convert.ToInt32(hashtable["totalrows"]);
-
-        return logList.AsQueryable();
+        return dynamicRepository.Fetch<LogFunction>(criteria).AsQueryable();
     }
 }

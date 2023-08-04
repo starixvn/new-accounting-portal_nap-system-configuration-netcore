@@ -423,20 +423,12 @@
                         @Html.DropDownList("items-per-page", new List<SelectListItem> {
                             new() { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
                             new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
-                            new() { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() }
+                            new() { Value = "50", Text = "50", Selected = "50" == Model.PageSize.ToString() },
+                            new() { Value = "100", Text = "100", Selected = "100" == Model.PageSize.ToString() },
+                            new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() },
                         }, new { id = string.Empty, @class = "items-per-page" })
                     </span>
-                        @*@Html.Pager(Model.TotalItemCount, Model.PageSize, Model.CurrentPageIndex, new PagerOptions()
-                   {
-                       PageIndexParameterName = "id",
-                       ShowFirstLast = true,
-                       ShowPrevNext = true,
-                       ShowDisabledPagerItems = true,
-                       ShowMorePagerItems = true,
-                       NumericPagerItemCount = 20,
-                       CurrentPagerItemTemplate = "<a disabled='disabled'>{0}</a>",                       
-                       CssClass = "jpages"
-                   })*@
+                    <div id="jpages"></div>
                 }
             </td>
         </tr>
@@ -444,4 +436,12 @@
 </table>
 @section Foot {
     <script src="~/scripts/User/Manage.js" type="text/javascript"></script>
+    <script type="text/ecmascript">
+        $(document).ready(function(){
+            var totalItemCount = @Model.TotalItemCount;
+            var pageSize = @Model.PageSize;
+            var currentPage = @Model.CurrentPageIndex;
+            $('#jpages').setupPagination(currentPage, pageSize, totalItemCount);
+        });
+    </script>
 }

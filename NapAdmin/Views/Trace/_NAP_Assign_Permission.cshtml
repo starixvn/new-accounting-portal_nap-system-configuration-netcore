@@ -43,10 +43,10 @@
             {
                 var function = functionList[i];
                 var groupFuncPolicyOld = groupFuncPolicyOldList.Where(x => x.Function.Id == function.Id).SingleOrDefault();
-                var parentId = function.Parent != null ? function.Parent.Id.ToString() : string.Empty;
+                var parentId = function.ParentId > 0 ? function.ParentId.ToString() : string.Empty;
 
                 var funcNameStyle = i == functionCount - 1 ? "nbt" : "nbt nbb";
-                if (function.Parent == null)
+                if (function.ParentId  == 0)
                 {
                     funcNameStyle = i == functionCount - 1 ? string.Empty : "nbb";
                 }
@@ -130,9 +130,9 @@
 @{
     void IndentChildFunctions(List<Function> functionList, Function function, int level = 0)
     {
-        if (function.Parent != null)
+        if (function.ParentId > 0)
         {
-            var parent = functionList.Where(x => x.Id == function.Parent.Id).SingleOrDefault();
+            var parent = functionList.Where(x => x.Id == function.ParentId).SingleOrDefault();
 
             IndentChildFunctions(functionList, parent, level + 1);
         }

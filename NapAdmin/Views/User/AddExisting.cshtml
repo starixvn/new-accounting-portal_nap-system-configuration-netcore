@@ -77,4 +77,10 @@
 
 @section Foot {
     <script src="~/scripts/User/AddExisting.js" type="text/javascript"></script>
+    <script type="text/ecmascript">
+        $(document).ready(function(){
+            
+            $('#jpages').setupPagination(currentPage, pageSize, totalItemCount);
+        });
+    </script>
 }

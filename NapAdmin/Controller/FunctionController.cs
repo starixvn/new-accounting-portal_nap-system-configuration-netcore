@@ -480,7 +480,7 @@ public class FunctionController : BaseController
 
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Host)]
     public ActionResult PrivilegedUsers(
-        int id = 1,
+        int page = 1,
         int fid = 0,
         int gid = 0,
         string q = EmptyString)
@@ -498,7 +498,7 @@ public class FunctionController : BaseController
 
             var criteria = new SearchUserExcludeFunctionCriteria
             {
-                PageIndex = id,
+                PageIndex = page,
                 PageSize = size,
                 Username = q.Trim(),
                 GroupId = gid,

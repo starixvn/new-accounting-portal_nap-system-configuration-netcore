@@ -69,14 +69,14 @@ public class UserController : BaseController
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult Manage(
-        int id = 1,
+        int page = 1,
         int size = 20,
         string userName = EmptyString,
         int groupId = 0,
         int siteId = -1,
         int statusId = 1)
     {
-        var pageIndex = id;
+        var pageIndex = page;
         var pageSize = size;
         string username = ViewBag.Username = userName.Trim();
         var siteIdValue = siteId < 0 && siteId != AdminConstant.SearchAllSite ? SiteId : siteId;
@@ -236,7 +236,7 @@ public class UserController : BaseController
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public ActionResult AssignSite(
-        int id,
+        int page,
         string returnUserName = EmptyString,
         int returnSiteId = 0,
         int returnGroupId = 0,
@@ -277,7 +277,7 @@ public class UserController : BaseController
         }
 
         var currentUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
-        var siteLevelList = _siteService.GetSiteLevelByUser(id, Environment).ToList();
+        var siteLevelList = _siteService.GetSiteLevelByUser(page, Environment).ToList();
 
         var assignSiteVM = new AssignSiteVM
         {
@@ -293,9 +293,9 @@ public class UserController : BaseController
             SiteLevelList = siteLevelList,
             EditableSiteList = editableSiteList,
             CurrentSessionLevel = NapSession.Level,
-            UserId = id,
-            UserName = _userService.GetById(id).Username,
-            IsSelfEdit = NapSession.UserId == id,
+            UserId = page,
+            UserName = _userService.GetById(page).Username,
+            IsSelfEdit = NapSession.UserId == page,
             CurrentSiteId = SiteId,
             IsPortalAdmin = UserIsPortalAdmin
         };
@@ -375,7 +375,7 @@ public class UserController : BaseController
 
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult AddExisting(
-        int id = 1,
+        int page = 1,
         int size = 20,
         string userName = EmptyString,
         string returnUserName = EmptyString,
@@ -397,7 +397,7 @@ public class UserController : BaseController
         var criteria = new SearchByUsernameUserCriteria
         {
             Username = userName,
-            PageIndex = id,
+            PageIndex = page,
             PageSize = size,
             TotalRows = 0
         };
@@ -512,7 +512,7 @@ public class UserController : BaseController
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult Edit(
-        int id,
+        int page,
         string returnUserName = EmptyString,
         int returnSiteId = 0,
         int returnGroupId = 0,
@@ -520,7 +520,7 @@ public class UserController : BaseController
     {
         var criteria = new UpdateCustCriteria();
 
-        var user = _userService.GetById(id);
+        var user = _userService.GetById(page);
 
         if (user == null)
         {
@@ -583,13 +583,13 @@ public class UserController : BaseController
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult ResetPassword(
-        int id,
+        int page,
         string returnUserName = EmptyString,
         int returnSiteId = 0,
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        var user = _userService.GetById(id);
+        var user = _userService.GetById(page);
 
         if (user == null)
         {
@@ -693,7 +693,7 @@ public class UserController : BaseController
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Read)]
     public ActionResult AssignPermission(
-        int id,
+        int page,
         int siteId = 0,
         string returnUserName = EmptyString,
         int returnPageIndex = 1,
@@ -703,7 +703,7 @@ public class UserController : BaseController
         var assignPermissionVM = new AssignPermissionVM();
         var siteIdValue = siteId == 0 ? SiteId : siteId;
 
-        var user = _userService.GetById(id);
+        var user = _userService.GetById(page);
         var site = _siteService.GetById(siteIdValue);
 
         if (ReferenceEquals(user, null) || ReferenceEquals(site, null))
@@ -713,7 +713,7 @@ public class UserController : BaseController
 
         var criteria = new AssignFunctionUserCriteria
         {
-            UserId = id,
+            UserId = page,
             Username = user.Username,
             SiteId = siteIdValue
         };
@@ -725,7 +725,7 @@ public class UserController : BaseController
         }
 
         ViewFlags.HasAssignFunctionRight = HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Host)
-                                           && id != NapSession.UserId;
+                                           && page != NapSession.UserId;
 
         assignPermissionVM.Sites = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId).ToList() :
@@ -1025,7 +1025,7 @@ public class UserController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Read)]
     public ActionResult AssignSiteFunction(
-        int id,
+        int page,
         string returnUserName = EmptyString,
         int returnSiteId = 0,
         int returnGroupId = 0,
@@ -1044,13 +1044,13 @@ public class UserController : BaseController
         return View(new AssignSiteFunctionViewModel
         {
             LoginUserId = NapSession.UserId,
-            UserName = _userService.GetById(id).Username,
-            UserId = id,
+            UserName = _userService.GetById(page).Username,
+            UserId = page,
             LoginUserIsPortalAdmin = UserIsPortalAdmin,
             LoginUserHasAssignSitePermission = loginUserAssignSitePolicy >= (int)AdminConstant.Policy.Host,
             LoginUserHasAssignSiteReadPermission = loginUserAssignSitePolicy == (int)AdminConstant.Policy.Read,
             LoginUserAssignFunctionPermission = loginUserAssignFunctionPolicy,
-            IsSelfEdit = NapSession.UserId == id,
+            IsSelfEdit = NapSession.UserId == page,
             CurrentSiteId = SiteId,
             ReturnData = new ReturnData
             {
@@ -1413,9 +1413,9 @@ public class UserController : BaseController
 
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.SetupOTP, Policy = Constant.Policy.Read)]
-    public ActionResult SetupOTP(int id = 1, int size = 20, string username = "", string system = "", int status = 1)
+    public ActionResult SetupOTP(int page = 1, int size = 20, string username = "", string system = "", int status = 1)
     {
-        var pageIndex = id;
+        var pageIndex = page;
         var pageSize = size;
         var trimmedUsername = username.Trim();
 

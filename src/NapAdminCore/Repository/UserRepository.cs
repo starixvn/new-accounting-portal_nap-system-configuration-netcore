@@ -16,7 +16,7 @@ using Models;
 using Models.ValueObject;
 using Helpers;
 
-public interface IUserRepository 
+public interface IUserRepository
 {
     IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria);
 
@@ -49,26 +49,21 @@ public interface IUserRepository
 
 public class UserRepository : BaseRepository<User>, IUserRepository
 {
-    public  User Get(ICriteria criteria)
-    {
-        using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        var objUser = objectDb.QueryEntity<User, Group, User, User, User>(
-            (u, g, uc, um) => { u.Group = g; u.Creator = uc; u.Modifier = um; return u; },
-            "GroupId,CreatorId,ModifierId",
-            criteria);
+    private readonly IDynamicRepository dynamicRepository;
 
-        return objUser;
+    public UserRepository(IDynamicRepository dynamicRepository)
+    {
+        this.dynamicRepository = dynamicRepository;
     }
 
-    public  IEnumerable<User> Fetch(ICriteria criteria)
+    public User Get(ICriteria criteria)
     {
-        using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        var objListUser = objectDb.Query<User, Group, User, User, User>(
-            (u, g, uc, um) => { u.Group = g; u.Creator = uc; u.Modifier = um; return u; },
-            "GroupId,CreatorId,ModifierId",
-            criteria);
+        return dynamicRepository.Get<User>(criteria);
+    }
 
-        return objListUser;
+    public IEnumerable<User> Fetch(ICriteria criteria)
+    {
+        return dynamicRepository.Fetch<User>(criteria);
     }
 
     public IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria)
@@ -160,21 +155,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
                     LastLoginDate = reader.ToDateTime("LastLoginDate"),
                     CreatedDate = reader.ToDateTime("CreatedDate"),
                     ModifiedDate = reader.ToDateTime("ModifiedDate"),
-                    Group = reader.IsDBNull("GroupId") ? null : new Group
-                    {
-                        Id = reader.ToShort("GroupId"),
-                        Name = reader.ToString("GroupName")
-                    },
-                    Creator = reader.IsDBNull("CreatorId") ? null : new User
-                    {
-                        Id = reader.ToInt("CreatorId"),
-                        Username = reader.ToString("CreatorUsername")
-                    },
-                    Modifier = reader.IsDBNull("ModifierId") ? null : new User
-                    {
-                        Id = reader.ToInt("ModifierId"),
-                        Username = reader.ToString("ModifierUsername")
-                    },
+                    GroupId = reader.ToShort("GroupId"),
+                    GroupName = reader.ToString("GroupName"),
+                    CreatorId = reader.ToInt("CreatorId"),
+                    CreatorUsername = reader.ToString("CreatorUsername"),
+                    ModifierId = reader.ToInt("ModifierId"),
+                    ModifierUsername = reader.ToString("ModifierUsername")
                 },
                 CreatedDate = reader.ToDateTime("CreatedDateUserSite"),
                 ModifiedDate = reader.ToDateTime("ModifiedDateUserSite"),
@@ -278,21 +264,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
                     LastLoginDate = reader.ToDateTime("LastLoginDate"),
                     CreatedDate = reader.ToDateTime("CreatedDate"),
                     ModifiedDate = reader.ToDateTime("ModifiedDate"),
-                    Group = reader.IsDBNull("GroupId") ? null : new Group
-                    {
-                        Id = reader.ToShort("GroupId"),
-                        Name = reader.ToString("GroupName")
-                    },
-                    Creator = reader.IsDBNull("CreatorId") ? null : new User
-                    {
-                        Id = reader.ToInt("CreatorId"),
-                        Username = reader.ToString("CreatorUsername")
-                    },
-                    Modifier = reader.IsDBNull("ModifierId") ? null : new User
-                    {
-                        Id = reader.ToInt("ModifierId"),
-                        Username = reader.ToString("ModifierUsername")
-                    },
+                    GroupId = reader.ToShort("GroupId"),
+                    GroupName = reader.ToString("GroupName"),
+                    CreatorId = reader.ToInt("CreatorId"),
+                    CreatorUsername = reader.ToString("CreatorUsername"),
+                    ModifierId = reader.ToInt("ModifierId"),
+                    ModifierUsername = reader.ToString("ModifierUsername")
                 },
                 CreatedDate = reader.ToDateTime("CreatedDateUserFunction"),
                 ModifiedDate = reader.ToDateTime("ModifiedDateUserFunction"),
@@ -356,21 +333,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
                 LastLoginDate = reader.ToDateTime("LastLoginDate"),
                 CreatedDate = reader.ToDateTime("CreatedDate"),
                 ModifiedDate = reader.ToDateTime("ModifiedDate"),
-                Group = reader.IsDBNull("GroupId") ? null : new Group
-                {
-                    Id = reader.ToShort("GroupId"),
-                    Name = reader.ToString("GroupName")
-                },
-                Creator = reader.IsDBNull("CreatorId") ? null : new User
-                {
-                    Id = reader.ToInt("CreatorId"),
-                    Username = reader.ToString("CreatorUsername")
-                },
-                Modifier = reader.IsDBNull("ModifierId") ? null : new User
-                {
-                    Id = reader.ToInt("ModifierId"),
-                    Username = reader.ToString("ModifierUsername")
-                },
+                GroupId = reader.ToShort("GroupId"),
+                GroupName = reader.ToString("GroupName"),
+                CreatorId = reader.ToInt("CreatorId"),
+                CreatorUsername = reader.ToString("CreatorUsername"),
+                ModifierId = reader.ToInt("ModifierId"),
+                ModifierUsername = reader.ToString("ModifierUsername")
             },
             CreatedDate = reader.ToDateTime("CreatedDateUserSite"),
             ModifiedDate = reader.ToDateTime("ModifiedDateUserSite"),
@@ -384,13 +352,25 @@ public class UserRepository : BaseRepository<User>, IUserRepository
                 Id = reader.ToInt("ModifierIdUserSite"),
                 Username = reader.ToString("ModifierUsernameUserSite")
             },
-            IsActive = reader.ToBool("IsActive"),
             LastLoginDate = reader.ToDateTime("LastLoginDateUserSite"),
             Site = reader.IsDBNull("SiteId") ? null : new Site
             {
                 Id = reader.ToByte("SiteId"),
                 Name = reader.ToString("SiteName")
-            }
+            },
+            Status = TryGetColumnValue(reader, "Status", 0)
         };
+    }
+
+    private static T TryGetColumnValue<T>(IDataReader reader, string columnName, T defaultValue)
+    {
+        try
+        {
+            return reader.GetValue<T>(columnName);
+        }
+        catch
+        {
+            return defaultValue;
+        }
     }
 }

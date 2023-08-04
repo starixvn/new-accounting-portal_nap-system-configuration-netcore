@@ -86,7 +86,7 @@
             {
                 var funcNameStyle = i == functionCount - 1 ? "nbt" : "nbt nbb";
 
-                if (function.Parent == null)
+                if (function.ParentId == 0)
                 {
                     funcNameStyle = i == functionCount - 1 ? string.Empty : "nbb";
                     rowBg = rowBg == string.Empty ? "class='alt'" : string.Empty;
@@ -97,7 +97,7 @@
                     @{ IndentChildFunction(function, functionList, 0); }
                 </td>
                 <td class="grid-mode-only" style="display: none">
-                    @(function.Parent != null ? function.Parent.Name : string.Empty)
+                    @(function.ParentName)
                 </td>
                 <td class="text-center">
                     @function.DisplayOrder
@@ -205,14 +205,11 @@
 @{
     void IndentChildFunction(Function function, IEnumerable<Function> functionList, int level = 0)
     {
-        if (function.Parent != null)
+        if (function.ParentId > 0)
         {
-            if (function.Parent.Id > 0)
-            {
-                var parent = functionList.Where(f => f.Id == function.Parent.Id).FirstOrDefault();
-
-                IndentChildFunction(parent, functionList, level + 1);
-            }
+            
+            var parent = functionList.Where(f => f.Id == function.ParentId).FirstOrDefault();
+            IndentChildFunction(parent, functionList, level + 1);
         }
         else
         {
@@ -231,7 +228,7 @@
 
         if (level == 0)
         {
-            var functionHasKids = functionList.Where(f => f.Parent != null && f.Parent.Id == function.Id).Count() > 0;
+            var functionHasKids = functionList.Where(f => f.ParentId == function.Id).Count() > 0;
 
             if (functionHasKids)
             {

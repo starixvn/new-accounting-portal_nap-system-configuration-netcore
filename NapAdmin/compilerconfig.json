@@ -74,5 +74,9 @@
   {
     "outputFile": "wwwroot/themes/nap/themes.css",
     "inputFile": "wwwroot/themes/nap/themes.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/pagination.css",
+    "inputFile": "wwwroot/themes/pagination.less"
   }
 ]

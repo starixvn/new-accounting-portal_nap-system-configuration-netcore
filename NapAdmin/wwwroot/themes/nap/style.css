@@ -842,99 +842,12 @@ footer p {
 /********************************************************/
 /*                      PAGING                          */
 /********************************************************/
-.jpages {
-  margin: 0;
-  float: left;
-  border: 1px solid #bbb;
-  font-size: 0;
-  background-color: #fefefe;
-  box-shadow: 1px 1px 0 #fff;
-  -moz-box-shadow: 1px 1px 0 #fff;
-  -webkit-box-shadow: 1px 1px 0 #fff;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  /*a:first-child + a {
-        background: url("img/prev.png") no-repeat 0 2px;
-        font-size: 0;
-        margin-left: 7px;
-        padding: 9px 4px;
-        width: 15px;
-    }
-
-    a:first-child + a:hover {
-        background-position: 0 -23px;
-    }*/
-}
-.jpages a {
-  display: inline-block;
-  background-color: #fff;
-  padding: 2px 8px;
-  font-size: 11px;
-  color: #292929;
-  text-shadow: 0 1px 0 #bbb;
-  cursor: pointer;
-  float: left;
-  border-right: 1px solid #bbb;
-  background-color: #fefefe;
-  /*&:first-child {
-            background: url("img/first.png") no-repeat 0 4px;
-            font-size: 0;
-            margin-left: 7px;
-            padding: 9px 4px;
-            width: 15px;
-
-            &:hover {
-                background-position: 0 -18px;
-            }
-        }*/
-  /*&:last-child {
-            background: url("img/last.png") no-repeat 0 4px;
-            font-size: 0;
-            margin-left: 7px;
-            padding: 9px 4px;
-            width: 15px;
-
-            &:hover {
-                background-position: 0 -17px;
-            }
-        }
-
-        &:nth-last-child(2) {
-            background: url("img/next.png") no-repeat scroll 0 2px;
-            font-size: 0;
-            margin-left: 7px;
-            padding: 9px 6px;
-            width: 10px;
-
-            &:hover {
-                background-position: 0 -23px;
-            }
-        }*/
-}
-.jpages a:hover {
-  background-color: #ddd;
-  text-decoration: none;
-}
-.jpages a[disabled] {
-  opacity: 0.35;
-  filter: alpha(opacity=35);
-}
-.jpages a[disabled]:hover {
-  background-color: #fff;
-  cursor: default;
-}
-.jpages a.jp-current,
-.jpages a.jp-current:hover {
-  background-color: #355391;
-  color: #fff;
-  cursor: default;
-}
 .items-per-page-wrp {
   float: left;
   margin-top: 0;
   color: #000;
   font-size: 12px;
+  height: 100%;
 }
 .items-per-page-wrp .items-per-page {
   margin: 0 10px 0 5px;
@@ -949,7 +862,7 @@ footer p {
   -webkit-border-radius: 2px;
   font-size: 11px;
   color: #292929;
-  height: 20px;
+  height: 100%;
 }
 /********************************************************/
 /*                      Combo Picker                    */

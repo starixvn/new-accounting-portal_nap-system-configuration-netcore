@@ -45,7 +45,7 @@ public class TraceController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ExecSpLog)]
     [HttpGet]
     public ActionResult LogExecSp(
-        int id = 1,
+        int page = 1,
         int size = 20,
         string q = EmptyString,
         string username = EmptyString,
@@ -55,7 +55,7 @@ public class TraceController : BaseController
     {
         var criteria = new GetAllLogCriteria
         {
-            PageIndex = id,
+            PageIndex = page,
             PageSize = size,
             Name = q ?? string.Empty,
             Username = username,
@@ -94,7 +94,7 @@ public class TraceController : BaseController
 
     [HttpGet]
     public ActionResult LogUserLogin(
-        int id = 1,
+        int page = 1,
         int size = 20,
         string q = EmptyString,
         DateTime? from = null,
@@ -103,7 +103,7 @@ public class TraceController : BaseController
     {
         var criteria = new GetAllLogUserLoginCriteria
         {
-            PageIndex = id,
+            PageIndex = page,
             PageSize = size,
             Name = q ?? string.Empty,
             From = from ?? DateTime.Now,

@@ -26,26 +26,21 @@ public interface IGroupRepository
 }
 public class GroupRepository : BaseRepository<Group>, IGroupRepository
 {
+    private readonly IDynamicRepository dynamicRepository;
+
+    public GroupRepository(IDynamicRepository dynamicRepository)
+    {
+        this.dynamicRepository = dynamicRepository;
+    }
+
     public Group Get(ICriteria criteria)
     {
-        using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        var objGroup = objectDb.QueryEntity<Group, User, User, Group>(
-            (g, cu, mu) => { g.Creator = cu; g.Modifier = mu; return g; },
-            "CreatorId,ModifierId",
-            criteria);
-
-        return objGroup;
+        return dynamicRepository.Get<Group>(criteria);
     }
 
     public IEnumerable<Group> Fetch(ICriteria criteria)
     {
-        using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        var listGroup = objectDb.Query<Group, User, User, Group>(
-            (g, cu, mu) => { g.Creator = cu; g.Modifier = mu; return g; },
-            "CreatorId,ModifierId",
-            criteria);
-
-        return listGroup.OrderBy(g => g.Name).ToList();
+        return dynamicRepository.Fetch<Group>(criteria);
     }
 
     public ICommandResult Insert(InsertGroupCriteria criteria, ICriteria logCriteria)
@@ -91,16 +86,10 @@ public class GroupRepository : BaseRepository<Group>, IGroupRepository
                     Name = reader.ToString("GroupName"),
                     CreatedDate = reader.ToDateTime("CreatedDate"),
                     ModifiedDate = reader.ToDateTime("ModifiedDate"),
-                    Creator = reader.IsDBNull("CreatorId") ? null : new User
-                    {
-                        Id = reader.ToInt("CreatorId"),
-                        Username = reader.ToString("CreatorUsername")
-                    },
-                    Modifier = reader.IsDBNull("ModifierId") ? null : new User
-                    {
-                        Id = reader.ToInt("ModifierId"),
-                        Username = reader.ToString("ModifierUsername")
-                    }
+                    CreatorId = reader.ToInt("CreatorId"),
+                    CreatorUsername = reader.ToString("CreatorUsername"),
+                    ModifierId = reader.ToInt("ModifierId"),
+                    ModifierUsername = reader.ToString("ModifierUsername")
                 },
                 CreatedDate = reader.ToDateTime("CreatedDateGroupFunction"),
                 ModifiedDate = reader.ToDateTime("ModifiedDateGroupFunction"),

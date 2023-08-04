@@ -33,20 +33,16 @@ public interface IFunctionRepository
 
 public class FunctionRepository : BaseRepository<Function>, IFunctionRepository
 {
+    private readonly IDynamicRepository dynamicRepository;
+
+    public FunctionRepository(IDynamicRepository dynamicRepository)
+    {
+        this.dynamicRepository = dynamicRepository;
+    }
+
     public Function Get(ICriteria criteria)
     {
-        using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        return db.QueryEntity<Function, Function, Site, User, User, Function>(
-            (f, pf, s, cu, mu) =>
-            {
-                f.Parent = pf;
-                f.Site = s;
-                f.Creator = cu;
-                f.Modifier = mu;
-                return f;
-            },
-            "ParentId,SiteId,CreatorId,ModifierId",
-            criteria);
+        return dynamicRepository.Get<Function>(criteria);
     }
 
     public int Count(ICriteria criteria)
@@ -57,18 +53,7 @@ public class FunctionRepository : BaseRepository<Function>, IFunctionRepository
 
     public IEnumerable<Function> Fetch(ICriteria criteria)
     {
-        using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        return db.Query<Function, Function, Site, User, User, Function>(
-            (f, pf, s, cu, mu) =>
-            {
-                f.Parent = pf;
-                f.Site = s;
-                f.Creator = cu;
-                f.Modifier = mu;
-                return f;
-            },
-            "ParentId,SiteId,CreatorId,ModifierId",
-            criteria).OrderBy(f => f.Name).ToList();
+        return dynamicRepository.Fetch<Function>(criteria);
     }
 
     public IEnumerable<FunctionPolicy> FetchFunctionPolicy(ICriteria criteria)
@@ -90,16 +75,10 @@ public class FunctionRepository : BaseRepository<Function>, IFunctionRepository
                     Crud = reader.ToByte("CRUD"),
                     DisplayOrder = reader.ToShort("DisplayOrder"),
                     IsActive = reader.ToBool("IsActive"),
-                    Site = new Site
-                    {
-                        Id = reader.ToByte("SiteId"),
-                        Name = reader.ToString("SiteName")
-                    },
-                    Parent = reader.IsDBNull("ParentId") ? null : new Function
-                    {
-                        Id = reader.ToShort("ParentId"),
-                        Name = reader.ToString("ParentName")
-                    }
+                    SiteId = reader.ToByte("SiteId"),
+                    SiteName = reader.ToString("SiteName"),
+                    ParentId = reader.ToShort("ParentId"),
+                    ParentName = reader.ToString("ParentName")
                 },
                 Site = new Site
                 {
@@ -132,16 +111,10 @@ public class FunctionRepository : BaseRepository<Function>, IFunctionRepository
                     Crud = reader.ToByte("CRUD"),
                     DisplayOrder = reader.ToShort("DisplayOrder"),
                     IsActive = reader.ToBool("IsActive"),
-                    Site = new Site
-                    {
-                        Id = reader.ToByte("SiteId"),
-                        Name = reader.ToString("SiteName")
-                    },
-                    Parent = reader.IsDBNull("ParentId") ? null : new Function
-                    {
-                        Id = reader.ToShort("ParentId"),
-                        Name = reader.ToString("ParentName")
-                    }
+                    SiteId = reader.ToByte("SiteId"),
+                    SiteName = reader.ToString("SiteName"),
+                    ParentId = reader.ToShort("ParentId"),
+                    ParentName = reader.ToString("ParentName")
                 },
                 Site = new Site
                 {

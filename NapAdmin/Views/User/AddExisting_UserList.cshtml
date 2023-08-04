@@ -71,20 +71,20 @@
                         @Html.DropDownList("items-per-page", new List<SelectListItem> {
                             new() { Value = "10", Text = "10", Selected = "10" == Model.UserList.PageSize.ToString() },
                             new() { Value = "20", Text = "20", Selected = "20" == Model.UserList.PageSize.ToString() },
-                            new() { Value = "30", Text = "30", Selected = "30" == Model.UserList.PageSize.ToString() }
+                            new() { Value = "50", Text = "50", Selected = "50" == Model.UserList.PageSize.ToString() },
+                            new() { Value = "100", Text = "100", Selected = "100" == Model.UserList.PageSize.ToString() },
+                            new() { Value = "200", Text = "200", Selected = "200" == Model.UserList.PageSize.ToString() },
                         }, new { id = string.Empty, @class = "items-per-page" })</span>
 
-                    @*@Html.Pager(Model.UserList, new PagerOptions() {
-                       PageIndexParameterName = "id",
-                       ShowFirstLast = true,
-                       ShowPrevNext = true,
-                       ShowDisabledPagerItems = true,
-                       ShowMorePagerItems = true,
-                       NumericPagerItemCount = 20,
-                       CurrentPagerItemTemplate = "<a disabled='disabled'>{0}</a>",
-                       CssClass = "jpages"
-                   })*@
+                    <div id="jpages"></div>
+                    <script type="text/ecmascript">
+                        var totalItemCount = @Model.UserList.TotalItemCount;
+                        var pageSize = @Model.UserList.PageSize;
+                        var currentPage = @Model.UserList.CurrentPageIndex;
+                    </script>
                 }
+                
+
             </td>
         </tr>
     </tfoot>
