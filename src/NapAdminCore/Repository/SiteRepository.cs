@@ -7,7 +7,6 @@ using System.Linq;
 using Command;
 using Criteria.Misc;
 using Criteria.Site;
-using Domain;
 using Fanex.Data;
 using Fanex.Data.Repository;
 using Models;
@@ -30,9 +29,9 @@ public interface ISiteRepository
 
     ICommandResult Delete(ICriteria criteria, ICriteria logCriteria);
 }
-public class SiteRepository : BaseRepository<ISite>, ISiteRepository
+public class SiteRepository : BaseRepository<Site>, ISiteRepository
 {
-    public  ISite Get(ICriteria criteria)
+    public  Site Get(ICriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         return db.QueryEntity<Site>(criteria);
@@ -56,7 +55,7 @@ public class SiteRepository : BaseRepository<ISite>, ISiteRepository
         throw new NotImplementedException();
     }
 
-    public  IEnumerable<ISite> Fetch(ICriteria criteria)
+    public  IEnumerable<Site> Fetch(ICriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         return db.Query<Site>(criteria).OrderBy(s => s.Name).ToList();

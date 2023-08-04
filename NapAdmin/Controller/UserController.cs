@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.User;
 using NapAdminCore.DbParams;
-using NapAdminCore.Domain;
 using NapAdminCore.Helpers;
 using NapAdminCore.Models;
 using NapAdminCore.Models.ValueObject;
@@ -243,8 +242,8 @@ public class UserController : BaseController
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        List<ISite> siteList;
-        var editableSiteList = new List<ISite>();
+        List<Site> siteList;
+        var editableSiteList = new List<Site>();
 
         if (UserIsPortalAdmin)
         {
@@ -319,8 +318,8 @@ public class UserController : BaseController
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        var availableSites = new List<ISite>();
-        var hostRightSites = new List<ISite>();
+        var availableSites = new List<Site>();
+        var hostRightSites = new List<Site>();
         var currentUserSiteLevelList = new List<SiteLevel>();
 
         if (NapSession.UserId != userId)
@@ -403,13 +402,13 @@ public class UserController : BaseController
             TotalRows = 0
         };
 
-        PagerList<IUser> userList = null;
+        PagerList<User> userList = null;
 
         if (criteria.Username.Length > 0)
         {
             var users = _userService.SearchByUsername(criteria);
 
-            userList = new PagerList<IUser>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, users);
+            userList = new PagerList<User>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, users);
 
             ViewBag.Groups = _groupService.GetAllSelectListItem();
             ViewBag.UserName = criteria.Username;
@@ -1096,7 +1095,7 @@ public class UserController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public JsonResult GetAllUserSites(int userId)
     {
-        IEnumerable<ISite> siteList = UserIsPortalAdmin || NapSession.UserId == userId ?
+        IEnumerable<Site> siteList = UserIsPortalAdmin || NapSession.UserId == userId ?
             _siteService.GetAll(Environment, true).ToList() :
             _siteService.GetByUserAndFunctionKeyIncludeGroup(
                 NapSession.UserId,
@@ -1112,7 +1111,7 @@ public class UserController : BaseController
         return Json(userSiteList);
     }
 
-    private void GetUserHasFunctionPermissionSites(List<ISite> userSiteList)
+    private void GetUserHasFunctionPermissionSites(List<Site> userSiteList)
     {
         var loginUserHasFunctionPermissionSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
             NapSession.UserId,
@@ -1183,7 +1182,7 @@ public class UserController : BaseController
             SiteId,
             FunctionKeys.AssignSiteToUser);
 
-        var editableSites = new List<ISite>();
+        var editableSites = new List<Site>();
 
         if (assignSitePolicy >= (int)AdminConstant.Policy.Host)
         {
@@ -1382,7 +1381,7 @@ public class UserController : BaseController
         return encrypted;
     }
 
-    private List<ISite> GetUserUnassignedSites(int userId)
+    private List<Site> GetUserUnassignedSites(int userId)
     {
         var loginUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
         var loginUserHasAssignSiteHostRightSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
@@ -1392,7 +1391,7 @@ public class UserController : BaseController
             policy: AdminConstant.Policy.Host).ToList();
 
         var availableSites = _siteService.GetAvailableSitesForUser(userId, Environment).ToList();
-        var unassignedSite = new List<ISite>();
+        var unassignedSite = new List<Site>();
 
         foreach (var site in availableSites)
         {

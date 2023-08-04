@@ -1,13 +1,13 @@
 namespace NapAdmin.ViewModels.User;
 
-using NapAdminCore.Domain;
 using NapAdminCore.Helpers;
+using NapAdminCore.Models;
 
 public class AddExistingUserVM
 {
     public ReturnData ReturnData { get; set; } = new();
 
-    public PagerList<IUser> UserList { get; set; }
+    public PagerList<User> UserList { get; set; }
 
     public string UserName { get; set; } = string.Empty;
 

@@ -25,7 +25,7 @@
 
             if (!lvl1MenuItemList.Any())
             {
-                <li class="@className"><a href="@Url.Content(menuItem.ValidUrl)">@menuItem.Name</a></li>
+                <li class="@className"><a href="@Url.Content(menuItem.ValidUrl.Replace("Admin/",""))">@menuItem.Name</a></li>
             }
             else
             {
@@ -36,7 +36,7 @@
                     <ul>
                         @foreach (var subMenuItem in lvl1MenuItemList)
                         {
-                            <li><a href="@Url.Content(subMenuItem.ValidUrl)">@subMenuItem.Name</a></li>
+                            <li><a href="@Url.Content(subMenuItem.ValidUrl.Replace("Admin/",""))">@subMenuItem.Name</a></li>
                         }
                     </ul>
                 </li>

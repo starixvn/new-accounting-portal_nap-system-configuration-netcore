@@ -9,7 +9,6 @@ var ChangePassword = function () {
         userPwd: null,
         confirmUserPwd: null,
         hiddenForm: null,
-        token: null,
         oldPassword: null,
         newPassword: null,
         confirmPassword: null
@@ -22,7 +21,6 @@ $(document).ready(function () {
     ChangePassword.userPwd = $('#UserPwd');
     ChangePassword.confirmUserPwd = $('#ConfirmUserPwd');
     ChangePassword.hiddenForm = $('#hiddenForm');
-    ChangePassword.token = $('#token');
     ChangePassword.oldPassword = $('#oldPassword');
     ChangePassword.newPassword = $('#newPassword');
     ChangePassword.confirmPassword = $('#confirmPassword');
@@ -30,10 +28,9 @@ $(document).ready(function () {
     ChangePassword.mainForm.on('submit', function () {
         if ($(this).valid()) {
             var encryptPass = '';
-            var token = ChangePassword.token.val();
-
+            
             encryptPass = CryptoJS.CfsEnCode(ChangePassword.oldUserPwd.val());
-            ChangePassword.oldPassword.val(CryptoJS.SHA256(encryptPass + token));
+            ChangePassword.oldPassword.val(CryptoJS.SHA256(encryptPass));
             encryptPass = CryptoJS.CfsEnCode(ChangePassword.userPwd.val());
             ChangePassword.newPassword.val(encryptPass);
             encryptPass = CryptoJS.CfsEnCode(ChangePassword.confirmUserPwd.val());

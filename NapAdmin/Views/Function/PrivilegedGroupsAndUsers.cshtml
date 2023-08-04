@@ -5,7 +5,7 @@
     var userList = (List<UserPolicy>)ViewBag.Users;
     var userSiteLevels = (Dictionary<int, int>)ViewBag.UserSiteLevels;
     var groupList = (List<GroupPolicy>)ViewBag.Groups;
-    var function = (IFunction)ViewBag.Function;
+    var function = (Function)ViewBag.Function;
     var enableRemovePermission = !function.IsActive;
 }
 @section Head {

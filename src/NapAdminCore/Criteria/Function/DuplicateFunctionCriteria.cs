@@ -47,13 +47,7 @@ public class DuplicateFunctionCriteria : CriteriaBase
     public string ParentName { get; set; }
 
     [Display(Name = "CRUD", ResourceType = typeof(ViewResources))]
-    public byte Crud
-    {
-        get
-        {
-            return Readonly ? (byte)AdminConstant.Crud.Read : (byte)AdminConstant.Crud.Host;
-        }
-    }
+    public byte Crud => Readonly ? (byte)AdminConstant.Crud.Read : (byte)AdminConstant.Crud.Host;
 
     [Display(Name = "Read_only", ResourceType = typeof(ViewResources))]
     public bool Readonly { get; set; }

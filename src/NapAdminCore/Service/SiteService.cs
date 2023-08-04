@@ -7,7 +7,6 @@ using Command;
 using Criteria.Function;
 using Criteria.Site;
 using Criteria.User;
-using Domain;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
@@ -16,11 +15,11 @@ using Repository;
 
 public interface ISiteService 
 {
-    ISite GetById(int id);
+    Site GetById(int id);
 
-    ISite GetByName(string name);
+    Site GetByName(string name);
 
-    ISite GetByKey(string key);
+    Site GetByKey(string key);
 
     bool GetStatusById(int id);
 
@@ -28,18 +27,18 @@ public interface ISiteService
 
     IEnumerable<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<ISite> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<ISite> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetAllSelectListItem(
         string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedSiteId = 0);
 
-    IEnumerable<ISite> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<ISite> GetByUserAndFunctionKeyIncludeGroup(
+    IEnumerable<Site> GetByUserAndFunctionKeyIncludeGroup(
         int userId,
         string functionKey,
         string env = AdminConstant.Uat,
@@ -100,34 +99,34 @@ public class SiteService : ISiteService
 
     #region get
 
-    public ISite GetById(int id)
+    public Site GetById(int id)
     {
         var criteria = new GetByIdSiteCriteria
         {
             SiteId = id
         };
 
-        return dynamicRepository.Get<ISite>(criteria);
+        return dynamicRepository.Get<Site>(criteria);
     }
 
-    public ISite GetByName(string name)
+    public Site GetByName(string name)
     {
         var criteria = new GetByNameSiteCriteria
         {
             SiteName = name
         };
 
-        return dynamicRepository.Get<ISite>(criteria);
+        return dynamicRepository.Get<Site>(criteria);
     }
 
-    public ISite GetByKey(string key)
+    public Site GetByKey(string key)
     {
         var criteria = new GetBySiteKeyCriteria
         {
             SiteKey = key
         };
 
-        return dynamicRepository.Get<ISite>(criteria);
+        return dynamicRepository.Get<Site>(criteria);
     }
 
     public bool GetStatusById(int id)
@@ -137,7 +136,7 @@ public class SiteService : ISiteService
             SiteId = id
         };
 
-        return dynamicRepository.Get<ISite>(criteria)?.IsActive == true;
+        return dynamicRepository.Get<Site>(criteria)?.IsActive == true;
     }
 
     public IEnumerable<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
@@ -152,7 +151,7 @@ public class SiteService : ISiteService
         return siteRepository.FetchSiteLevel(criteria).OrderBy(sl => sl.Site.Name);
     }
 
-    public IEnumerable<ISite> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAvailableSitesCriteria
         {
@@ -161,10 +160,10 @@ public class SiteService : ISiteService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<ISite>(criteria).OrderBy(site => site.Name);
+        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name);
     }
 
-    public IEnumerable<ISite> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllSiteCriteria
         {
@@ -172,7 +171,7 @@ public class SiteService : ISiteService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<ISite>(criteria).OrderBy(site => site.Name);
+        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name);
     }
 
     public IList<SelectListItem> GetAllSelectListItem(
@@ -186,7 +185,7 @@ public class SiteService : ISiteService
             IsActive = isActive
         };
 
-        IEnumerable<ISite> siteList = dynamicRepository.Fetch<ISite>(criteria).OrderBy(s => s.Name);
+        IEnumerable<Site> siteList = dynamicRepository.Fetch<Site>(criteria).OrderBy(s => s.Name);
 
         return siteList.Select(s => new SelectListItem
         {
@@ -196,7 +195,7 @@ public class SiteService : ISiteService
         }).ToList();
     }
 
-    public IEnumerable<ISite> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllSiteWithNumOfUserCriteria
         {
@@ -204,10 +203,10 @@ public class SiteService : ISiteService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<ISite>(criteria).OrderBy(site => site.Name);
+        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name);
     }
 
-    public IEnumerable<ISite> GetByUserAndFunctionKeyIncludeGroup(
+    public IEnumerable<Site> GetByUserAndFunctionKeyIncludeGroup(
         int userId,
         string functionKey,
         string env = AdminConstant.Uat,

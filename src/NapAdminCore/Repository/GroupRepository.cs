@@ -7,7 +7,6 @@ using System.Linq;
 using Command;
 using Criteria.Group;
 using Criteria.Misc;
-using Domain;
 using Fanex.Common.Extensions;
 using Fanex.Data;
 using Fanex.Data.Repository;
@@ -25,9 +24,9 @@ public interface IGroupRepository
 
     IEnumerable<GroupPolicy> GetGroupPolicy(ICriteria criteria);
 }
-public class GroupRepository : BaseRepository<IGroup>, IGroupRepository
+public class GroupRepository : BaseRepository<Group>, IGroupRepository
 {
-    public IGroup Get(ICriteria criteria)
+    public Group Get(ICriteria criteria)
     {
         using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         var objGroup = objectDb.QueryEntity<Group, User, User, Group>(
@@ -38,7 +37,7 @@ public class GroupRepository : BaseRepository<IGroup>, IGroupRepository
         return objGroup;
     }
 
-    public IEnumerable<IGroup> Fetch(ICriteria criteria)
+    public IEnumerable<Group> Fetch(ICriteria criteria)
     {
         using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         var listGroup = objectDb.Query<Group, User, User, Group>(

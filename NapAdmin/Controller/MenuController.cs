@@ -9,7 +9,6 @@ using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.MenuItem;
-using NapAdminCore.Domain;
 using NapAdminCore.Models;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
@@ -202,7 +201,7 @@ public class MenuController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var menuItemList = new List<IMenuItem>();
+            var menuItemList = new List<MenuItem>();
 
             var environmentValue = !string.IsNullOrEmpty(environment) ? environment : Environment;
             menuItemList.Add(new MenuItem { Id = 0, Name = ViewResources.None });
@@ -215,7 +214,7 @@ public class MenuController : BaseController
             return Json(menuItemList);
         }
 
-        return Json(new List<IMenuItem>());
+        return Json(new List<MenuItem>());
     }
 
     [HttpPost]

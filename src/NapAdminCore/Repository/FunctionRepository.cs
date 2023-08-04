@@ -7,7 +7,6 @@ using System.Linq;
 using Command;
 using Criteria.Function;
 using Criteria.Misc;
-using Domain;
 using Fanex.Common.Extensions;
 using Fanex.Data;
 using Fanex.Data.Repository;
@@ -32,9 +31,9 @@ public interface IFunctionRepository
     ICommandResult CopyPermission(CopyPermissionCriteria criteria, ICriteria logCriteria);
 }
 
-public class FunctionRepository : BaseRepository<IFunction>, IFunctionRepository
+public class FunctionRepository : BaseRepository<Function>, IFunctionRepository
 {
-    public IFunction Get(ICriteria criteria)
+    public Function Get(ICriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         return db.QueryEntity<Function, Function, Site, User, User, Function>(
@@ -56,7 +55,7 @@ public class FunctionRepository : BaseRepository<IFunction>, IFunctionRepository
         return (int)db.ExecuteScalar(criteria);
     }
 
-    public IEnumerable<IFunction> Fetch(ICriteria criteria)
+    public IEnumerable<Function> Fetch(ICriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         return db.Query<Function, Function, Site, User, User, Function>(

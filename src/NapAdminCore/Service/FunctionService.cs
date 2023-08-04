@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Command;
 using Criteria.Function;
-using Domain;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
@@ -17,21 +16,21 @@ public interface IFunctionService
 {
     #region Gets Function
 
-    IFunction GetById(int id);
+    Function GetById(int id);
 
-    IFunction GetByNameAndSite(string name, int siteId);
+    Function GetByNameAndSite(string name, int siteId);
 
-    IFunction GetByKeyAndSite(string key, int siteId);
+    Function GetByKeyAndSite(string key, int siteId);
 
     #endregion
 
     #region Gets Functions
 
-    IEnumerable<IFunction> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Function> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
 
-    Dictionary<ISite, IEnumerable<IFunction>> GetAllAndGroupBySite(string env = AdminConstant.Uat, bool? isActive = null);
+    Dictionary<Site, IEnumerable<Function>> GetAllAndGroupBySite(string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<IFunction> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Function> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetSelectListItemBySite(
         int siteId,
@@ -39,13 +38,13 @@ public interface IFunctionService
         bool? isActive = null,
         int selectedFunctionId = 0);
 
-    IEnumerable<IFunction> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Function> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<IFunction> GetParentById(int id);
+    IEnumerable<Function> GetParentById(int id);
 
-    IEnumerable<IFunction> Search(string functionName, int siteId, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Function> Search(string functionName, int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<IFunction> GetByParentKeyAndSite(GetByParentKeyAndSiteCriteria criteria);
+    IEnumerable<Function> GetByParentKeyAndSite(GetByParentKeyAndSiteCriteria criteria);
 
     #endregion
 
@@ -53,11 +52,11 @@ public interface IFunctionService
 
     IEnumerable<FunctionPolicy> GetByUser(int userId, string env = AdminConstant.Uat);
 
-    Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat);
+    Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat);
 
     IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat);
 
-    Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat);
+    Dictionary<Site, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat);
 
     IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat);
 
@@ -106,17 +105,17 @@ public class FunctionService : IFunctionService
 
     #region Gets Function
 
-    public IFunction GetById(int id)
+    public Function GetById(int id)
     {
         var criteria = new GetByIdFunctionCriteria
         {
             FunctionId = id
         };
 
-        return dynamicRepository.Get<IFunction>(criteria);
+        return dynamicRepository.Get<Function>(criteria);
     }
 
-    public IFunction GetByNameAndSite(string name, int siteId)
+    public Function GetByNameAndSite(string name, int siteId)
     {
         var criteria = new GetByNameAndSiteFunctionCriteria
         {
@@ -124,10 +123,10 @@ public class FunctionService : IFunctionService
             SiteId = siteId
         };
 
-        return dynamicRepository.Get<IFunction>(criteria);
+        return dynamicRepository.Get<Function>(criteria);
     }
 
-    public IFunction GetByKeyAndSite(string key, int siteId)
+    public Function GetByKeyAndSite(string key, int siteId)
     {
         var criteria = new GetByKeyAndSiteFunctionCriteria
         {
@@ -135,14 +134,14 @@ public class FunctionService : IFunctionService
             SiteId = siteId
         };
 
-        return dynamicRepository.Get<IFunction>(criteria);
+        return dynamicRepository.Get<Function>(criteria);
     }
 
     #endregion
 
     #region Get Functions
 
-    public IEnumerable<IFunction> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Function> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllFunctionCriteria
         {
@@ -150,10 +149,10 @@ public class FunctionService : IFunctionService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IFunction>(criteria);
+        return dynamicRepository.Fetch<Function>(criteria);
     }
 
-    public Dictionary<ISite, IEnumerable<IFunction>> GetAllAndGroupBySite(
+    public Dictionary<Site, IEnumerable<Function>> GetAllAndGroupBySite(
         string env = AdminConstant.Uat,
         bool? isActive = null)
     {
@@ -163,9 +162,9 @@ public class FunctionService : IFunctionService
             IsActive = isActive
         };
 
-        var functionList = dynamicRepository.Fetch<IFunction>(criteria);
+        var functionList = dynamicRepository.Fetch<Function>(criteria);
 
-        var result = new Dictionary<ISite, IEnumerable<IFunction>>();
+        var result = new Dictionary<Site, IEnumerable<Function>>();
 
         var siteList = functionList.GroupBy(f => f.Site.Id)
             .Select(s => new Site
@@ -184,7 +183,7 @@ public class FunctionService : IFunctionService
         return result;
     }
 
-    public IEnumerable<IFunction> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Function> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteFunctionCriteria
         {
@@ -193,7 +192,7 @@ public class FunctionService : IFunctionService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IFunction>(criteria);
+        return dynamicRepository.Fetch<Function>(criteria);
     }
 
     public IList<SelectListItem> GetSelectListItemBySite(
@@ -210,7 +209,7 @@ public class FunctionService : IFunctionService
         };
 
 
-        var functionList = dynamicRepository.Fetch<IFunction>(criteria);
+        var functionList = dynamicRepository.Fetch<Function>(criteria);
 
         return functionList.Select(s => new SelectListItem
         {
@@ -220,7 +219,7 @@ public class FunctionService : IFunctionService
         }).ToList();
     }
 
-    public IEnumerable<IFunction> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Function> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteFunctionCriteria
         {
@@ -229,22 +228,22 @@ public class FunctionService : IFunctionService
             IsActive = isActive
         };
 
-        var functionList = dynamicRepository.Fetch<IFunction>(criteria).OrderBy(x => x.DisplayOrder);
+        var functionList = dynamicRepository.Fetch<Function>(criteria).OrderBy(x => x.DisplayOrder);
 
         return SortFunctionsInHierarchy(functionList);
     }
 
-    public IEnumerable<IFunction> GetParentById(int id)
+    public IEnumerable<Function> GetParentById(int id)
     {
         var criteria = new GetParentByIdFunctionCriteria
         {
             FunctionId = id
         };
 
-        return dynamicRepository.Fetch<IFunction>(criteria);
+        return dynamicRepository.Fetch<Function>(criteria);
     }
 
-    public IEnumerable<IFunction> Search(
+    public IEnumerable<Function> Search(
         string functionName,
         int siteId,
         string env = AdminConstant.Uat,
@@ -253,9 +252,9 @@ public class FunctionService : IFunctionService
         throw new NotImplementedException();
     }
 
-    public IEnumerable<IFunction> GetByParentKeyAndSite(GetByParentKeyAndSiteCriteria criteria)
+    public IEnumerable<Function> GetByParentKeyAndSite(GetByParentKeyAndSiteCriteria criteria)
     {
-        return dynamicRepository.Fetch<IFunction>(criteria);
+        return dynamicRepository.Fetch<Function>(criteria);
     }
 
     #endregion
@@ -273,7 +272,7 @@ public class FunctionService : IFunctionService
         return functionRepository.FetchFullFunctionPolicy(criteria);
     }
 
-    public Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat)
+    public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserFunctionCriteria
         {
@@ -283,7 +282,7 @@ public class FunctionService : IFunctionService
 
         var functionPolicyList = functionRepository.FetchFullFunctionPolicy(criteria);
 
-        var result = new Dictionary<ISite, IEnumerable<FunctionPolicy>>();
+        var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
 
         var siteList = functionPolicyList.GroupBy(f => f.Site.Id)
             .Select(s => new Site
@@ -325,7 +324,7 @@ public class FunctionService : IFunctionService
         return functionRepository.FetchFullFunctionPolicy(criteria);
     }
 
-    public Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat)
+    public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByGroupFunctionCriteria
         {
@@ -335,7 +334,7 @@ public class FunctionService : IFunctionService
 
         var functionPolicyList = functionRepository.FetchFullFunctionPolicy(criteria);
 
-        var result = new Dictionary<ISite, IEnumerable<FunctionPolicy>>();
+        var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
 
         var siteList = functionPolicyList.GroupBy(f => f.Site.Id)
             .Select(s => new Site
@@ -440,9 +439,9 @@ public class FunctionService : IFunctionService
         return functionRepository.Update(criteria, logCriteria);
     }
 
-    private IEnumerable<IFunction> SortFunctionsInHierarchy(IEnumerable<IFunction> functionList, int parentId = 0)
+    private IEnumerable<Function> SortFunctionsInHierarchy(IEnumerable<Function> functionList, int parentId = 0)
     {
-        var sortedFunctionList = new List<IFunction>();
+        var sortedFunctionList = new List<Function>();
 
         foreach (var function in functionList)
         {

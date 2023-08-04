@@ -9,7 +9,6 @@ using System.Linq;
 using Command;
 using Criteria.Misc;
 using Criteria.User;
-using Domain;
 using Fanex.Common.Extensions;
 using Fanex.Data;
 using Fanex.Data.Repository;
@@ -19,7 +18,7 @@ using Helpers;
 
 public interface IUserRepository 
 {
-    IQueryable<IUser> SearchByUsername(SearchByUsernameUserCriteria criteria);
+    IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria);
 
     IEnumerable<UserLevel> Search(ICriteria criteria);
 
@@ -48,9 +47,9 @@ public interface IUserRepository
     string UserSSOGetTime(ICriteria criteria);
 }
 
-public class UserRepository : BaseRepository<IUser>, IUserRepository
+public class UserRepository : BaseRepository<User>, IUserRepository
 {
-    public  IUser Get(ICriteria criteria)
+    public  User Get(ICriteria criteria)
     {
         using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         var objUser = objectDb.QueryEntity<User, Group, User, User, User>(
@@ -61,7 +60,7 @@ public class UserRepository : BaseRepository<IUser>, IUserRepository
         return objUser;
     }
 
-    public  IEnumerable<IUser> Fetch(ICriteria criteria)
+    public  IEnumerable<User> Fetch(ICriteria criteria)
     {
         using var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         var objListUser = objectDb.Query<User, Group, User, User, User>(
@@ -72,7 +71,7 @@ public class UserRepository : BaseRepository<IUser>, IUserRepository
         return objListUser;
     }
 
-    public IQueryable<IUser> SearchByUsername(SearchByUsernameUserCriteria criteria)
+    public IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         var hashtable = HashtableExtensions.ToHashtable(criteria);

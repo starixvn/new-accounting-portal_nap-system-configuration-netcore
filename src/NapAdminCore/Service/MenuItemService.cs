@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Command;
 using Criteria.MenuItem;
-using Domain;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
@@ -13,18 +12,18 @@ using Repository;
 
 public interface IMenuItemService 
 {
-    IMenuItem GetById(int id);
+    MenuItem GetById(int id);
 
-    IMenuItem GetByNameAndSite(string name, int siteId);
+    MenuItem GetByNameAndSite(string name, int siteId);
 
-    IEnumerable<IMenuItem> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<MenuItem> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetAllSelectListItem(
         string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedMenuItemId = 0);
 
-    IEnumerable<IMenuItem> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<MenuItem> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetSelectListItemBySite(
         int siteId,
@@ -32,21 +31,21 @@ public interface IMenuItemService
         bool? isActive = null,
         int selectedMenuItemId = 0);
 
-    IEnumerable<IMenuItem> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<MenuItem> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<IMenuItem> GetByUserAndSiteIncludeGroup(
+    IEnumerable<MenuItem> GetByUserAndSiteIncludeGroup(
         int userId,
         int siteId,
         string env = AdminConstant.Uat,
         bool? isActive = null);
 
-    IEnumerable<IMenuItem> Search(
+    IEnumerable<MenuItem> Search(
         string menuItemName,
         int siteId,
         string env = AdminConstant.Uat,
         bool? isActive = null);
 
-    IEnumerable<IMenuItem> GetParentById(int id, string env = AdminConstant.Uat);
+    IEnumerable<MenuItem> GetParentById(int id, string env = AdminConstant.Uat);
 
     IList<SelectListItem> GetParentSelectListItemById(int id, int selectedMenuItemId = 0, string env = AdminConstant.Uat);
 
@@ -69,17 +68,17 @@ public class MenuItemService : IMenuItemService
         this.loggedUserContext = loggedUserContext;
     }
 
-    public IMenuItem GetById(int id)
+    public MenuItem GetById(int id)
     {
         var criteria = new GetByIdMenuItemCriteria
         {
             MenuItemId = id
         };
 
-        return dynamicRepository.Get<IMenuItem>(criteria);
+        return dynamicRepository.Get<MenuItem>(criteria);
     }
 
-    public IMenuItem GetByNameAndSite(string name, int siteId)
+    public MenuItem GetByNameAndSite(string name, int siteId)
     {
         var criteria = new GetByNameAndSiteMenuItemCriteria
         {
@@ -87,10 +86,10 @@ public class MenuItemService : IMenuItemService
             SiteId = siteId
         };
 
-        return dynamicRepository.Get<IMenuItem>(criteria);
+        return dynamicRepository.Get<MenuItem>(criteria);
     }
 
-    public IEnumerable<IMenuItem> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<MenuItem> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllMenuItemCriteria
         {
@@ -98,7 +97,7 @@ public class MenuItemService : IMenuItemService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IMenuItem>(criteria);
+        return dynamicRepository.Fetch<MenuItem>(criteria);
     }
 
     public IList<SelectListItem> GetAllSelectListItem(
@@ -112,7 +111,7 @@ public class MenuItemService : IMenuItemService
             IsActive = isActive
         };
 
-        var menuItemList = dynamicRepository.Fetch<IMenuItem>(criteria);
+        var menuItemList = dynamicRepository.Fetch<MenuItem>(criteria);
 
         return menuItemList.Select(s => new SelectListItem
         {
@@ -122,7 +121,7 @@ public class MenuItemService : IMenuItemService
         }).ToList();
     }
 
-    public IEnumerable<IMenuItem> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<MenuItem> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteMenuItemCriteria
         {
@@ -131,7 +130,7 @@ public class MenuItemService : IMenuItemService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IMenuItem>(criteria);
+        return dynamicRepository.Fetch<MenuItem>(criteria);
     }
 
     public IList<SelectListItem> GetSelectListItemBySite(
@@ -147,7 +146,7 @@ public class MenuItemService : IMenuItemService
             IsActive = isActive
         };
 
-        var menuItemList = dynamicRepository.Fetch<IMenuItem>(criteria);
+        var menuItemList = dynamicRepository.Fetch<MenuItem>(criteria);
 
         return menuItemList.Select(s => new SelectListItem
         {
@@ -157,7 +156,7 @@ public class MenuItemService : IMenuItemService
         }).ToList();
     }
 
-    public IEnumerable<IMenuItem> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<MenuItem> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteMenuItemCriteria
         {
@@ -166,12 +165,12 @@ public class MenuItemService : IMenuItemService
             IsActive = isActive
         };
 
-        var menuItemList = dynamicRepository.Fetch<IMenuItem>(criteria).OrderBy(x => x.DisplayOrder);
+        var menuItemList = dynamicRepository.Fetch<MenuItem>(criteria).OrderBy(x => x.DisplayOrder);
 
         return SortMenuItemsInHierarchy(menuItemList);
     }
 
-    public IEnumerable<IMenuItem> GetParentById(int id, string env = AdminConstant.Uat)
+    public IEnumerable<MenuItem> GetParentById(int id, string env = AdminConstant.Uat)
     {
         var criteria = new GetParentByIdMenuItemCriteria
         {
@@ -179,7 +178,7 @@ public class MenuItemService : IMenuItemService
             Environment = env
         };
 
-        return dynamicRepository.Fetch<IMenuItem>(criteria);
+        return dynamicRepository.Fetch<MenuItem>(criteria);
     }
 
     public IList<SelectListItem> GetParentSelectListItemById(
@@ -193,7 +192,7 @@ public class MenuItemService : IMenuItemService
             Environment = env
         };
 
-        var menuItemList = dynamicRepository.Fetch<IMenuItem>(criteria);
+        var menuItemList = dynamicRepository.Fetch<MenuItem>(criteria);
 
         return menuItemList.Select(s => new SelectListItem
         {
@@ -203,7 +202,7 @@ public class MenuItemService : IMenuItemService
         }).ToList();
     }
 
-    public IEnumerable<IMenuItem> GetByUserAndSiteIncludeGroup(
+    public IEnumerable<MenuItem> GetByUserAndSiteIncludeGroup(
         int userId,
         int siteId,
         string env = AdminConstant.Uat,
@@ -216,10 +215,10 @@ public class MenuItemService : IMenuItemService
             Environment = env
         };
 
-        return dynamicRepository.Fetch<IMenuItem>(criteria);
+        return dynamicRepository.Fetch<MenuItem>(criteria);
     }
 
-    public IEnumerable<IMenuItem> Search(
+    public IEnumerable<MenuItem> Search(
         string menuItemName,
         int siteId,
         string env = AdminConstant.Uat,
@@ -233,7 +232,7 @@ public class MenuItemService : IMenuItemService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IMenuItem>(criteria);
+        return dynamicRepository.Fetch<MenuItem>(criteria);
     }
 
     public ICommandResult Insert(InsertMenuItemCriteria criteria)
@@ -257,9 +256,9 @@ public class MenuItemService : IMenuItemService
         return menuItemRepository.Update(criteria, logCriteria);
     }
 
-    private IEnumerable<IMenuItem> SortMenuItemsInHierarchy(IEnumerable<IMenuItem> menuItemList, int parentId = 0)
+    private IEnumerable<MenuItem> SortMenuItemsInHierarchy(IEnumerable<MenuItem> menuItemList, int parentId = 0)
     {
-        var sortedMenuItemList = new List<IMenuItem>();
+        var sortedMenuItemList = new List<MenuItem>();
 
         foreach (var menuItem in menuItemList)
         {

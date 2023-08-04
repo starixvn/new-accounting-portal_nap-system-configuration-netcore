@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.Trace;
-using NapAdminCore.Domain;
 using NapAdminCore.Helpers;
 using NapAdminCore.Models;
 using NapAdminCore.Models.ValueObject;
@@ -935,7 +934,7 @@ public class TraceController : BaseController
                 }
             }
 
-            ISite site = _siteService.GetById(siteId);
+            Site site = _siteService.GetById(siteId);
 
             ViewBag.SiteName = site.Name;
         }

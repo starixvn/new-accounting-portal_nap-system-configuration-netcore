@@ -2,12 +2,9 @@ namespace NapAdminCore.Models;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
-using Domain;
 
-[SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Reviewed")]
 [Serializable]
-public class Function : IFunction
+public class Function
 {
     public short Id { get; set; }
 
@@ -17,7 +14,7 @@ public class Function : IFunction
 
     public string Description { get; set; }
 
-    public IFunction Parent { get; set; }
+    public Function Parent => new() { Id = ParentId, Name = ParentName };
 
     public short DisplayOrder { get; set; }
 
@@ -27,21 +24,24 @@ public class Function : IFunction
 
     public string Environment { get; set; }
 
-    public ISite Site { get; set; }
+    public Site Site => new() { Id = SiteId, Name = SiteName };
 
-    public IUser Creator { get; set; }
+    public User Creator => new() { Id = CreatorId, Username = CreatorUsername };
 
     public DateTime CreatedDate { get; set; }
 
-    public IUser Modifier { get; set; }
+    public User Modifier => new() { Id = ModifierId, Username = ModifierUsername };
 
     public DateTime ModifiedDate { get; set; }
 
-    public bool Readonly
-    {
-        get
-        {
-            return Crud == (byte)AdminConstant.Crud.Read;
-        }
-    }
+    public bool Readonly => Crud == (byte)AdminConstant.Crud.Read;
+
+    public short ParentId { get; set; }
+    public string ParentName { get; set; }
+    public byte SiteId { get; set; }
+    public string SiteName { get; set; }
+    public int CreatorId { get; set; }
+    public string CreatorUsername { get; set; }
+    public int ModifierId { get; set; }
+    public string ModifierUsername { get; set; }
 }

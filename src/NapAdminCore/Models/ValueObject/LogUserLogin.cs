@@ -22,7 +22,13 @@ public class LogUserLogin
 
     public int Duration { get; set; }
 
-    public User User { get; set; }
+    public User User => new() { Id = UserId };
 
-    public Site Site { get; set; }
+    public Site Site => new() { Id = SiteId, Name = SiteName };
+
+    public byte SiteId { get; set; }
+
+    public string SiteName { get; set; }
+
+    public int UserId { get; set; }
 }

@@ -12,7 +12,6 @@ public class UpdateSiteUrlCriteria : CriteriaBase
     [Required]
     public int SiteId { get; set; }
 
-    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     [Required]
     [Display(Name = "URL", ResourceType = typeof(ViewResources))]
     [StringLength(100, MinimumLength = 0,

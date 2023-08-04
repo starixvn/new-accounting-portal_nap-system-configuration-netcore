@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = string.Format("{0} {1}", ViewResources.Manage, ViewResources.Group);
     var viewFlags = (ViewFlags)ViewBag.ViewFlags;
-    var groupList = (IEnumerable<IGroup>)ViewBag.GroupList;
+    var groupList = (IEnumerable<Group>)ViewBag.GroupList;
 }
 @section Head {
      <link type="text/css" rel="stylesheet" href="~/themes/nap/style.css" />

@@ -8,7 +8,6 @@ namespace NapAdmin.Controller;
 
 using Fanex.NAP.Client.Configuration;
 using NapAdminCore.Service;
-using Controller = Microsoft.AspNetCore.Mvc.Controller;
 
 public class HomeController : BaseController
 {

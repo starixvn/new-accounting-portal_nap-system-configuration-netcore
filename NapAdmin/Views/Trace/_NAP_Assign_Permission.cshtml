@@ -1,6 +1,6 @@
 ﻿@using System.Collections
 @{
-    var functionList = ViewBag.FunctionList as List<IFunction>;
+    var functionList = ViewBag.FunctionList as List<Function>;
     var groupFuncPolicyOldList = ViewBag.ListOldData as List<FunctionPolicy> ?? new List<FunctionPolicy>();
     var groupFuncPolicyNewDic = ViewBag.ListNewData as Hashtable ?? new Hashtable();
 }
@@ -128,7 +128,7 @@
     </tbody>
 </table>
 @{
-    void IndentChildFunctions(List<IFunction> functionList, IFunction function, int level = 0)
+    void IndentChildFunctions(List<Function> functionList, Function function, int level = 0)
     {
         if (function.Parent != null)
         {

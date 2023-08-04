@@ -1,10 +1,9 @@
 namespace NapAdminCore.Models;
 
 using System;
-using NapAdminCore.Domain;
 
 [Serializable]
-public class Group : IGroup
+public class Group
 {
     public short Id { get; set; }
 
@@ -14,11 +13,19 @@ public class Group : IGroup
 
     public bool IsActive { get; set; }
 
-    public IUser Creator { get; set; }
+    public int CreatorId { get; set; }
+
+    public string CreatorUsername { get; set; }
+
+    public int ModifierId { get; set; }
+
+    public string ModifierUsername { get; set; }
+
+    public User Creator => new() { Id = CreatorId, Username = CreatorUsername };
 
     public DateTime CreatedDate { get; set; }
 
-    public IUser Modifier { get; set; }
+    public User Modifier => new() { Id = ModifierId, Username = ModifierUsername };
 
     public DateTime ModifiedDate { get; set; }
 

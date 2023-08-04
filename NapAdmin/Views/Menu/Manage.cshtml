@@ -3,7 +3,7 @@
     ViewBag.Title = ViewResources.Manage_Menu;
 
     var viewFlags = (ViewFlags)ViewBag.ViewFlags;
-    var menuItemList = (List<IMenuItem>)ViewBag.MenuItemList;
+    var menuItemList = (List<MenuItem>)ViewBag.MenuItemList;
 }
 @section Head {
     <link type="text/css" rel="stylesheet" href="~/themes/nap/style.css" />
@@ -190,7 +190,7 @@
     <script src="~/scripts/Menu/Manage.js" type="text/javascript"></script>
 }
 @{
-    void IndentChildMenuItem(IMenuItem menuItem, List<IMenuItem> listMenuItem, int level = 0)
+    void IndentChildMenuItem(MenuItem menuItem, List<MenuItem> listMenuItem, int level = 0)
     {
         if (!ReferenceEquals(menuItem.Parent, null))
         {

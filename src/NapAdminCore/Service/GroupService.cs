@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Command;
 using Criteria.Group;
-using Domain;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
@@ -14,21 +13,21 @@ using Repository;
 
 public interface IGroupService
 {
-    IGroup GetByUser(int userId);
+    Group GetByUser(int userId);
 
-    IGroup GetById(int id);
+    Group GetById(int id);
 
-    IGroup GetByName(string name);
+    Group GetByName(string name);
 
-    IEnumerable<IGroup> GetAll(bool? isActive = null);
+    IEnumerable<Group> GetAll(bool? isActive = null);
 
-    IEnumerable<IGroup> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0);
+    IEnumerable<Group> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0);
 
     IList<SelectListItem> GetAllSelectListItem(bool? isActive = null, int selectedGroupId = 0);
 
     IEnumerable<GroupPolicy> GetByFunctionAndSite(int functionId, int siteId);
 
-    IEnumerable<IGroup> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null);
+    IEnumerable<Group> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null);
 
     ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria);
 
@@ -51,44 +50,44 @@ public class GroupService : IGroupService
         this.loggedUserContext = loggedUserContext;
     }
 
-    public IGroup GetByUser(int userId)
+    public Group GetByUser(int userId)
     {
         var criteria = new GetByUserGroupCriteria
         {
             UserId = userId
         };
 
-        return dynamicRepository.Get<IGroup>(criteria);
+        return dynamicRepository.Get<Group>(criteria);
     }
 
-    public IGroup GetById(int id)
+    public Group GetById(int id)
     {
         var criteria = new GetByIdGroupCriteria
         {
             GroupId = id
         };
 
-        return dynamicRepository.Get<IGroup>(criteria);
+        return dynamicRepository.Get<Group>(criteria);
     }
 
-    public IGroup GetByName(string name)
+    public Group GetByName(string name)
     {
         var criteria = new GetByNameGroupCriteria
         {
             GroupName = name
         };
 
-        return dynamicRepository.Get<IGroup>(criteria);
+        return dynamicRepository.Get<Group>(criteria);
     }
 
-    public IEnumerable<IGroup> GetAll(bool? isActive = null)
+    public IEnumerable<Group> GetAll(bool? isActive = null)
     {
         var criteria = new GetAllGroupCriteria
         {
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IGroup>(criteria);
+        return dynamicRepository.Fetch<Group>(criteria);
     }
 
     public IList<SelectListItem> GetAllSelectListItem(bool? isActive = null, int selectedGroupId = 0)
@@ -99,7 +98,7 @@ public class GroupService : IGroupService
         };
 
 
-        var groupList = dynamicRepository.Fetch<IGroup>(criteria).OrderBy(g => g.Name);
+        var groupList = dynamicRepository.Fetch<Group>(criteria).OrderBy(g => g.Name);
         return groupList.Select(g => new SelectListItem
         {
             Text = g.Name,
@@ -108,7 +107,7 @@ public class GroupService : IGroupService
         }).ToList();
     }
 
-    public IEnumerable<IGroup> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null)
+    public IEnumerable<Group> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllWithNumOfUserGroupCriteria
         {
@@ -117,7 +116,7 @@ public class GroupService : IGroupService
             Environment = env
         };
 
-        return dynamicRepository.Fetch<IGroup>(criteria).OrderBy(g => g.Name);
+        return dynamicRepository.Fetch<Group>(criteria).OrderBy(g => g.Name);
     }
 
     public ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria)
@@ -159,7 +158,7 @@ public class GroupService : IGroupService
         return groupRepository.GetGroupPolicy(criteria).OrderBy(g => g.Group.Name);
     }
 
-    public IEnumerable<IGroup> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0)
+    public IEnumerable<Group> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0)
     {
         var criteria = new SearchGroupExcludeFunctionCriteria
         {
@@ -168,6 +167,6 @@ public class GroupService : IGroupService
             FunctionId = functionId
         };
 
-        return dynamicRepository.Fetch<IGroup>(criteria).OrderBy(g => g.Name);
+        return dynamicRepository.Fetch<Group>(criteria).OrderBy(g => g.Name);
     }
 }

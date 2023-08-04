@@ -12,7 +12,7 @@
     <link type="text/css" rel="stylesheet" href="~/themes/reset.css" />
     <link type="text/css" rel="stylesheet" href="~/themes/jquery-ui-1.8.23.css" />
     <link type="text/css" rel="stylesheet" href="~/scripts/lib/tipsy/tipsy-1.0.0.css" />
-    <link type="text/css" rel="stylesheet" href="~/scripts/lib/msgbox/msgbox-0.0.1.css" />"
+    <link type="text/css" rel="stylesheet" href="~/scripts/lib/msgbox/msgbox-0.0.1.css" />
     @RenderSection("Head", false)
 </head>
 <body>
@@ -35,9 +35,9 @@
                         <span class="info-more"></span>
                     </h2>
                     <ul>
-                        <li>@Html.ActionLink(ViewResources.Profile, "UserProfile", "User", new { Area = "UserControl" }, new { })</li>
-                        <li>@Html.ActionLink(ViewResources.Change_Password, "ChangePassword", "User", new { Area = "UserControl" }, new { })</li>
-                        <li>@Html.ActionLink(ViewResources.Sign_Out, "LogOut", "Login", new { Area = "UserLogin" }, new { })</li>
+                        <li>@Html.ActionLink(ViewResources.Profile, "UserProfile", "User")</li>
+                        <li>@Html.ActionLink(ViewResources.Change_Password, "ChangePassword", "User")</li>
+                        <li>@Html.ActionLink(ViewResources.Sign_Out, "LogOut", "Auth")</li>
                     </ul>
                 </div>
             </div>

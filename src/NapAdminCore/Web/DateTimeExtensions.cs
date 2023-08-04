@@ -2,7 +2,6 @@
 namespace NapAdminCore.Web;
 
 using System;
-using Fanex.Common.Extensions;
 
 public static class DateTimeExtensions
 {

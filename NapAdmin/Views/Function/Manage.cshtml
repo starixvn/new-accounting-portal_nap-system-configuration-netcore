@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = ViewResources.Manage_Function;
     var viewFlags = (ViewFlags)ViewBag.ViewFlags;
-    var functionList = (List<IFunction>)ViewBag.FunctionList;
+    var functionList = (List<Function>)ViewBag.FunctionList;
 }
 @section Head {
     <link type="text/css" rel="stylesheet" href="~/themes/nap/style.css" />
@@ -203,7 +203,7 @@
     <script src="~/scripts/Function/Manage.js" type="text/javascript"></script>
 }
 @{
-    void IndentChildFunction(IFunction function, IEnumerable<IFunction> functionList, int level = 0)
+    void IndentChildFunction(Function function, IEnumerable<Function> functionList, int level = 0)
     {
         if (function.Parent != null)
         {

@@ -2,10 +2,9 @@ namespace NapAdminCore.Models;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using NapAdminCore.Domain;
 
 [Serializable]
-public class MenuItem : IMenuItem
+public class MenuItem
 {
     public int Id { get; set; }
 
@@ -13,15 +12,15 @@ public class MenuItem : IMenuItem
 
     public string Description { get; set; }
 
-    public IMenuItem Parent { get; set; }
+    public MenuItem Parent { get; set; }
 
-    public IFunction Function { get; set; }
+    public Function Function { get; set; }
 
-    public ISite Site { get; set; }
+    public Site Site { get; set; }
 
-    public IUser Creator { get; set; }
+    public User Creator { get; set; }
 
-    public IUser Modifier { get; set; }
+    public User Modifier { get; set; }
 
     public DateTime ModifiedDate { get; set; }
 
@@ -33,12 +32,10 @@ public class MenuItem : IMenuItem
 
     public string Environment { get; set; }
 
-    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     public string Url { get; set; }
 
     public int Policy { get; set; }
 
-    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     public string ValidUrl
     {
         get

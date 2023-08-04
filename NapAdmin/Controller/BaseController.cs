@@ -3,7 +3,6 @@ namespace NapAdmin.Controller;
 using System.Text;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Web;
-using Fanex.NAP.Client.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NapAdminCore.Service;
@@ -25,6 +24,11 @@ public class BaseController : Controller
         this.napSettings = napSettings;
         this.userService = userService;
         NapSession = napSession;
+    }
+
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        base.OnActionExecuting(context);
         ViewFlags = new ViewFlags
         {
             IsLive = Environment.Equals(AdminConstant.Live),
@@ -32,12 +36,6 @@ public class BaseController : Controller
             HasEditRight = false,
             IsReCheckin = napSettings.EnableReCheckIn
         };
-    }
-
-    public override void OnActionExecuting(ActionExecutingContext context)
-    {
-        base.OnActionExecuting(context);
-        
         ViewBag.NapSession = NapSession;
         ViewBag.ViewFlags = ViewFlags;
     }

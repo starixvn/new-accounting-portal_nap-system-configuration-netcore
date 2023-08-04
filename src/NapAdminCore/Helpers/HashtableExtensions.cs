@@ -1,12 +1,15 @@
 namespace NapAdminCore.Helpers;
 
 using System.Collections;
+using System.Reflection;
+using Fanex.Data;
 
 public static class HashtableExtensions
 {
     public static Hashtable ToHashtable(object obj)
     {
         var dict = obj.GetType().GetProperties()
+            .Where(p=>!IsIgnoredSpParam(p))
             .ToDictionary(p => p.Name, p => p.GetValue(obj));
 
         return new Hashtable(dict);
@@ -36,5 +39,11 @@ public static class HashtableExtensions
             .ToDictionary(e => e.Key, e => e.Value);
 
         return new Hashtable(dict);
+    }
+
+    private static bool IsIgnoredSpParam(PropertyInfo info)
+    {
+        var map = Attribute.GetCustomAttribute(info, typeof(SpParamAttribute)) as SpParamAttribute;
+        return map?.Ignored == true;
     }
 }

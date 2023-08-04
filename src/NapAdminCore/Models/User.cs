@@ -2,11 +2,10 @@ namespace NapAdminCore.Models;
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Domain;
 using Web;
 
 [Serializable]
-public class User : IUser
+public class User
 {
     public int Id { get; set; }
 
@@ -14,7 +13,7 @@ public class User : IUser
     public string Name { get; set; }
 
     [Display(Name = "Group", ResourceType = typeof(ViewResources))]
-    public IGroup Group { get; set; }
+    public Group Group => new() { Id = GroupId, Name = GroupName };
 
     [Display(Name = "Username", ResourceType = typeof(ViewResources))]
     public string Username { get; set; }
@@ -26,13 +25,13 @@ public class User : IUser
     public DateTime LastLoginDate { get; set; }
 
     [Display(Name = "Creator", ResourceType = typeof(ViewResources))]
-    public IUser Creator { get; set; }
+    public User Creator => new() { Id = CreatorId, Username = CreatorUsername };
 
     [Display(Name = "Created_Date", ResourceType = typeof(ViewResources))]
     public DateTime CreatedDate { get; set; }
 
     [Display(Name = "Modifier", ResourceType = typeof(ViewResources))]
-    public IUser Modifier { get; set; }
+    public User Modifier => new() { Id = ModifierId, Username = ModifierUsername };
 
     [Display(Name = "Modified_Date", ResourceType = typeof(ViewResources))]
     public DateTime ModifiedDate { get; set; }
@@ -47,4 +46,17 @@ public class User : IUser
     public string Email { get; set; }
 
     public bool Closed { get; set; }
+
+    public short GroupId { get; set; }
+
+    public string GroupName { get; set; }
+
+    public int CreatorId { get; set; }
+
+    public string CreatorUsername { get; set; }
+
+    public int ModifierId { get; set; }
+
+    public string ModifierUsername { get; set; }
+
 }

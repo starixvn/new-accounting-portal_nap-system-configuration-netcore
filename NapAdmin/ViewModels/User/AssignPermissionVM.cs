@@ -3,7 +3,7 @@ namespace NapAdmin.ViewModels.User;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Criteria.User;
-using NapAdminCore.Domain;
+using NapAdminCore.Models;
 using NapAdminCore.Models.ValueObject;
 
 public class AssignPermissionVM
@@ -16,7 +16,7 @@ public class AssignPermissionVM
 
     public List<SelectListItem> Sites { get; set; }
 
-    public List<IFunction> FunctionList { get; set; }
+    public List<Function> FunctionList { get; set; }
 
     public List<FunctionPolicy> UserFuncPolicyList { get; set; }
 

@@ -11,7 +11,6 @@ using Models;
 using Command;
 using Criteria.Trace;
 using Criteria.User;
-using Domain;
 using Models.ValueObject;
 using Repository;
 using ONEbook.OTP.Services;
@@ -24,19 +23,19 @@ public interface IUserService
 
     bool VerifyOTP(int userId, string system, string otp);
 
-    IUser GetById(int id);
+    User GetById(int id);
 
-    IUser GetByUsername(string username);
+    User GetByUsername(string username);
 
     bool CheckUsernameExist(string username);
 
-    IEnumerable<IUser> GetAll();
+    IEnumerable<User> GetAll();
 
     IEnumerable<UserPolicy> GetByFunctionAndSite(int functionId, int siteId);
 
-    IEnumerable<IUser> GetBySite(int siteId = 0, bool? isActive = null);
+    IEnumerable<User> GetBySite(int siteId = 0, bool? isActive = null);
 
-    IEnumerable<IUser> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null);
+    IEnumerable<User> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null);
 
     IQueryable<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria);
 
@@ -44,7 +43,7 @@ public interface IUserService
 
     IQueryable<UserLevel> SearchUserExcludeFunction(SearchUserExcludeFunctionCriteria criteria);
 
-    IQueryable<IUser> SearchByUsername(SearchByUsernameUserCriteria criteria);
+    IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria);
 
     int GetUserSiteLevel(int userId, int siteId);
 
@@ -56,15 +55,15 @@ public interface IUserService
 
     Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite);
 
-    ICommandResult ResetPassword(IUser user);
+    ICommandResult ResetPassword(User user);
 
-    ICommandResult Insert(IUser user);
+    ICommandResult Insert(User user);
 
     ICommandResult Insert(InsertCustCriteria criteria);
 
     ICommandResult Update(int userId, string email, string displayName);
 
-    ICommandResult Update(IUser user);
+    ICommandResult Update(User user);
 
     ICommandResult ChangeUserSiteStatus(int userId, int siteId, bool isActive);
 
@@ -109,24 +108,24 @@ public class UserService : IUserService
         this.loggedUserContext = loggedUserContext;
     }
 
-    public IUser GetById(int id)
+    public User GetById(int id)
     {
         var criteria = new GetByIdUserCriteria
         {
             UserId = id
         };
 
-        return dynamicRepository.Get<IUser>(criteria);
+        return dynamicRepository.Get<User>(criteria);
     }
 
-    public IUser GetByUsername(string username)
+    public User GetByUsername(string username)
     {
         var criteria = new GetByUsernameUserCriteria
         {
             Username = username
         };
 
-        return dynamicRepository.Get<IUser>(criteria);
+        return dynamicRepository.Get<User>(criteria);
     }
 
     public bool CheckUsernameExist(string username)
@@ -136,14 +135,14 @@ public class UserService : IUserService
         return user?.Id != 0;
     }
 
-    public IEnumerable<IUser> GetAll()
+    public IEnumerable<User> GetAll()
     {
         var criteria = new GetAllUserCriteria();
 
-        return dynamicRepository.Fetch<IUser>(criteria).OrderBy(u => u.Username);
+        return dynamicRepository.Fetch<User>(criteria).OrderBy(u => u.Username);
     }
 
-    public IEnumerable<IUser> GetBySite(int siteId = 0, bool? isActive = null)
+    public IEnumerable<User> GetBySite(int siteId = 0, bool? isActive = null)
     {
         var criteria = new GetBySiteUserCriteria
         {
@@ -151,10 +150,10 @@ public class UserService : IUserService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IUser>(criteria).OrderBy(u => u.Username);
+        return dynamicRepository.Fetch<User>(criteria).OrderBy(u => u.Username);
     }
 
-    public IEnumerable<IUser> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null)
+    public IEnumerable<User> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null)
     {
         var criteria = new GetByGroupAndSiteUserCriteria
         {
@@ -163,7 +162,7 @@ public class UserService : IUserService
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<IUser>(criteria).OrderBy(u => u.Username);
+        return dynamicRepository.Fetch<User>(criteria).OrderBy(u => u.Username);
     }
 
     public IQueryable<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria)
@@ -192,12 +191,12 @@ public class UserService : IUserService
         return dynamicRepository.Get<int>(criteria);
     }
 
-    public ICommandResult ResetPassword(IUser user)
+    public ICommandResult ResetPassword(User user)
     {
         throw new NotImplementedException();
     }
 
-    public ICommandResult Insert(IUser user)
+    public ICommandResult Insert(User user)
     {
         throw new NotImplementedException();
     }
@@ -214,7 +213,7 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public ICommandResult Update(IUser user)
+    public ICommandResult Update(User user)
     {
         throw new NotImplementedException();
     }
@@ -349,26 +348,16 @@ public class UserService : IUserService
         return dynamicRepository.Get<int>(criteria);
     }
 
-    public IQueryable<IUser> SearchByUsername(SearchByUsernameUserCriteria criteria)
+    public IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria)
     {
-        if (criteria.IsValid())
-        {
-            return userRepository.SearchByUsername(criteria);
-        }
-
-        return null;
+        return userRepository.SearchByUsername(criteria);
     }
 
     public ICommandResult InsertOrUpdate(ICriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        if (criteria.IsValid() && logCriteria.IsValid())
-        {
-            return userRepository.Update(criteria, logCriteria);
-        }
-
-        return null;
+        return userRepository.Update(criteria, logCriteria);
     }
 
     public IEnumerable<UserPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -379,12 +368,7 @@ public class UserService : IUserService
             SiteId = siteId
         };
 
-        if (criteria.IsValid())
-        {
-            return userRepository.GetUserPolicy(criteria).OrderBy(u => u.User.Username);
-        }
-
-        return null;
+        return userRepository.GetUserPolicy(criteria).OrderBy(u => u.User.Username);
     }
 
     public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite)
@@ -396,12 +380,7 @@ public class UserService : IUserService
             FunctionKey = functionKey
         };
 
-        if (criteria.IsValid())
-        {
-            return userRepository.GetUserListSiteFunctionKeyPolicy(criteria);
-        }
-
-        return null;
+        return userRepository.GetUserListSiteFunctionKeyPolicy(criteria);
     }
 
     public bool HasPermissionUserSiteFunctionKey(int userId, int siteId, string functionKey, AdminConstant.Policy policy)

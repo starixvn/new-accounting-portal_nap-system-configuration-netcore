@@ -12,7 +12,6 @@ public class InsertSiteUrlCriteria : CriteriaBase
     [Required]
     public int SiteId { get; set; }
 
-    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     [Display(Name = "URL", ResourceType = typeof(ViewResources))]
     [StringLength(100, MinimumLength = 0,
         ErrorMessageResourceName = "InputLengthValidationMsg", ErrorMessageResourceType = typeof(ViewResources))]

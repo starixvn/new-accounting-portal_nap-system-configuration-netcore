@@ -44,14 +44,6 @@
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      <Mapping DataField="ParentId" ObjectProperty="Id" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Function_GetByGroup" SpName="NAP_Function_GetByGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Function_GetByGroupAndSite" SpName="NAP_Function_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
@@ -59,66 +51,28 @@
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      <Mapping DataField="ParentId" ObjectProperty="Id" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Function_GetByKeyAndSite" SpName="NAP_Function_GetByKeyAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      <Mapping DataField="ParentId" ObjectProperty="Id" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_Function_GetByNameAndSite" SpName="NAP_Function_GetByNameAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      <Mapping DataField="ParentId" ObjectProperty="Id" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Function_GetBySite" SpName="NAP_Function_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      <Mapping DataField="ParentId" ObjectProperty="Id" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Function_GetParentById" SpName="NAP_Function_GetParentById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      <Mapping DataField="ParentId" ObjectProperty="Id" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_Function_GetByUser" SpName="NAP_Function_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Function_GetByUserAndSite" SpName="NAP_Function_GetByUserAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
@@ -138,88 +92,49 @@
     <Setting Key="NAP_Group_GetAll" SpName="NAP_Group_GetAll" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Group_GetAllWithNumOfUser" SpName="NAP_Group_GetAllWithNumOfUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_Group_GetById" SpName="NAP_Group_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_Group_GetByUser" SpName="NAP_Group_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_Group_GetByName" SpName="NAP_Group_GetByName" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_Group_GetGroupByFunctionAndSite" SpName="NAP_Group_GetGroupByFunctionAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Group_GetGroupByFunction" SpName="NAP_Group_GetGroupByFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_Group_SearchExcludeFunction" SpName="NAP_Group_SearchExcludeFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
   </Function>
   <Function Name="User">
     <Setting Key="NAP_User_GetById" SpName="NAP_User_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_User_GetByUsername" SpName="NAP_User_GetByUsername" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_User_CheckIn" SpName="NAP_User_CheckIn" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
     <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
@@ -232,32 +147,16 @@
     <Setting Key="NAP_User_GetAll" SpName="NAP_User_GetAll" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
     <Setting Key="NAP_User_GetBySite" SpName="NAP_User_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_User_GetByGroupAndSite" SpName="NAP_User_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_User_Search" SpName="NAP_User_Search" DbName="DBPOL.NAP_UserControl.bodbAdminNet"> </Setting>
     <Setting Key="NAP_User_SearchExcludeFunction" SpName="NAP_User_SearchExcludeFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet"> </Setting>
@@ -267,22 +166,12 @@
     <Setting Key="NAP_User_GetUserByFunctionAndSite" SpName="NAP_User_GetUserByFunctionAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_User_GetUserByFunction" SpName="NAP_User_GetUserByFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
+      
     </Setting>
     <Setting Key="NAP_User_GetAllByUsernameGroupSite" SpName="NAP_User_GetAllByUsernameGroupSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
     <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
@@ -291,10 +180,6 @@
     <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" />
     </Setting>
   </Function>
   <Function Name="Cust">
@@ -307,9 +192,7 @@
   <Function Name="LogUserLogin">
     <Setting Key="NAP_LogUserLogin_Insert" SpName="NAP_LogUserLogin_Insert" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet" />
     <Setting Key="NAP_LogUserLogin_Search" SpName="NAP_LogUserLogin_Search" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet">
-      <Mapping DataField="UserId" ObjectProperty="Id" />
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
+      
     </Setting>
   </Function> 
 </Functions>

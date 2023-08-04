@@ -1,10 +1,9 @@
 namespace NapAdminCore.Models;
 
 using System;
-using Domain;
 
 [Serializable]
-public class Site : ISite
+public class Site
 {
     public byte Id { get; set; }
 

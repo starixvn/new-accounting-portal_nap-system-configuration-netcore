@@ -7,7 +7,6 @@ using System.Linq;
 using Command;
 using Criteria.MenuItem;
 using Criteria.Misc;
-using Domain;
 using Fanex.Common.Extensions;
 using Fanex.Data;
 using Fanex.Data.Repository;
@@ -22,9 +21,9 @@ public interface IMenuItemRepository
 
     ICommandResult Delete(ICriteria criteria, ICriteria logCriteria);
 }
-public class MenuItemRepository : BaseRepository<IMenuItem>, IMenuItemRepository
+public class MenuItemRepository : BaseRepository<MenuItem>, IMenuItemRepository
 {
-    public  IMenuItem Get(ICriteria criteria)
+    public  MenuItem Get(ICriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         using var reader = db.ExecuteReader(criteria);
@@ -79,7 +78,7 @@ public class MenuItemRepository : BaseRepository<IMenuItem>, IMenuItemRepository
         return (int)db.ExecuteScalar(criteria);
     }
 
-    public  IEnumerable<IMenuItem> Fetch(ICriteria criteria)
+    public  IEnumerable<MenuItem> Fetch(ICriteria criteria)
     {
         using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
         using var reader = db.ExecuteReader(criteria);

@@ -6,7 +6,7 @@
         : string.Format("Permission of Group '{0}'", Model.GroupName);
 
     bool success = ViewBag.Success != null && ViewBag.Success;
-    var functionList = ViewBag.FunctionList as List<IFunction>;
+    var functionList = ViewBag.FunctionList as List<Function>;
     var groupFuncPolicyList = ViewBag.GroupFuncPolicyList as List<FunctionPolicy>;
     var userFuncPolicyList = ViewBag.UserFuncPolicyList as List<FunctionPolicy>;
     var userLevel = ViewBag.UserLevel as int?;
@@ -162,7 +162,7 @@
 }
 @{
 
-    void IndentChildFunctions(List<IFunction> functionList, IFunction function, int level = 0)
+    void IndentChildFunctions(List<Function> functionList, Function function, int level = 0)
     {
         if (function.Parent != null)
         {
