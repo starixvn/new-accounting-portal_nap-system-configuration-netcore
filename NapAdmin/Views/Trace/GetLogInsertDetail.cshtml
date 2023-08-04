@@ -1,120 +1,119 @@
-﻿@using Fanex.NAP.Admin.Core.Configuration
-@{
+﻿@{
     Layout = null;
 }
 @model LogExecSp
 @if (!ReferenceEquals(Model, null))
 {
     if (Model.ActionId == (int)LogAction.NAP_Cust_Insert)
-    { 
-    @Html.Action("NAPCustInsert", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPCustInsert", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_User_Insert)
-    { 
-    @Html.Action("NAPUserInsert", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPUserInsert", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Function_Insert)
-    { 
-    @Html.Action("NAPFunctionInsert", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPFunctionInsert", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Group_Insert)
-    { 
-    @Html.Action("NAPGroupInsert", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPGroupInsert", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_MenuItem_Insert)
-    { 
-    @Html.Action("NAPMenuItemInsert", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPMenuItemInsert", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Site_InsertWithSiteURL)
     {
-    @Html.Action("NAPSiteInsertWithSiteUrl", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPSiteInsertWithSiteUrl", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_MenuItem_Update)
-    { 
-    @Html.Action("NAPMenuItemUpdate", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPMenuItemUpdate", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_MenuItem_UpdateStatus)
-    { 
-    @Html.Action("NAPMenuItemUpdateStatus", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPMenuItemUpdateStatus", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Function_Update
         || Model.ActionId == (int)LogAction.NAP_Function_Duplicate)
-    { 
-    @Html.Action("NAPFunctionUpdate", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPFunctionUpdate", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Function_UpdateStatus)
-    { 
-    @Html.Action("NAPFunctionUpdateStatus", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPFunctionUpdateStatus", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Site_Update)
-    { 
-    @Html.Action("NAPSiteUpdate", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPSiteUpdate", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Site_UpdateStatus)
-    { 
-    @Html.Action("NAPSiteUpdateStatus", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPSiteUpdateStatus", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Group_Update)
-    { 
-    @Html.Action("NAPGroupUpdate", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPGroupUpdate", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Group_UpdateStatus)
-    { 
-    @Html.Action("NAPGroupUpdateStatus", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPGroupUpdateStatus", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Cust_Update)
-    { 
-    @Html.Action("NAPCustUpdate", "Trace", Model)
+    {
+        await Html.PartialAsync("~/Views/Trace/_NAPCustUpdate", Model);
     }
 
     if (Model.ActionId == (int)LogAction.NAP_Site_UpdateSiteURL
         || Model.ActionId == (int)LogAction.NAP_Site_InsertSiteURL
         || Model.ActionId == (int)LogAction.NAP_Site_UpdateDefaultSiteURL)
     {
-    @Html.Action("NAPSiteUrl", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPSiteUrl", Model);
     }
     if (Model.ActionId == (int)LogAction.NAP_Group_AssignFunction
         || Model.ActionId == (int)LogAction.NAP_User_AssignFunction
         || Model.ActionId == (int)LogAction.NAP_Function_CopyPermission)
     {
-    @Html.Action("NAPAssignPermission", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPAssignPermission", Model);
     }
     if (Model.ActionId == (int)LogAction.NAP_User_AssignNewSite)
     {
-        @Html.Action("NAPAssignNewSite", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPAssignNewSite", Model);
     }
     if (Model.ActionId == (int)LogAction.NAP_User_UpdateSite)
     {
-        @Html.Action("NAPUpdateSite", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPUpdateSite", Model);
     }
     if (Model.ActionId == (int)LogAction.NAP_User_AssignSite)
     {
-    @Html.Action("NAPAssignSite", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPAssignSite", Model);
     }
     if (Model.ActionId == (int)LogAction.NAP_Function_AssignFunctionToUsers)
     {
-    @Html.Action("NAPFunctionAssignToUsers", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPFunctionAssignToUsers", Model);
     }
     if (Model.ActionId == (int)LogAction.NAP_Function_AssignFunctionToGroups)
     {
-    @Html.Action("NAPFunctionAssignFunctionToGroups", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_NAPFunctionAssignFunctionToGroups", Model);
     }
     if (Model.ActionId == (int)LogAction.Task_NAP_RevokeUserPermission)
     {
-        @Html.Action("TaskNAPRevokeUserPermission", "Trace", Model)
+        await Html.PartialAsync("~/Views/Trace/_TaskNAPRevokeUserPermission", Model);
     }
 }

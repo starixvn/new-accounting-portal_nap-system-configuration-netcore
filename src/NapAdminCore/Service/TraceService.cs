@@ -8,7 +8,7 @@ using Criteria.Trace;
 using Models.ValueObject;
 using Repository;
 
-public interface ITraceService : IBaseService
+public interface ITraceService 
 {
     LogExecSp GetById(int logId);
 
@@ -18,7 +18,7 @@ public interface ITraceService : IBaseService
 
     IQueryable<LogFunction> SearchLogFunction(GetAllLogFunctionCriteria criteria);
 }
-public class TraceService : BaseService, ITraceService
+public class TraceService : ITraceService
 {
     private readonly ITraceRepository _traceRepository;
 

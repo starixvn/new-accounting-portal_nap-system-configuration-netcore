@@ -1,4 +1,4 @@
-﻿namespace NapAdmin.ViewModels.Trace;
+namespace NapAdmin.ViewModels.Trace;
 
 public class RevokedSite
 {

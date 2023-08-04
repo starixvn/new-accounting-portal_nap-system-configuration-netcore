@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.MenuItem;
 
 using Fanex.Data.Repository;

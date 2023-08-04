@@ -1,8 +1,10 @@
-﻿namespace NapAdmin.ViewModels.User;
+namespace NapAdmin.ViewModels.User;
+
+using NapAdminCore.Criteria.User;
 
 public class EditUserVM
 {
-    public ReturnData ReturnData { get; set; } = new ReturnData();
+    public ReturnData ReturnData { get; set; } = new();
 
     public UpdateCustCriteria Criteria { get; set; }
 }

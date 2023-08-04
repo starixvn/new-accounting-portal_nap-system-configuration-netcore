@@ -1,53 +1,53 @@
 
-//namespace NapAdminCore.Web;
+namespace NapAdminCore.Web;
 
-//using Business;
+using Models;
 
-//public class ViewFlags
-//{
-//    public ViewFlags()
-//    {
-//        IsLive = false;
-//        HasEditRight = false;
-//        IsNapAdminSite = false;
-//        HasAssignFunctionRight = false;
-//        HasAssignFunctionToUserRight = false;
-//        HasAssignFunctionToGroupRight = false;
-//        HasAssignSiteRight = false;
-//        IsShowLevelColumn = false;
-//        IsShowActionColumn = false;
-//        IsReCheckin = false;
-//    }
-        
-//    public bool IsLive { get; set; }
+public class ViewFlags
+{
+    public ViewFlags()
+    {
+        IsLive = false;
+        HasEditRight = false;
+        IsNapAdminSite = false;
+        HasAssignFunctionRight = false;
+        HasAssignFunctionToUserRight = false;
+        HasAssignFunctionToGroupRight = false;
+        HasAssignSiteRight = false;
+        IsShowLevelColumn = false;
+        IsShowActionColumn = false;
+        IsReCheckin = false;
+    }
 
-//    public bool HasEditRight { get; set; }
+    public bool IsLive { get; set; }
 
-//    public bool IsNapAdminSite { get; set; }
+    public bool HasEditRight { get; set; }
 
-//    public bool HasAssignSiteReadRight { get; set; }
+    public bool IsNapAdminSite { get; set; }
 
-//    public bool HasAssignSiteRight { get; set; }
+    public bool HasAssignSiteReadRight { get; set; }
 
-//    public bool HasAssignFunctionRight { get; set; }
+    public bool HasAssignSiteRight { get; set; }
 
-//    public bool HasAssignFunctionToUserRight { get; set; }
+    public bool HasAssignFunctionRight { get; set; }
 
-//    public bool HasAssignFunctionToGroupRight { get; set; }
+    public bool HasAssignFunctionToUserRight { get; set; }
 
-//    public bool HasManageUserRight { get; set; }
+    public bool HasAssignFunctionToGroupRight { get; set; }
 
-//    public bool IsShowLevelColumn { get; set; }
+    public bool HasManageUserRight { get; set; }
 
-//    public bool IsShowActionColumn { get; set; }
+    public bool IsShowLevelColumn { get; set; }
 
-//    public bool IsReCheckin { get; set; }
+    public bool IsShowActionColumn { get; set; }
 
-//    public void SetEditRight(int policy)
-//    {
-//        if (policy >= (int)Constant.Policy.Host)
-//        {
-//            HasEditRight = true;
-//        }
-//    }
-//}
+    public bool IsReCheckin { get; set; }
+
+    public void SetEditRight(int policy)
+    {
+        if (policy >= (int)AdminConstant.Policy.Host)
+        {
+            HasEditRight = true;
+        }
+    }
+}

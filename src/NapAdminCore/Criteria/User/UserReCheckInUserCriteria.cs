@@ -1,10 +1,9 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using Fanex.Data.Repository;
 
 public class UserReCheckInUserCriteria : CriteriaBase
-{       
+{
     public int OnUserId { get; set; }
 
     public bool IsKickedOut { get; set; }

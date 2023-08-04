@@ -1,4 +1,4 @@
-﻿using ILogger = Fanex.Logging.ILogger;
+using ILogger = Fanex.Logging.ILogger;
 
 namespace NapAdmin.AppStart;
 

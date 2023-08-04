@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using System.Collections.Generic;
@@ -25,7 +24,7 @@ public class GetAllByUsernameGroupSiteUserCriteria : CriteriaBase
 
                 foreach (var siteId in ListSite)
                 {
-                    value.AppendFormat(_siteTml, siteId.Value); // 1 -> read
+                    value.AppendFormat(this._siteTml, siteId.Value); // 1 -> read
                 }
 
                 return value.Append("</ROOT>").ToString();
@@ -43,6 +42,10 @@ public class GetAllByUsernameGroupSiteUserCriteria : CriteriaBase
     public int PageSize { get; set; }
 
     public int TotalRows { get; set; }
+
+    public int Status { get; set; }
+
+    public string Environment { get; set; }
 
     public override string GetSettingKey()
     {

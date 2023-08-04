@@ -1,4 +1,4 @@
-﻿namespace NapAdmin.AppStart;
+namespace NapAdmin.AppStart;
 
 using System.IO.Compression;
 using Fanex.Caching;
@@ -10,11 +10,10 @@ using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.AspNetCore;
 using Fanex.Logging.Extensions.Database;
 using Fanex.Logging.Sentry.RavenClient;
-using Fanex.NAP.Client.AspNetCore.Configuration;
-using Fanex.NAP.Client.AspNetCore.Session;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Web;
 using Fanex.NAP.Client.Services;
+using Fanex.NAP.Client.Session;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -38,8 +37,10 @@ using IUserServiceClient = Fanex.NAP.Client.Services.IUserService;
 using SiteServiceClient = Fanex.NAP.Client.Services.SiteService;
 using UserServiceClient = Fanex.NAP.Client.Services.UserService;
 
-public static class ServiceCollectionExtensions
+public static class IServiceCollectionExtensions
 {
+    public static NapSettings NapSettings { get; private set; }
+
     public static void AddFanex(this IServiceCollection services, IConfiguration configuration)
     {
         var connections = new Dictionary<string?, ConnectionConfiguration>();
@@ -76,6 +77,8 @@ public static class ServiceCollectionExtensions
     public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)
     {
         var napSettings = new NapSettings(configuration);
+        NapSettings = napSettings;
+
         services.AddSingleton<INapSettings>(napSettings);
         services.AddSingleton<ILogger, Logger>();
         services.AddSingleton<INapSession, NapSession>();
@@ -103,6 +106,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISiteService, SiteService>();
         services.AddScoped<ITraceService, TraceService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<LoggedUserContext, LoggedUserContextImp>();
     }
 
     public static void AddNapSession(this IServiceCollection services, IConfiguration configuration)

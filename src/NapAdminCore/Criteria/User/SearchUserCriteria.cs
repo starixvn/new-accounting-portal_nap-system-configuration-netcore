@@ -1,14 +1,13 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using Fanex.Data.Repository;
 
 public class SearchUserCriteria : CriteriaBase
-{       
+{
     public string Username { get; set; }
-        
+
     public int GroupId { get; set; }
-       
+
     public int SiteId { get; set; }
 
     public int PageIndex { get; set; }
@@ -16,6 +15,10 @@ public class SearchUserCriteria : CriteriaBase
     public int PageSize { get; set; }
 
     public int TotalRows { get; set; }
+
+    public int Status { get; set; }
+
+    public string Environment { get; set; }
 
     public override string GetSettingKey()
     {

@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using System;
@@ -13,6 +12,8 @@ public class AssignSiteUserCriteria : CriteriaBase
     public int Level { get; set; }
 
     public bool IsActive { get; set; }
+
+    public bool IsNeverExpired { get; set; }
 
     public int CreatedBy { get; set; }
 

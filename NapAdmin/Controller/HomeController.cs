@@ -6,26 +6,34 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NapAdmin.Controller;
 
+using Fanex.NAP.Client.Configuration;
+using NapAdminCore.Service;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
-    private readonly INapSession session;
+    private readonly INapSession napSession;
 
-    private readonly IConfiguration configuration;
-
-    public HomeController(INapSession session, IConfiguration configuration)
+    public HomeController(INapSession napSession,
+        INapSettings napSettings,
+        IUserService userService)
+    : base(napSession, napSettings, userService)
     {
-        this.session = session;
-        this.configuration = configuration;
+        this.napSession = napSession;
     }
 
     [Authorize]
     public IActionResult Index()
     {
+        return View();
+    }
+
+    [Authorize]
+    public IActionResult Test()
+    {
         ViewBag.IsSessionAvailable = HttpContext.Session.IsAvailable;
-        ViewBag.UserId = session.UserId;
-        ViewBag.Username = session.UserName;
+        ViewBag.UserId = napSession.UserId;
+        ViewBag.Username = napSession.UserName;
         var instanceName = Dns.GetHostName();
         var ip = Dns.GetHostEntry(instanceName).AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
         ViewBag.InstanceName = instanceName;

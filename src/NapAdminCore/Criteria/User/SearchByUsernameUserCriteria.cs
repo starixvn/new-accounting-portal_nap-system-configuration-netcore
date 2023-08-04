@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using Fanex.Data.Repository;

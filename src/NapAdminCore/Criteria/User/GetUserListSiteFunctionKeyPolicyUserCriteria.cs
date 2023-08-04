@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using System.Collections.Generic;
@@ -17,13 +16,13 @@ public class GetUserListSiteFunctionKeyPolicyUserCriteria : CriteriaBase
     {
         get
         {
-            if (ListSite != null)
+            if (this.ListSite != null)
             {
                 var value = new StringBuilder("<ROOT>");
 
-                foreach (var siteId in ListSite)
+                foreach (var siteId in this.ListSite)
                 {
-                    value.AppendFormat(_siteTml, siteId.Value); // 1 -> read
+                    value.AppendFormat(this._siteTml, siteId.Value); // 1 -> read
                 }
 
                 return value.Append("</ROOT>").ToString();

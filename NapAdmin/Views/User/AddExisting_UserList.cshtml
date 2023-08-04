@@ -13,7 +13,7 @@
                 @ViewResources.Last_Name
             </th>
             <th>
-                @ViewResources.Closed
+                Closed
             </th>
             <th>
                 @ViewResources.Add
@@ -23,11 +23,11 @@
     <tbody id="grid-user">
         @if (Model.UserList != null && Model.UserList.Count() > 0)
         {
-            int i = 0;
+            var i = 0;
 
             foreach (var item in Model.UserList)
             {
-                string row_class = i % 2 == 0 ? "class='alt'" : string.Empty;
+                var row_class = i % 2 == 0 ? "class='alt'" : string.Empty;
 
             <tr @Html.Raw(row_class)>
                 <td>
@@ -69,12 +69,12 @@
                 {
                     <span class="items-per-page-wrp">@ViewResources.PageSize
                         @Html.DropDownList("items-per-page", new List<SelectListItem> {
-                            new SelectListItem { Value = "10", Text = "10", Selected = "10" == Model.UserList.PageSize.ToString() },
-                            new SelectListItem { Value = "20", Text = "20", Selected = "20" == Model.UserList.PageSize.ToString() },
-                            new SelectListItem { Value = "30", Text = "30", Selected = "30" == Model.UserList.PageSize.ToString() }
+                            new() { Value = "10", Text = "10", Selected = "10" == Model.UserList.PageSize.ToString() },
+                            new() { Value = "20", Text = "20", Selected = "20" == Model.UserList.PageSize.ToString() },
+                            new() { Value = "30", Text = "30", Selected = "30" == Model.UserList.PageSize.ToString() }
                         }, new { id = string.Empty, @class = "items-per-page" })</span>
 
-                    @Html.Pager(Model.UserList, new PagerOptions() {
+                    @*@Html.Pager(Model.UserList, new PagerOptions() {
                        PageIndexParameterName = "id",
                        ShowFirstLast = true,
                        ShowPrevNext = true,
@@ -83,7 +83,7 @@
                        NumericPagerItemCount = 20,
                        CurrentPagerItemTemplate = "<a disabled='disabled'>{0}</a>",
                        CssClass = "jpages"
-                   })
+                   })*@
                 }
             </td>
         </tr>

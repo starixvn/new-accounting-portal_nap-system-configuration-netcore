@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Misc;
 
 using System;
@@ -16,8 +15,5 @@ public class LogExecSpCriteria : CriteriaBase
 
     public override string GetSettingKey() => string.Empty;
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

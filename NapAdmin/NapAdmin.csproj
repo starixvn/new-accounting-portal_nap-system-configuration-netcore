@@ -2,12 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\scripts\User\assign-site-function\**" />
+    <Content Remove="wwwroot\scripts\User\assign-site-function\**" />
+    <EmbeddedResource Remove="wwwroot\scripts\User\assign-site-function\**" />
+    <None Remove="wwwroot\scripts\User\assign-site-function\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="wwwroot\scripts\ReCheckIn.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +34,7 @@
     <Content Include="App_Data\Fanex.Data\NAPCommonSpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -165,24 +174,11 @@
     <None Include="wwwroot\scripts\Trace\LogExecSp.js" />
     <None Include="wwwroot\scripts\Trace\LogUserLogin.js" />
     <None Include="wwwroot\scripts\User\AddExisting.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\.editorconfig" />
-    <None Include="wwwroot\scripts\User\assign-site-function\.prettierrc" />
-    <None Include="wwwroot\scripts\User\assign-site-function\config\helpers.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.base.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.dev.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.prod.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\config\webpack.config.test.js" />
     <None Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css.map" />
     <None Include="wwwroot\scripts\User\assign-site-function\dist\main.js" />
     <None Include="wwwroot\scripts\User\assign-site-function\dist\main.js.map" />
     <None Include="wwwroot\scripts\User\assign-site-function\dist\main.min.js" />
     <None Include="wwwroot\scripts\User\assign-site-function\dist\main.min.js.gz" />
-    <None Include="wwwroot\scripts\User\assign-site-function\environment\dev.env.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\environment\prod.env.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\README.md" />
-    <None Include="wwwroot\scripts\User\assign-site-function\test\karma.conf.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\test\libs\jquery.js" />
-    <None Include="wwwroot\scripts\User\assign-site-function\webpack.config.js" />
     <None Include="wwwroot\scripts\User\AssignNewSite.js" />
     <None Include="wwwroot\scripts\User\AssignPermission.js" />
     <None Include="wwwroot\scripts\User\AssignSite.js" />
@@ -190,6 +186,7 @@
     <None Include="wwwroot\scripts\User\Manage.js" />
     <None Include="wwwroot\scripts\User\ResetPassword.js" />
     <None Include="wwwroot\scripts\User\SetupOTP.js" />
+    <None Include="wwwroot\scripts\ReCheckIn.js" />
     <None Include="wwwroot\scripts\_Layout.js" />
     <None Include="wwwroot\themes\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="wwwroot\themes\bootstrap\css\bootstrap.css.map" />
@@ -229,8 +226,8 @@
     <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.0.9" />
-    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="2.0.0.3" />
-    <PackageReference Include="Fanex.NAP.Signin.AspNetCore" Version="2.0.0.6" />
+    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="2.0.0.5" />
+    <PackageReference Include="Fanex.NAP.Signin.AspNetCore" Version="2.0.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.5" />
     <PackageReference Include="ONEbook.OTP" Version="2.0.0" />
@@ -247,46 +244,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\edit-field\edit-field.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\edit-field\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\expired-date\expired-date.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\expired-date\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\function-name\function-name.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\function-name\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\header-row\header-row.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\header-row\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\save-all-row\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\save-all-row\save-all-row.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-level\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-level\site-level.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-list\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-list\site-list.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-status\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\components\site-status\site-status.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\configs\configs.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\main.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\model\function.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\model\site.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\service\function-service.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\service\site-service.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\actions.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\getters.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\mutations.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\modules\site\state.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\store\types.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\datetime.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\function.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\log.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\message-box.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\src\util\site.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\test\index.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\test\specs\components\header-row\header-row.spec.ts" />
-    <TypeScriptCompile Include="wwwroot\scripts\User\assign-site-function\test\utils\component-test.ts" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Group;
 
 using System;
@@ -32,19 +31,19 @@ public class AssignFunctionGroupCriteria : CriteriaBase
         {
             var value = new StringBuilder("<ROOT>");
 
-            if (FuncRead != null)
+            if (this.FuncRead != null)
             {
-                foreach (var funcId in FuncRead)
+                foreach (var funcId in this.FuncRead)
                 {
-                    value.AppendFormat(AssignPermissionTpl, SiteId, funcId, 1); // 1 -> read
+                    value.AppendFormat(AssignPermissionTpl, this.SiteId, funcId, 1); // 1 -> read
                 }
             }
 
-            if (FuncHost != null)
+            if (this.FuncHost != null)
             {
-                foreach (var funcId in FuncHost)
+                foreach (var funcId in this.FuncHost)
                 {
-                    value.AppendFormat(AssignPermissionTpl, SiteId, funcId, 2); // 2 -> host
+                    value.AppendFormat(AssignPermissionTpl, this.SiteId, funcId, 2); // 2 -> host
                 }
             }
 

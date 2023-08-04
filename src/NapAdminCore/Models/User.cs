@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Models;
 
 using System;
@@ -46,4 +45,6 @@ public class User : IUser
 
     [Display(Name = "Email", ResourceType = typeof(ViewResources))]
     public string Email { get; set; }
+
+    public bool Closed { get; set; }
 }

@@ -13,7 +13,7 @@
     var groups = ViewBag.Groups as IList<SelectListItem> ?? new List<SelectListItem>();
 }
 @section Head {
-    <link href="~/Areas/UserControl/themes/nap/user/add-existing.less" rel="stylesheet"
+    <link href="~/themes/nap/user/add-existing.less" rel="stylesheet"
           type="text/css" />
 }
 @section Headline {
@@ -51,7 +51,7 @@
     </div>
 }
 <div id="grid-wrp">
-    @{Html.RenderPartial("AddExisting_UserList", Model); }
+    @{ await Html.RenderPartialAsync("~/View/User/AddExisting_UserList", Model); }
 </div>
 
 <div id="form-wrp" class="col-sm-7 col-md-5" style="display: none">
@@ -76,5 +76,5 @@
 </div>
 
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/User/AddExisting.js" type="text/javascript"></script>
+    <script src="~/scripts/User/AddExisting.js" type="text/javascript"></script>
 }

@@ -3,52 +3,52 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Business;
 using Command;
 using Criteria.MenuItem;
 using Domain;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Models;
 using Repository;
 
-public interface IMenuItemService : IBaseService
+public interface IMenuItemService 
 {
     IMenuItem GetById(int id);
 
     IMenuItem GetByNameAndSite(string name, int siteId);
 
-    IEnumerable<IMenuItem> GetAll(string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IMenuItem> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetAllSelectListItem(
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedMenuItemId = 0);
 
-    IEnumerable<IMenuItem> GetBySite(int siteId, string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IMenuItem> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetSelectListItemBySite(
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedMenuItemId = 0);
 
-    IEnumerable<IMenuItem> GetBySiteInHierarchy(int siteId, string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IMenuItem> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IEnumerable<IMenuItem> GetByUserAndSiteIncludeGroup(
         int userId,
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null);
 
     IEnumerable<IMenuItem> Search(
         string menuItemName,
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null);
 
-    IEnumerable<IMenuItem> GetParentById(int id, string env = Constant.Uat);
+    IEnumerable<IMenuItem> GetParentById(int id, string env = AdminConstant.Uat);
 
-    IList<SelectListItem> GetParentSelectListItemById(int id, int selectedMenuItemId = 0, string env = Constant.Uat);
+    IList<SelectListItem> GetParentSelectListItemById(int id, int selectedMenuItemId = 0, string env = AdminConstant.Uat);
 
     ICommandResult Insert(InsertMenuItemCriteria criteria);
 
@@ -56,15 +56,17 @@ public interface IMenuItemService : IBaseService
 
     ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria);
 }
-public class MenuItemService : BaseService, IMenuItemService
+public class MenuItemService : IMenuItemService
 {
     private readonly IMenuItemRepository menuItemRepository;
     private readonly IDynamicRepository dynamicRepository;
+    private readonly LoggedUserContext loggedUserContext;
 
-    public MenuItemService(IMenuItemRepository menuItemRepository, IDynamicRepository dynamicRepository)
+    public MenuItemService(IMenuItemRepository menuItemRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     {
         this.menuItemRepository = menuItemRepository;
         this.dynamicRepository = dynamicRepository;
+        this.loggedUserContext = loggedUserContext;
     }
 
     public IMenuItem GetById(int id)
@@ -88,7 +90,7 @@ public class MenuItemService : BaseService, IMenuItemService
         return dynamicRepository.Get<IMenuItem>(criteria);
     }
 
-    public IEnumerable<IMenuItem> GetAll(string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IMenuItem> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllMenuItemCriteria
         {
@@ -100,7 +102,7 @@ public class MenuItemService : BaseService, IMenuItemService
     }
 
     public IList<SelectListItem> GetAllSelectListItem(
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedMenuItemId = 0)
     {
@@ -120,7 +122,7 @@ public class MenuItemService : BaseService, IMenuItemService
         }).ToList();
     }
 
-    public IEnumerable<IMenuItem> GetBySite(int siteId, string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IMenuItem> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteMenuItemCriteria
         {
@@ -134,7 +136,7 @@ public class MenuItemService : BaseService, IMenuItemService
 
     public IList<SelectListItem> GetSelectListItemBySite(
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedMenuItemId = 0)
     {
@@ -155,7 +157,7 @@ public class MenuItemService : BaseService, IMenuItemService
         }).ToList();
     }
 
-    public IEnumerable<IMenuItem> GetBySiteInHierarchy(int siteId, string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IMenuItem> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteMenuItemCriteria
         {
@@ -169,7 +171,7 @@ public class MenuItemService : BaseService, IMenuItemService
         return SortMenuItemsInHierarchy(menuItemList);
     }
 
-    public IEnumerable<IMenuItem> GetParentById(int id, string env = Constant.Uat)
+    public IEnumerable<IMenuItem> GetParentById(int id, string env = AdminConstant.Uat)
     {
         var criteria = new GetParentByIdMenuItemCriteria
         {
@@ -183,7 +185,7 @@ public class MenuItemService : BaseService, IMenuItemService
     public IList<SelectListItem> GetParentSelectListItemById(
         int id,
         int selectedMenuItemId = 0,
-        string env = Constant.Uat)
+        string env = AdminConstant.Uat)
     {
         var criteria = new GetParentByIdMenuItemCriteria
         {
@@ -204,7 +206,7 @@ public class MenuItemService : BaseService, IMenuItemService
     public IEnumerable<IMenuItem> GetByUserAndSiteIncludeGroup(
         int userId,
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null)
     {
         var criteria = new GetByUserAndSiteIncludeGroupMenuItemCriteria
@@ -220,7 +222,7 @@ public class MenuItemService : BaseService, IMenuItemService
     public IEnumerable<IMenuItem> Search(
         string menuItemName,
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null)
     {
         var criteria = new SearchAllMenuItemCriteria
@@ -236,21 +238,21 @@ public class MenuItemService : BaseService, IMenuItemService
 
     public ICommandResult Insert(InsertMenuItemCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return menuItemRepository.Insert(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateMenuItemCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return menuItemRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return menuItemRepository.Update(criteria, logCriteria);
     }

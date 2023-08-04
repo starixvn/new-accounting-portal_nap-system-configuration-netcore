@@ -1,12 +1,11 @@
-
 namespace NapAdminCore.Criteria.Function;
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Business;
 using Fanex.Data;
 using Fanex.Data.Repository;
-using Web;
+using NapAdminCore.Models;
+using NapAdminCore.Web;
 
 public class UpdateFunctionCriteria : CriteriaBase
 {
@@ -41,7 +40,13 @@ public class UpdateFunctionCriteria : CriteriaBase
     public string ParentName { get; set; }
 
     [Display(Name = "CRUD", ResourceType = typeof(ViewResources))]
-    public byte Crud => Readonly ? (byte)Constant.Crud.Read : (byte)Constant.Crud.Host;
+    public byte Crud
+    {
+        get
+        {
+            return this.Readonly ? (byte)AdminConstant.Crud.Read : (byte)AdminConstant.Crud.Host;
+        }
+    }
 
     [Display(Name = "Read_only", ResourceType = typeof(ViewResources))]
     public bool Readonly { get; set; }

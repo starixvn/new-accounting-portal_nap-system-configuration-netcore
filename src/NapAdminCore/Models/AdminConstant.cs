@@ -1,7 +1,6 @@
+namespace NapAdminCore.Models;
 
-namespace NapAdminCore.Business;
-
-public static class Constant
+public static class AdminConstant
 {
     public const string Space = " ";
 
@@ -53,5 +52,13 @@ public static class Constant
         DownTime = 1,
 
         KickedOut = 2
+    }
+
+    public enum UserStatus
+    {
+        All = 0,
+        Active = 1,
+        Inactive = 2,
+        Closed = 3
     }
 }

@@ -1,20 +1,27 @@
-﻿namespace NapAdmin.Controller;
+namespace NapAdmin.Controller;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fanex.Common.Extensions;
-using Fanex.NAP.Core.Business;
+using Fanex.NAP.Client.Attributes;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Business;
+using Fanex.NAP.Client.Helpers.Web;
+using Microsoft.AspNetCore.Mvc;
+using NapAdminCore.Configuration;
+using NapAdminCore.Criteria.Group;
+using NapAdminCore.Models;
+using NapAdminCore.Models.ValueObject;
+using NapAdminCore.Service;
+using NapAdminCore.Web;
 
-/// <summary>
-/// Group controller.
-/// </summary>
 [NapSuperAuth]
 public class GroupController : BaseController
 {
     #region Members
 
-    private readonly IGroupService _groupService;
+    private readonly IGroupService groupService;
     private readonly ISiteService _siteService;
     private readonly IFunctionService _functionService;
     private readonly IUserService _userService;
@@ -22,61 +29,50 @@ public class GroupController : BaseController
     #endregion Members
 
     #region Ctors
-
-    public GroupController()
-        : this(null, null, null, null)
-    {
-    }
-
+    
     public GroupController(
         IGroupService groupService,
         ISiteService siteService,
         IFunctionService functionService,
-        IUserService userService)
+        IUserService userService,
+        INapSession napSession,
+        INapSettings napSettings)
+    : base(napSession, napSettings, userService)
     {
-        _groupService = groupService ?? new GroupService { ServiceContext = ServiceContext };
-        _siteService = siteService ?? new SiteService { ServiceContext = ServiceContext };
-        _functionService = functionService ?? new FunctionService { ServiceContext = ServiceContext };
-        _userService = userService ?? new UserService { ServiceContext = ServiceContext };
+        this.groupService = groupService ;
+        _siteService = siteService ;
+        _functionService = functionService ;
+        _userService = userService ;
     }
 
     #endregion Ctors
 
     #region Manage
 
-    /// <summary>
-    /// Manage group.
-    /// </summary>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Read)]
     public ActionResult Manage()
     {
-        ViewFlags.HasEditRight = HasRight(FunctionKeys.ManageGroup, Constant.Policy.Host);
-        ViewFlags.HasAssignFunctionRight = HasRight(FunctionKeys.AssignFunctionToGroup, Constant.Policy.Read);
-        ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, Constant.Policy.Read);
+        ViewFlags.HasEditRight = HasRight(FunctionKeys.ManageGroup, AdminConstant.Policy.Host);
+        ViewFlags.HasAssignFunctionRight = HasRight(FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Read);
+        ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Read);
 
-        ViewBag.GroupList = _groupService.GetAllWithNumOfUser(string.Empty, Environment);
+        ViewBag.GroupList = groupService.GetAllWithNumOfUser(string.Empty, Environment);
 
         return View(new GetAllWithNumOfUserGroupCriteria());
     }
 
-    /// <summary>
-    /// Manage group.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Read)]
     public ActionResult Manage(GetAllWithNumOfUserGroupCriteria criteria)
     {
         criteria.Environment = Environment;
 
-        ViewFlags.HasEditRight = HasRight(FunctionKeys.ManageGroup, Constant.Policy.Host);
-        ViewFlags.HasAssignFunctionRight = HasRight(FunctionKeys.AssignFunctionToGroup, Constant.Policy.Read);
-        ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, Constant.Policy.Read);
+        ViewFlags.HasEditRight = HasRight(FunctionKeys.ManageGroup, AdminConstant.Policy.Host);
+        ViewFlags.HasAssignFunctionRight = HasRight(FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Read);
+        ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Read);
 
-        ViewBag.GroupList = _groupService.GetAllWithNumOfUser(criteria.GroupName);
+        ViewBag.GroupList = groupService.GetAllWithNumOfUser(criteria.GroupName);
 
         return View(criteria);
     }
@@ -85,10 +81,6 @@ public class GroupController : BaseController
 
     #region Add New Group
 
-    /// <summary>
-    /// Add new group.
-    /// </summary>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
     public ActionResult AddNew()
@@ -96,33 +88,26 @@ public class GroupController : BaseController
         return View(new InsertGroupCriteria());
     }
 
-    /// <summary>
-    /// Add new group.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(InsertGroupCriteria criteria)
     {
         if (ModelState.IsValid)
         {
-            // Check name exist
-            IGroup group = _groupService.GetByName(criteria.GroupName);
+            var group = groupService.GetByName(criteria.GroupName);
 
-            if (!object.ReferenceEquals(group, null))
+            if (!ReferenceEquals(group, null))
             {
                 ModelState.AddModelError("SiteName", string.Format(ViewResources.DuplicateMsg, criteria.GroupName));
                 return View(criteria);
             }
 
-            // Add group
-            criteria.CreatedBy = CurrentSession.UserId;
+            criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
-            ICommandResult result = _groupService.Insert(criteria);
+            var result = groupService.Insert(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -135,45 +120,35 @@ public class GroupController : BaseController
 
     #region Edit Group
 
-    /// <summary>
-    /// Update group.
-    /// </summary>
-    /// <param name="id">The group ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
     public ActionResult Edit(int id)
     {
-        IGroup group = _groupService.GetById(id);
+        var group = groupService.GetById(id);
 
-        if (object.ReferenceEquals(group, null))
+        if (ReferenceEquals(group, null))
         {
             return RedirectToAction("Manage");
         }
 
-        var criteria = new UpdateGroupCriteria();
-
-        criteria.GroupId = group.Id;
-        criteria.Description = group.Description;
-        criteria.GroupName = group.Name;
-        criteria.IsActive = group.IsActive;
+        var criteria = new UpdateGroupCriteria
+        {
+            GroupId = group.Id,
+            Description = group.Description,
+            GroupName = group.Name,
+            IsActive = group.IsActive
+        };
 
         return View(criteria);
     }
 
-    /// <summary>
-    /// Update group.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
     public ActionResult Edit(UpdateGroupCriteria criteria)
     {
         if (ModelState.IsValid)
         {
-            // check name exist
-            IGroup group = _groupService.GetByName(criteria.GroupName);
+            var group = groupService.GetByName(criteria.GroupName);
 
             if (!ReferenceEquals(group, null) && group.Id != criteria.GroupId)
             {
@@ -182,13 +157,12 @@ public class GroupController : BaseController
                 return View(criteria);
             }
 
-            // update function
-            criteria.ModifiedBy = CurrentSession.UserId;
+            criteria.ModifiedBy = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
-            ICommandResult result = _groupService.Update(criteria);
+            var result = groupService.Update(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -201,12 +175,6 @@ public class GroupController : BaseController
 
     #region Activation
 
-    /// <summary>
-    /// Update group status.
-    /// </summary>
-    /// <param name="id">The group ID.</param>
-    /// <param name="isActive">Is active or not.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
     public ActionResult Activate(int id, bool isActive)
     {
@@ -216,15 +184,15 @@ public class GroupController : BaseController
             {
                 GroupId = id,
                 IsActive = isActive,
-                ModifiedBy = CurrentSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            ICommandResult result = _groupService.UpdateStatus(criteria);
+            var result = groupService.UpdateStatus(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Json(Constant.Ok);
+                return Json(AdminConstant.Ok);
             }
         }
 
@@ -235,19 +203,13 @@ public class GroupController : BaseController
 
     #region Assign Permission
 
-    /// <summary>
-    /// Assign group permission.
-    /// </summary>
-    /// <param name="id">The group ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Read)]
     public ActionResult AssignPermission(int id, int siteId = 0)
     {
         var siteIdValue = siteId == 0 || SiteId != NapAdminId ? SiteId : siteId;
 
-        var group = _groupService.GetById(id);
+        var group = groupService.GetById(id);
         var site = _siteService.GetById(siteIdValue);
 
         if (group == null || site == null)
@@ -255,18 +217,19 @@ public class GroupController : BaseController
             return RedirectToAction("Manage");
         }
 
-        var criteria = new AssignFunctionGroupCriteria();
-
-        criteria.GroupId = group.Id;
-        criteria.GroupName = group.Name;
-        criteria.SiteId = site.Id;
+        var criteria = new AssignFunctionGroupCriteria
+        {
+            GroupId = group.Id,
+            GroupName = group.Name,
+            SiteId = site.Id
+        };
 
         ViewFlags.HasAssignFunctionRight =
-            HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToGroup, Constant.Policy.Host);
+            HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Host);
 
-        ViewBag.SiteSelectList = CurrentSession.Level == (int)Constant.Level.PortalAdmin ?
+        ViewBag.SiteSelectList = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
-            _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(CurrentSession.UserId,
+            _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(NapSession.UserId,
                 FunctionKeys.AssignFunctionToGroup,
                 Environment,
                 selectedSiteId: criteria.SiteId);
@@ -275,73 +238,56 @@ public class GroupController : BaseController
         ViewBag.GroupFuncPolicyList =
             _functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment);
         ViewBag.UserFuncPolicyList =
-            _functionService.GetByUserAndSiteIncludeGroup(CurrentSession.UserId, criteria.SiteId, Environment);
-        ViewBag.UserLevel = CurrentSession.Level;
+            _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment);
+        ViewBag.UserLevel = NapSession.Level;
 
         return View(criteria);
     }
 
-    /// <summary>
-    /// Assign group permission.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Host)]
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-#pragma warning disable S1541 // Methods and properties should not be too complex
     public ActionResult AssignPermission(AssignFunctionGroupCriteria criteria)
-#pragma warning restore S1541 // Methods and properties should not be too complex
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
     {
-        // check group and site
-        IGroup group = _groupService.GetById(criteria.GroupId);
-        ISite site = _siteService.GetById(criteria.SiteId);
+        var group = groupService.GetById(criteria.GroupId);
+        var site = _siteService.GetById(criteria.SiteId);
 
         if (group == null || site == null)
         {
             return RedirectToAction("Manage");
         }
 
-        // check policy
-        int policy = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+        var policy = _userService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             criteria.SiteId,
             FunctionKeys.AssignFunctionToGroup);
 
-        if (policy < (int)Constant.Policy.Host)
+        if (policy < (int)AdminConstant.Policy.Host)
         {
             return RedirectToAction("Unauthorize", "Common");
         }
 
-        ViewFlags.HasAssignFunctionRight = policy >= (int)Constant.Policy.Host;
+        ViewFlags.HasAssignFunctionRight = true;
 
-        criteria.ModifiedBy = CurrentSession.UserId;
+        criteria.ModifiedBy = NapSession.UserId;
         criteria.ModifiedDate = DateTime.Now;
 
-        // list function policy
-        List<IFunction> listFunc =
+        var listFunc =
             _functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true).ToList();
 
-        // list group function policy
-        List<FunctionPolicy> listGroupFuncPolicy =
+        var listGroupFuncPolicy =
             _functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment).ToList();
 
-        // list function will be remove by current user login
         var listGroupFuncRemove = new List<FunctionPolicy>();
         listGroupFuncRemove.AddRange(listGroupFuncPolicy);
 
-        // list function policy of current user login
-        List<FunctionPolicy> listCurrentUserFuncPolicy =
-            _functionService.GetByUserAndSiteIncludeGroup(CurrentSession.UserId, criteria.SiteId, Environment).ToList();
+        var listCurrentUserFuncPolicy =
+            _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
 
-        // check function host,contains in list function
         if (!criteria.FuncHost.IsNullOrDBNull())
         {
-            foreach (int itemFunc in criteria.FuncHost)
+            foreach (var itemFunc in criteria.FuncHost)
             {
-                // function find from list function, policy is host
-                if (!listFunc.Any(f => f.Id == itemFunc))
+                if (listFunc.All(f => f.Id != itemFunc))
                 {
                     return RedirectToAction("Error", "Common");
                 }
@@ -350,19 +296,16 @@ public class GroupController : BaseController
             }
         }
 
-        // check function read, with current user login have permission
         if (!criteria.FuncRead.IsNullOrDBNull())
         {
-            foreach (int itemFunc in criteria.FuncRead)
+            foreach (var itemFunc in criteria.FuncRead)
             {
                 listGroupFuncRemove.Remove(f => f.Function.Id == itemFunc);
             }
         }
 
-        // check permission current user login with group be assign permission
-        // check for function policy will be remove ( set policy = 0 )
         listGroupFuncRemove.Remove(f => f.Policy > 0);
-        foreach (FunctionPolicy itemFunc in listGroupFuncRemove)
+        foreach (var itemFunc in listGroupFuncRemove)
         {
             if (!listCurrentUserFuncPolicy.Any(f => f.Function.Id == itemFunc.Function.Id && f.Policy >= itemFunc.Policy))
             {
@@ -370,10 +313,9 @@ public class GroupController : BaseController
             }
         }
 
-        // assign permission
-        ICommandResult result = _groupService.AssignFunction(criteria);
+        var result = groupService.AssignFunction(criteria);
 
-        if (result != null && result.IsSuccessful)
+        if (result is { IsSuccessful: true })
         {
             ViewBag.Success = true;
 
@@ -384,7 +326,7 @@ public class GroupController : BaseController
         ViewBag.SiteSelectList = UserIsPortalAdmin ?
             _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
             _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToGroup,
                 Environment,
                 selectedSiteId: criteria.SiteId);
@@ -392,7 +334,7 @@ public class GroupController : BaseController
         ViewBag.FunctionList = listFunc;
         ViewBag.GroupFuncPolicyList = listGroupFuncPolicy;
         ViewBag.UserFuncPolicyList = listCurrentUserFuncPolicy;
-        ViewBag.UserLevel = CurrentSession.Level;
+        ViewBag.UserLevel = NapSession.Level;
 
         return View(criteria);
     }
@@ -400,33 +342,28 @@ public class GroupController : BaseController
     #endregion Assign Permission
 
     #region UnassignPermission
-    /// <summary>
-    /// Assign group permission.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Host)]
     public ActionResult UnassignPermission(int groupId, int functionId)
     {
-        // check group and site
         var function = _functionService.GetById(functionId);
-        IGroup group = _groupService.GetById(groupId);
-        ISite site = function.Site;
-        List<FunctionPolicy> listGroupFuncPolicy = _functionService.GetByGroupAndSite(groupId, site.Id, Environment).ToList();
+        var group = groupService.GetById(groupId);
+        var site = function.Site;
+        var listGroupFuncPolicy = _functionService.GetByGroupAndSite(groupId, site.Id, Environment).ToList();
 
-        var criteria = new AssignFunctionGroupCriteria();
-        criteria.FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray();
-        criteria.FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray();
-        criteria.ModifiedBy = CurrentSession.UserId;
-        criteria.ModifiedDate = DateTime.Now;
-        criteria.GroupId = groupId;
-        criteria.GroupName = group.Name;
-        criteria.SiteId = site.Id;
+        var criteria = new AssignFunctionGroupCriteria
+        {
+            FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray(),
+            FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray(),
+            ModifiedBy = NapSession.UserId,
+            ModifiedDate = DateTime.Now,
+            GroupId = groupId,
+            GroupName = group.Name,
+            SiteId = site.Id
+        };
 
 
-        // assign permission
-        ICommandResult result = _groupService.AssignFunction(criteria);
+        var result = groupService.AssignFunction(criteria);
 
         return Json(result);
     }
@@ -434,16 +371,12 @@ public class GroupController : BaseController
     #endregion
     #region Group Info
 
-    /// <summary>
-    /// Get group information.
-    /// </summary>
-    /// <param name="id">The group ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Read)]
     public ActionResult GroupInfo(int id)
     {
-        return View(_groupService.GetById(id));
+        var group = groupService.GetById(id);
+        return View(group);
     }
 
     #endregion Group Info

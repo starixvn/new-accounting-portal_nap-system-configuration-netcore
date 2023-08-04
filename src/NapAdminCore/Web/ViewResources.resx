@@ -222,6 +222,12 @@
   <data name="Confirm_Password" xml:space="preserve">
     <value>Confirm Password</value>
   </data>
+  <data name="CopyPermissionSuccessMsg" xml:space="preserve">
+    <value>{0} has been copied permission successfully. You will be redirected in &amp;lt;span class='msec'&amp;gt;{1}&amp;lt;/span&amp;gt; seconds.</value>
+  </data>
+  <data name="Copy_Permission" xml:space="preserve">
+    <value>Copy Permission</value>
+  </data>
   <data name="Country_Code" xml:space="preserve">
     <value>Country</value>
   </data>
@@ -497,6 +503,9 @@
   </data>
   <data name="NAP_Hub" xml:space="preserve">
     <value>NAP Hub</value>
+  </data>
+  <data name="Never_Expired" xml:space="preserve">
+    <value>Never Expired</value>
   </data>
   <data name="New_Accounting_Portal" xml:space="preserve">
     <value>New Accounting Portal</value>

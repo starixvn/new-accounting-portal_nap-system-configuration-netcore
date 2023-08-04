@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Group;
 
 using Fanex.Data.Repository;
@@ -6,7 +5,7 @@ using Fanex.Data.Repository;
 public class SearchGroupExcludeFunctionCriteria : CriteriaBase
 {
     public string GroupName { get; set; }
-      
+
     public int SiteId { get; set; }
 
     public int FunctionId { get; set; }

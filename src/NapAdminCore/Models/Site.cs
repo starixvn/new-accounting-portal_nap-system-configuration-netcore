@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Models;
 
 using System;

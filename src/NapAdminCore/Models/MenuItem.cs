@@ -1,8 +1,8 @@
-
 namespace NapAdminCore.Models;
 
 using System;
-using Domain;
+using System.Diagnostics.CodeAnalysis;
+using NapAdminCore.Domain;
 
 [Serializable]
 public class MenuItem : IMenuItem
@@ -33,17 +33,19 @@ public class MenuItem : IMenuItem
 
     public string Environment { get; set; }
 
+    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     public string Url { get; set; }
 
     public int Policy { get; set; }
 
+    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     public string ValidUrl
     {
         get
         {
-            if (!string.IsNullOrEmpty(Url))
+            if (!string.IsNullOrEmpty(this.Url))
             {
-                return Url.StartsWith("/", StringComparison.CurrentCulture) ? "~" + Url : Url;
+                return this.Url.StartsWith("/", StringComparison.CurrentCulture) ? "~" + this.Url : this.Url;
             }
 
             return "/";

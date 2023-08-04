@@ -1,9 +1,11 @@
-
 namespace NapAdminCore.Models;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata;
 using Domain;
 
+[SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Reviewed")]
 [Serializable]
 public class Function : IFunction
 {
@@ -35,5 +37,11 @@ public class Function : IFunction
 
     public DateTime ModifiedDate { get; set; }
 
-    public bool Readonly => Crud == (byte)Business.Constant.Crud.Read;
+    public bool Readonly
+    {
+        get
+        {
+            return Crud == (byte)AdminConstant.Crud.Read;
+        }
+    }
 }

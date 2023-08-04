@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Models.ValueObject;
 
 public class LogData

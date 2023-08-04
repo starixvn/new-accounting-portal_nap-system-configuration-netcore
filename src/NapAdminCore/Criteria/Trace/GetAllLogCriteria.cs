@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Trace;
 
 using System;
@@ -8,6 +7,7 @@ using Web;
 
 public class GetAllLogCriteria : CriteriaBase
 {
+    [Display(Name = "Modified By")]
     public string Username { get; set; }
 
     public string Name { get; set; }

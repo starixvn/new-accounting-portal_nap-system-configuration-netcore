@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Function;
 
 using System;
@@ -21,17 +20,17 @@ public class AssignFunctionToUsersCriteria : CriteriaBase
         {
             var value = new StringBuilder("<ROOT>");
 
-            if (UserRead != null)
+            if (this.UserRead != null)
             {
-                foreach (var userId in UserRead)
+                foreach (var userId in this.UserRead)
                 {
                     value.AppendFormat(AssignPermissionTpl, userId, 1); // 1 -> read
                 }
             }
 
-            if (UserHost != null)
+            if (this.UserHost != null)
             {
-                foreach (var userId in UserHost)
+                foreach (var userId in this.UserHost)
                 {
                     value.AppendFormat(AssignPermissionTpl, userId, 2); // 2 -> host
                 }

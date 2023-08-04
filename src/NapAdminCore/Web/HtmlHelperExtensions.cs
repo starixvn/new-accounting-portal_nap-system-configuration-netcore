@@ -20,9 +20,9 @@ public static class HtmlHelperExtensions
     {
         return value switch
         {
-            (int)Constant.Level.PortalAdmin => new HtmlString(ViewResources.Portal_Admin),
-            (int)Constant.Level.SiteAdmin => new HtmlString(ViewResources.Site_Admin),
-            (int)Constant.Level.User => new HtmlString(ViewResources.User),
+            (int)AdminConstant.Level.PortalAdmin => new HtmlString(ViewResources.Portal_Admin),
+            (int)AdminConstant.Level.SiteAdmin => new HtmlString(ViewResources.Site_Admin),
+            (int)AdminConstant.Level.User => new HtmlString(ViewResources.User),
             _ => new HtmlString(string.Empty)
         };
     }
@@ -31,8 +31,8 @@ public static class HtmlHelperExtensions
     {
         return value switch
         {
-            (int)Constant.Policy.Host => new HtmlString(ViewResources.Host),
-            (int)Constant.Policy.Read => new HtmlString(ViewResources.Read),
+            (int)AdminConstant.Policy.Host => new HtmlString(ViewResources.Host),
+            (int)AdminConstant.Policy.Read => new HtmlString(ViewResources.Read),
             _ => new HtmlString(ViewResources.None)
         };
     }

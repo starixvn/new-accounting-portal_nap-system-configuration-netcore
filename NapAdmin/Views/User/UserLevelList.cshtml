@@ -40,10 +40,10 @@
     <tbody>
         @if (Model != null && Model.Count() > 0)
         {
-            int i = 0;
+            var i = 0;
             foreach (var item in Model)
             {
-                string rowCss = i % 2 == 0 ? string.Empty : "class=\"alt\"";
+                var rowCss = i % 2 == 0 ? string.Empty : "class=\"alt\"";
         
             <tr @Html.Raw(rowCss)>
                 <td class="text-center">
@@ -64,7 +64,7 @@
                 <td class="text-center">
                     @if (item.IsActive)
                     {
-                        <img src="~/areas/usercontrol/themes/nap/img/blank.png" alt="" class="ico-tick" />
+                        <img src="~/themes/nap/img/blank.png" alt="" class="ico-tick" />
                     }
                 </td>
                 <td>

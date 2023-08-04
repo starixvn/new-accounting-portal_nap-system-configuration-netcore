@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Trace;
 
 using System;

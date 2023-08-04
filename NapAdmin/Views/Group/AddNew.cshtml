@@ -1,11 +1,10 @@
-﻿@using Fanex.NAP.Core.Criteria.Group
-@model InsertGroupCriteria
+﻿@model InsertGroupCriteria
 @{
     ViewBag.Title = ViewResources.Create_New_Group;
     bool success = ViewBag.Success != null && ViewBag.Success;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/themes/BasicStyles")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/style.css" />
 }
 @section Headline {
     <span class="title">
@@ -60,7 +59,7 @@
 @section Foot {
     @if (success)
     {
-        string dialogMsg = string.Format(ViewResources.AddSuccessMsg, ViewResources.Group + " '" + Model.GroupName + "'", 3);
+        var dialogMsg = string.Format(ViewResources.AddSuccessMsg, ViewResources.Group + " '" + Model.GroupName + "'", 3);
 
         <script type="text/javascript">
             $(function () {

@@ -5,7 +5,7 @@
     var viewFlags = (ViewBag.ViewFlags ?? new ViewFlags { IsLive = false }) as ViewFlags;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/themes/EditSite")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/site/edit.css" />
 }
 @section Headline {
     <span class="title">
@@ -103,10 +103,10 @@
     </div>
 }
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/Site/Edit.js" type="text/javascript"></script>
+    <script src="~/scripts/Site/Edit.js" type="text/javascript"></script>
     @if (success)
     {
-        string dialogMsg = string.Format(ViewResources.EditSuccessMsg, Model.SiteName, 3);
+        var dialogMsg = string.Format(ViewResources.EditSuccessMsg, Model.SiteName, 3);
 
         <script type="text/javascript">
             $(function () {

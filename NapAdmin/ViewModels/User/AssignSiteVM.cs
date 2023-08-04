@@ -1,10 +1,12 @@
-﻿namespace NapAdmin.ViewModels.User;
+namespace NapAdmin.ViewModels.User;
 
 using System.Collections.Generic;
+using NapAdminCore.Domain;
+using NapAdminCore.Models.ValueObject;
 
 public class AssignSiteVM
 {
-    public ReturnData ReturnData { get; set; } = new ReturnData();
+    public ReturnData ReturnData { get; set; } = new();
 
     public List<ISite> SiteList { get; set; }
 

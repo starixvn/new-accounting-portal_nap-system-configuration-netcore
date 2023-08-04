@@ -1,8 +1,8 @@
-﻿namespace NapAdmin.ViewModels.User;
+namespace NapAdmin.ViewModels.User;
 
 public class AssignSiteFunctionViewModel
 {
-    public ReturnData ReturnData { get; set; } = new ReturnData();
+    public ReturnData ReturnData { get; set; } = new();
 
     public int UserId { get; set; }
 
@@ -22,5 +22,5 @@ public class AssignSiteFunctionViewModel
 
     public int CurrentSiteId { get; set; }
 
-    public bool IsDevelopingVueJS { get; } = AppSettings.VueJSEnvironment == "DEV";
+    public bool IsDevelopingVueJS => false;
 }

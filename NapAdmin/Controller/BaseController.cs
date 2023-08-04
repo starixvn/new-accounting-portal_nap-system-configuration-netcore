@@ -1,10 +1,14 @@
-﻿namespace NapAdmin.Controller;
+namespace NapAdmin.Controller;
 
 using System.Text;
-using Fanex.NAP.Client.AspNetCore.Configuration;
-using Fanex.NAP.Core.Business;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client.Session;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using NapAdminCore.Service;
+using NapAdminCore.Web;
+using AdminConstant = NapAdminCore.Models.AdminConstant;
 
 public class BaseController : Controller
 {
@@ -12,111 +16,75 @@ public class BaseController : Controller
 
     protected const int NapAdminId = 1;
 
-    private readonly int _siteId = NapSettings.Settings.SiteId;
+    private readonly INapSettings napSettings;
 
-    private readonly string _environment = NapSettings.Settings.Environment;
+    protected IUserService userService;
 
-    private readonly ICurrentContext _currentContext;
-
-    private readonly ICurrentSession _currentSession;
-
-    private readonly IServiceContext _serviceContext;
-
-    private readonly IUserService _userService;
-
-    public BaseController()
+    public BaseController(INapSession napSession, INapSettings napSettings, IUserService userService)
     {
-        _currentContext = new CurrentContext();
-        ViewBag.Session = _currentSession = new CurrentSession();
-        _serviceContext = new ServiceContext
-        {
-            UserId = _currentSession.UserId,
-            SiteId = _siteId,
-            Ip = _currentContext.IP
-        };
-
+        this.napSettings = napSettings;
+        this.userService = userService;
+        NapSession = napSession;
         ViewFlags = new ViewFlags
         {
-            IsLive = Environment.Equals(Constant.Live),
-            IsNapAdminSite = _siteId.Equals(NapAdminId),
+            IsLive = Environment.Equals(AdminConstant.Live),
+            IsNapAdminSite = napSettings.SiteId.Equals(NapAdminId),
             HasEditRight = false,
-            IsReCheckin = NapSettings.Settings.EnableReCheckIn
+            IsReCheckin = napSettings.EnableReCheckIn
         };
+    }
 
-        _userService = new UserService { ServiceContext = _serviceContext };
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        base.OnActionExecuting(context);
+        
+        ViewBag.NapSession = NapSession;
+        ViewBag.ViewFlags = ViewFlags;
     }
 
     protected ViewFlags ViewFlags
     {
-        get
-        {
-            return ViewBag.ViewFlags;
-        }
+        get => ViewBag.ViewFlags;
 
-        set
-        {
-            ViewBag.ViewFlags = value;
-        }
+        set => ViewBag.ViewFlags = value;
     }
 
-    protected int SiteId => _siteId;
+    protected int SiteId => napSettings.SiteId;
 
-    protected string Environment => _environment;
+    protected string Environment => napSettings.Environment;
 
-    protected bool ThisSiteIsNapAdmin => _siteId == NapAdminId;
+    protected bool ThisSiteIsNapAdmin => napSettings.SiteId == NapAdminId;
 
-    protected bool UserIsPortalAdmin => _currentSession.Level == (int)Constant.Level.PortalAdmin;
+    protected bool UserIsPortalAdmin => NapSession.Level == (int)AdminConstant.Level.PortalAdmin;
 
-    protected bool UserIsSiteAdmin => _currentSession.Level == (int)Constant.Level.SiteAdmin;
+    protected bool UserIsSiteAdmin => NapSession.Level == (int)AdminConstant.Level.SiteAdmin;
 
-    protected ICurrentContext CurrentContext => _currentContext;
+    protected INapSession NapSession { get; }
 
-    protected ICurrentSession CurrentSession => _currentSession;
-
-    protected IServiceContext ServiceContext => _serviceContext;
-
-    /// <summary>
-    /// Determines whether the specified user has the right on a function.
-    /// </summary>
-    /// <param name="functionKey">The function key.</param>
-    /// <param name="policy">The policy.</param>
-    /// <returns>Whether the specified user has the right on a function.</returns>
-    public bool HasRight(string functionKey, Constant.Policy policy)
+    public bool HasRight(string functionKey, AdminConstant.Policy policy)
     {
-        int functionPolicy = _userService.GetUserSiteFunctionKeyPolicy(CurrentSession.UserId, _siteId, functionKey);
+        var functionPolicy = userService.GetUserSiteFunctionKeyPolicy(NapSession.UserId, napSettings.SiteId, functionKey);
 
         return functionPolicy >= (int)policy;
     }
 
-    /// <summary>
-    /// Determines whether the specified user has the right on a function of a site.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="functionKey">The function key.</param>
-    /// <param name="policy">The policy.</param>
-    /// <returns>Whether the specified user has the right on a function.</returns>
-    public bool HasRightOnSite(int siteId, string functionKey, Constant.Policy policy)
+    public bool HasRightOnSite(int siteId, string functionKey, AdminConstant.Policy policy)
     {
-        int functionPolicy = _userService.GetUserSiteFunctionKeyPolicy(CurrentSession.UserId, siteId, functionKey);
+        var functionPolicy = userService.GetUserSiteFunctionKeyPolicy(NapSession.UserId, siteId, functionKey);
 
         return functionPolicy >= (int)policy;
     }
 
-    /// <summary>
-    /// Generate function key from function name.
-    /// </summary>
-    /// <param name="name">Function name.</param>
-    /// <returns>Function key.</returns>
     protected static string ConvertToKey(string name)
     {
-        string functionKey = name.Replace(Constant.Space, string.Empty);
+        var functionKey = name.Replace(AdminConstant.Space, string.Empty);
 
         var sb = new StringBuilder();
-        int length = functionKey.Length;
+        var length = functionKey.Length;
 
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
-            char item = functionKey[i];
+            var item = functionKey[i];
 
             if (char.IsLetterOrDigit(item))
             {
@@ -129,5 +97,16 @@ public class BaseController : Controller
         }
 
         return sb.ToString();
+    }
+
+    private string GetClientIP()
+    {
+        var clientIP = HttpContext.Request.Headers["x-forwarded-for"].ToString();
+        if (string.IsNullOrWhiteSpace(clientIP))
+        {
+            clientIP = HttpContext?.Connection.RemoteIpAddress?.ToString();
+        }
+
+        return clientIP;
     }
 }

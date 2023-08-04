@@ -12,9 +12,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
 using Repository;
-using Constant = Business.Constant;
 
-public interface IFunctionService : IBaseService
+public interface IFunctionService 
 {
     #region Gets Function
 
@@ -28,23 +27,23 @@ public interface IFunctionService : IBaseService
 
     #region Gets Functions
 
-    IEnumerable<IFunction> GetAll(string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IFunction> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
 
-    Dictionary<ISite, IEnumerable<IFunction>> GetAllAndGroupBySite(string env = Constant.Uat, bool? isActive = null);
+    Dictionary<ISite, IEnumerable<IFunction>> GetAllAndGroupBySite(string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<IFunction> GetBySite(int siteId, string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IFunction> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetSelectListItemBySite(
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedFunctionId = 0);
 
-    IEnumerable<IFunction> GetBySiteInHierarchy(int siteId, string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IFunction> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IEnumerable<IFunction> GetParentById(int id);
 
-    IEnumerable<IFunction> Search(string functionName, int siteId, string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IFunction> Search(string functionName, int siteId, string env = AdminConstant.Uat, bool? isActive = null);
 
     IEnumerable<IFunction> GetByParentKeyAndSite(GetByParentKeyAndSiteCriteria criteria);
 
@@ -52,24 +51,24 @@ public interface IFunctionService : IBaseService
 
     #region Gets Functions Policy
 
-    IEnumerable<FunctionPolicy> GetByUser(int userId, string env = Constant.Uat);
+    IEnumerable<FunctionPolicy> GetByUser(int userId, string env = AdminConstant.Uat);
 
-    Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = Constant.Uat);
+    Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = Constant.Uat);
+    IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat);
 
-    Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = Constant.Uat);
+    Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = Constant.Uat);
+    IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = Constant.Uat);
+    IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(int userId, int siteId, string env = Constant.Uat);
+    IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(int userId, int siteId, string env = AdminConstant.Uat);
 
     IEnumerable<FunctionPolicy> GetByUserAndFunctionKeyIncludeGroup(
         int userId,
         string functionKey,
-        string env = Constant.Uat);
+        string env = AdminConstant.Uat);
 
     #endregion
 
@@ -86,18 +85,21 @@ public interface IFunctionService : IBaseService
     ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria);
 
     ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria);
+
+    ICommandResult CopyPermission(CopyPermissionCriteria criteria);
 }
-public class FunctionService : BaseService, IFunctionService
+public class FunctionService : IFunctionService
 {
     private readonly IFunctionRepository functionRepository;
     private readonly IDynamicRepository dynamicRepository;
-
+    private readonly LoggedUserContext loggedUserContext;
     #region Ctors
 
-    public FunctionService(IFunctionRepository functionRepository, IDynamicRepository dynamicRepository)
+    public FunctionService(IFunctionRepository functionRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     {
         this.functionRepository = functionRepository;
         this.dynamicRepository = dynamicRepository;
+        this.loggedUserContext = loggedUserContext;
     }
 
     #endregion
@@ -140,7 +142,7 @@ public class FunctionService : BaseService, IFunctionService
 
     #region Get Functions
 
-    public IEnumerable<IFunction> GetAll(string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IFunction> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllFunctionCriteria
         {
@@ -152,7 +154,7 @@ public class FunctionService : BaseService, IFunctionService
     }
 
     public Dictionary<ISite, IEnumerable<IFunction>> GetAllAndGroupBySite(
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null)
     {
         var criteria = new GetAllFunctionCriteria
@@ -182,7 +184,7 @@ public class FunctionService : BaseService, IFunctionService
         return result;
     }
 
-    public IEnumerable<IFunction> GetBySite(int siteId, string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IFunction> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteFunctionCriteria
         {
@@ -196,7 +198,7 @@ public class FunctionService : BaseService, IFunctionService
 
     public IList<SelectListItem> GetSelectListItemBySite(
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedFunctionId = 0)
     {
@@ -218,7 +220,7 @@ public class FunctionService : BaseService, IFunctionService
         }).ToList();
     }
 
-    public IEnumerable<IFunction> GetBySiteInHierarchy(int siteId, string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IFunction> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteFunctionCriteria
         {
@@ -245,7 +247,7 @@ public class FunctionService : BaseService, IFunctionService
     public IEnumerable<IFunction> Search(
         string functionName,
         int siteId,
-        string env = Constant.Uat,
+        string env = AdminConstant.Uat,
         bool? isActive = null)
     {
         throw new NotImplementedException();
@@ -260,7 +262,7 @@ public class FunctionService : BaseService, IFunctionService
 
     #region Gets Function Policy
 
-    public IEnumerable<FunctionPolicy> GetByUser(int userId, string env = Constant.Uat)
+    public IEnumerable<FunctionPolicy> GetByUser(int userId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserFunctionCriteria
         {
@@ -271,7 +273,7 @@ public class FunctionService : BaseService, IFunctionService
         return functionRepository.FetchFullFunctionPolicy(criteria);
     }
 
-    public Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = Constant.Uat)
+    public Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserFunctionCriteria
         {
@@ -300,7 +302,7 @@ public class FunctionService : BaseService, IFunctionService
         return result;
     }
 
-    public IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = Constant.Uat)
+    public IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByGroupFunctionCriteria
         {
@@ -311,7 +313,7 @@ public class FunctionService : BaseService, IFunctionService
         return functionRepository.FetchFullFunctionPolicy(criteria);
     }
 
-    public IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = Constant.Uat)
+    public IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByGroupAndSiteFunctionCriteria
         {
@@ -323,7 +325,7 @@ public class FunctionService : BaseService, IFunctionService
         return functionRepository.FetchFullFunctionPolicy(criteria);
     }
 
-    public Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = Constant.Uat)
+    public Dictionary<ISite, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByGroupFunctionCriteria
         {
@@ -352,7 +354,7 @@ public class FunctionService : BaseService, IFunctionService
         return result;
     }
 
-    public IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = Constant.Uat)
+    public IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserAndSiteFunctionCriteria
         {
@@ -367,7 +369,7 @@ public class FunctionService : BaseService, IFunctionService
     public IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(
         int userId,
         int siteId,
-        string env = Constant.Uat)
+        string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserAndSiteIncludeGroupFunctionCriteria
         {
@@ -382,7 +384,7 @@ public class FunctionService : BaseService, IFunctionService
     public IEnumerable<FunctionPolicy> GetByUserAndFunctionKeyIncludeGroup(
         int userId,
         string functionKey,
-        string env = Constant.Uat)
+        string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserAndFunctionKeyIncludeGroupFunctionCriteria
         {
@@ -403,37 +405,37 @@ public class FunctionService : BaseService, IFunctionService
 
     public ICommandResult Duplicate(DuplicateFunctionCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return functionRepository.Duplicate(criteria, logCriteria);
     }
 
     public ICommandResult Insert(InsertFunctionCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria(); 
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return functionRepository.Insert(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateFunctionCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return functionRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusFunctionCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return functionRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return functionRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return functionRepository.Update(criteria, logCriteria);
     }
@@ -452,5 +454,12 @@ public class FunctionService : BaseService, IFunctionService
         }
 
         return sortedFunctionList;
+    }
+
+    public ICommandResult CopyPermission(CopyPermissionCriteria criteria)
+    {
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
+
+        return functionRepository.CopyPermission(criteria, logCriteria);
     }
 }

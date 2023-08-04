@@ -1,17 +1,8 @@
 ﻿@model NapAdmin.ViewModels.User.AssignSiteFunctionViewModel
 
 @section Head {
-
-    @if (Model.IsDevelopingVueJS)
-    {
-        @*Run %current_project_dir%build/dev.bat for development*@
-        @Styles.Render("~/Areas/UserControl/themes/AssignSite")
-        <link rel="stylesheet" type="text/css" href="http://localhost:8080/css/main.css">
-    }
-    else
-    {
-        @Styles.Render("~/Areas/UserControl/themes/AssignSiteFunction")
-    }
+    <link type="text/css" rel="stylesheet" href="~/scripts/User/assign-site-function/dist/css/main.css" />
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/user/assign-site.css" />
 }
 @section Headline {
     <span class="title">
@@ -44,14 +35,5 @@
 </div>
 
 @section Foot {
-
-    @if (Model.IsDevelopingVueJS)
-    {
-        @*Run %current_project_dir%build/dev.bat for development*@
-        <script src="http://localhost:8080/main.js"></script>
-    }
-    else
-    {
-        @Scripts.Render("~/Areas/UserControl/js/User/AssignSiteFunction")
-    }
+    <script type="text/ecmascript" src="~/scripts/User/assign-site-function/dist/main.js"></script>
 }

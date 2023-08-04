@@ -1,19 +1,18 @@
-
 namespace NapAdminCore.Criteria.Function;
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Business;
 using Fanex.Data.Repository;
-using Web;
+using NapAdminCore.Models;
+using NapAdminCore.Web;
 
 public class InsertFunctionCriteria : CriteriaBase
 {
     public InsertFunctionCriteria()
     {
-        Environment = Constant.Uat;
+        this.Environment = AdminConstant.Uat;
     }
-        
+
     public int FunctionId { get; set; }
 
     public int SiteId { get; set; }
@@ -42,7 +41,13 @@ public class InsertFunctionCriteria : CriteriaBase
     public string ParentName { get; set; }
 
     [Display(Name = "CRUD", ResourceType = typeof(ViewResources))]
-    public byte Crud => Readonly ? (byte)Constant.Crud.Read : (byte)Constant.Crud.Host;
+    public byte Crud
+    {
+        get
+        {
+            return this.Readonly ? (byte)AdminConstant.Crud.Read : (byte)AdminConstant.Crud.Host;
+        }
+    }
 
     [Display(Name = "Read_only", ResourceType = typeof(ViewResources))]
     public bool Readonly { get; set; }

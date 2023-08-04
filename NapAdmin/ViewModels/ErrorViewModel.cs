@@ -1,4 +1,4 @@
-﻿namespace NapAdmin.ViewModels;
+namespace NapAdmin.ViewModels;
 
 public class ErrorViewModel
 {

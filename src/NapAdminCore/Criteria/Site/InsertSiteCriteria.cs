@@ -1,12 +1,11 @@
-
 namespace NapAdminCore.Criteria.Site;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Business;
 using Fanex.Data;
 using Fanex.Data.Repository;
+using Models;
 using Models.ValueObject;
 using Web;
 
@@ -16,7 +15,7 @@ public class InsertSiteCriteria : CriteriaBase
 
     public InsertSiteCriteria()
     {
-        Environment = Constant.Uat;
+        this.Environment = AdminConstant.Uat;
     }
 
     public int SiteId { get; set; }
@@ -44,11 +43,11 @@ public class InsertSiteCriteria : CriteriaBase
         {
             var value = new StringBuilder("<ROOT>");
 
-            if (Urls != null && Urls.Count > 0)
+            if (this.Urls != null && this.Urls.Count > 0)
             {
-                foreach (var siteUrl in Urls)
+                foreach (var siteUrl in this.Urls)
                 {
-                    value.AppendFormat(UrlTpl, siteUrl.Url, Environment, siteUrl.IsDefault, siteUrl.IsActive);
+                    value.AppendFormat(UrlTpl, siteUrl.Url, this.Environment, siteUrl.IsDefault, siteUrl.IsActive);
                 }
             }
 

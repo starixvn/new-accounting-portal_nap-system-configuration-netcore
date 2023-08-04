@@ -1,12 +1,11 @@
-﻿@using Fanex.NAP.Core.Criteria.Trace
-@using System.Globalization
+﻿@using System.Globalization
 @model GetAllLogUserLoginCriteria
 @{
     ViewBag.Title = ViewResources.Log_Management;
     var listLog = (PagerList<LogUserLogin>)ViewBag.ListLog;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/themes/Trace/logexecsp")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/trace/logexecsp.css" />
 }
 @section Headline {
         <span class="title"><span class="first">@ViewResources.Log_Management / </span>
@@ -76,10 +75,10 @@
     <tbody>
         @if (!ReferenceEquals(listLog, null) && listLog.Count() > 0)
         {
-            int i = 0;
+            var i = 0;
             foreach (LogUserLogin item in listLog)
             {
-                string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
             <tr @Html.Raw(rowCss)>
                 <td class="text-center">
@@ -141,11 +140,11 @@
                 {
                     <span class="items-per-page-wrp">@ViewResources.PageSize
                         @Html.DropDownList("items-per-page", new List<SelectListItem> { 
-                            new SelectListItem { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() }, 
-                            new SelectListItem { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() }, 
-                            new SelectListItem { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() } 
+                            new() { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() }, 
+                            new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() }, 
+                            new() { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() } 
                         }, new { id = string.Empty, @class = "items-per-page" })</span>
-                    @Html.Pager(listLog, new PagerOptions()
+                    @*@Html.Pager(listLog, new PagerOptions()
                {
                    PageIndexParameterName = "id",
                    ShowFirstLast = true,
@@ -155,13 +154,13 @@
                    NumericPagerItemCount = 20,
                    CurrentPagerItemTemplate = "<a disabled='disabled'>{0}</a>",
                    CssClass = "jpages"
-               })
+               })*@
                 }
             </td>
         </tr>
     </tfoot>
 </table>
-@Html.Hidden("imagePath", (string)@Url.Content("~/Areas/UserControl/themes/img/smoothness/icon-calendar.png"))
+@Html.Hidden("imagePath", (string)@Url.Content("~/themes/img/smoothness/icon-calendar.png"))
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/Trace/LogUserLogin.js" type="text/javascript"></script>
+    <script src="~/scripts/Trace/LogUserLogin.js" type="text/javascript"></script>
 }

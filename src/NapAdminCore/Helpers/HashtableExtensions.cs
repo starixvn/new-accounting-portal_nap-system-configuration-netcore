@@ -1,4 +1,4 @@
-﻿namespace NapAdminCore.Helpers;
+namespace NapAdminCore.Helpers;
 
 using System.Collections;
 

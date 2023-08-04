@@ -39,4 +39,6 @@ public interface IUser : IEntity<int, string>
 
     [Display(Name = "Email", ResourceType = typeof(ViewResources))]
     string Email { get; set; }
+
+    bool Closed { get; set; }
 }

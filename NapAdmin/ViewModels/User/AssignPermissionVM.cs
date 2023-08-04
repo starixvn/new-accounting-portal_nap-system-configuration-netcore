@@ -1,10 +1,14 @@
-﻿namespace NapAdmin.ViewModels.User;
+namespace NapAdmin.ViewModels.User;
 
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NapAdminCore.Criteria.User;
+using NapAdminCore.Domain;
+using NapAdminCore.Models.ValueObject;
 
 public class AssignPermissionVM
 {
-    public ReturnData ReturnData { get; set; } = new ReturnData();
+    public ReturnData ReturnData { get; set; } = new();
 
     public AssignFunctionUserCriteria Criteria { get; set; }
 

@@ -1,16 +1,15 @@
-
 namespace NapAdminCore.Criteria.Site;
 
 using System.ComponentModel.DataAnnotations;
-using Business;
 using Fanex.Data.Repository;
+using Models;
 using Web;
 
 public class UpdateSiteCriteria : CriteriaBase
 {
     public UpdateSiteCriteria()
     {
-        Environment = Constant.Uat;
+        this.Environment = AdminConstant.Uat;
     }
 
     public int SiteId { get; set; }
@@ -44,7 +43,7 @@ public class UpdateSiteCriteria : CriteriaBase
         ErrorMessageResourceType = typeof(ViewResources))]
     public string SiteKey { get; set; }
 
-    [Display(Name = "Secret_Access_Key", ResourceType = typeof(ViewResources))]
+    [Display(Name = "Access_Secret_Key", ResourceType = typeof(ViewResources))]
     [StringLength(200, MinimumLength = 2,
         ErrorMessageResourceName = "InputLengthValidationMsg",
         ErrorMessageResourceType = typeof(ViewResources))]

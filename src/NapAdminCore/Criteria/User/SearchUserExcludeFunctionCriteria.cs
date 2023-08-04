@@ -1,14 +1,13 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using Fanex.Data.Repository;
 
 public class SearchUserExcludeFunctionCriteria : CriteriaBase
-{       
+{
     public string Username { get; set; }
-        
+
     public int GroupId { get; set; }
-       
+
     public int SiteId { get; set; }
 
     public int FunctionId { get; set; }

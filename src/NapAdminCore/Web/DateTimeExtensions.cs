@@ -1,24 +1,41 @@
 
-//namespace NapAdminCore.Web;
+namespace NapAdminCore.Web;
 
-//using System;
+using System;
+using Fanex.Common.Extensions;
 
-//public static class DateTimeExtensions
-//{
-//    public const string ShortDateFormat = "MM/dd/yyyy";
+public static class DateTimeExtensions
+{
+    public const string ShortDateFormat = "MM/dd/yyyy";
+    public const string ShortMonthFormatedDate = "dd MMM yyyy";
 
-//    public static string ToShortFormatedDate(this DateTime? date)
-//    {
-//        if (date.HasValue)
-//        {
-//            return date.Value.ToShortFormatedDate();
-//        }
+    public static string ToShortFormatedDate(this DateTime? date)
+    {
+        if (date.HasValue)
+        {
+            return date.Value.ToShortFormatedDate();
+        }
 
-//        return string.Empty;
-//    }
+        return string.Empty;
+    }
 
-//    public static string ToShortFormatedDate(this DateTime date)
-//    {
-//        return date.ToString(ShortDateFormat);
-//    }
-//}
+    public static string ToShortFormatedDate(this DateTime date)
+    {
+        return date.ToString(ShortDateFormat);
+    }
+
+    public static string ToShortMonthFormatedDate(this DateTime? date)
+    {
+        if (date.HasValue)
+        {
+            return date.Value.ToShortFormatedDate();
+        }
+
+        return string.Empty;
+    }
+
+    public static string ToShortMonthFormatedDate(this DateTime date)
+    {
+        return date.ToString(ShortMonthFormatedDate);
+    }
+}

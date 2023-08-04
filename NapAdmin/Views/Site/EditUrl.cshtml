@@ -1,11 +1,11 @@
 ﻿@{
     ViewBag.Title = ViewResources.Update_URL;
     var siteUrlList = ViewBag.Urls as List<SiteUrl>;
-    int siteUrlListCount = siteUrlList.Count;
+    var siteUrlListCount = siteUrlList.Count;
     var viewFlags = (ViewFlags)ViewBag.ViewFlags;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/themes/Site/EditUrl")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/site/edit-url.css" />
 }
 @section Headline {
     <span class="title">
@@ -48,7 +48,7 @@
                     <tr>
                         <td class="text-center">
                             <input type="checkbox" @(Html.Raw(siteUrl.IsActive ? "checked='checked'" : string.Empty))
-                                   autocomplete="off" disabled="disabled" />
+                           autocomplete="off" disabled="disabled" />
                         </td>
                         <td>
                             <input type="text" value="@siteUrl.Url" disabled="disabled" autocomplete="off" />
@@ -59,11 +59,11 @@
                         </td>
                         <td class="text-center">
                             @Html.RadioButton("Url-" + siteUrl.Environment, siteUrl.IsDefault, siteUrl.IsDefault,
-                                new { id = string.Empty, suid = siteUrl.SiteUrlId })
+                    new { id = string.Empty, suid = siteUrl.SiteUrlId })
                         </td>
                         <td class="text-center">
                             <span class="site-url-environment-text">@(string.IsNullOrEmpty(siteUrl.Environment) ? "UAT" : siteUrl.Environment)</span>
-                            @RazorHelper.BuildSiteEnvironmentDropDownList(siteUrl.Environment, new Dictionary<string, object> { { "style", "display:none" } })
+                            @{ await BuildSiteEnvironmentDropDownList(siteUrl.Environment, new Dictionary<string, object> { { "style", "display:none" } }); }
                         </td>
                     </tr>
                 }
@@ -95,11 +95,11 @@
                         <input type="text" id="txt-add-url" />
                     </td>
                     <td>
-                        @RazorHelper.BuildSiteEnvironmentDropDownList("UAT", new Dictionary<string, object> { { "id", "site-url-environment" } })
+                        @{ await BuildSiteEnvironmentDropDownList("UAT", new Dictionary<string, object> { { "id", "site-url-environment" } }); }
                     </td>
                     <td class="text-center" colspan="2">
                         <input type="submit" value="+ @ViewResources.Add @ViewResources.URL"
-                               id="btn-add-url" sid="@ViewBag.SiteId" />
+                           id="btn-add-url" sid="@ViewBag.SiteId" />
                     </td>
 
                 </tr>
@@ -107,9 +107,27 @@
         </tbody>
     </table>
 </div>
+
+@{
+
+    async Task BuildSiteEnvironmentDropDownList(string selected, IDictionary<string, object> htmlAttributies)
+    {
+        htmlAttributies = htmlAttributies ?? new Dictionary<string, object>();
+        var style = htmlAttributies.ContainsKey("style") ? " style=" + htmlAttributies["style"] : string.Empty;
+        var @class = htmlAttributies.ContainsKey("class") ? " class=" + htmlAttributies["class"] : string.Empty;
+        var id = htmlAttributies.ContainsKey("id") ? "id=" + htmlAttributies["id"] : string.Empty;
+        <select name="site-url-environment" @(id) @(style) @(@class)>
+            <option value="UAT" selected="@(string.IsNullOrEmpty(selected) || selected.ToUpper() == "UAT")">UAT</option>
+            <option value="LIVE" selected="@(string.IsNullOrEmpty(selected) || selected.ToUpper() == "LIVE")">LIVE</option>
+            <option value="MNL" selected="@(string.IsNullOrEmpty(selected) || selected.ToUpper() == "MNL")")>MNL</option>
+        </select>
+    }
+
+}
+
 @section Foot {
     @if (viewFlags.HasEditRight)
     {
-        <script src="~/Areas/UserControl/scripts/Site/EditUrl.js" type="text/javascript"></script>
+        <script src="~/scripts/Site/EditUrl.js" type="text/javascript"></script>
     }
 }

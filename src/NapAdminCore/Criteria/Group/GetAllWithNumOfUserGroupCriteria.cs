@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Group;
 
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +7,7 @@ using Web;
 public class GetAllWithNumOfUserGroupCriteria : CriteriaBase
 {
     public bool? IsActive { get; set; }
-       
+
     [Display(Name = "Group_Name", ResourceType = typeof(ViewResources))]
     [StringLength(50, MinimumLength = 0,
         ErrorMessageResourceName = "InputLengthValidationMsg",

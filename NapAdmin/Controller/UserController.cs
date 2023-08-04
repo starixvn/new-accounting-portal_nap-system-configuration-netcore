@@ -1,93 +1,75 @@
-﻿namespace NapAdmin.Controller;
+namespace NapAdmin.Controller;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Fanex.Common.Extensions;
 using Fanex.Data;
 using Fanex.Data.Repository;
-using Fanex.NAP.Core.Business;
+using Fanex.NAP.Client.Attributes;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Business;
+using Fanex.NAP.Client.Helpers.Web;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NapAdminCore.Configuration;
+using NapAdminCore.Criteria.User;
+using NapAdminCore.DbParams;
+using NapAdminCore.Domain;
+using NapAdminCore.Helpers;
+using NapAdminCore.Models;
+using NapAdminCore.Models.ValueObject;
+using NapAdminCore.Service;
+using NapAdminCore.Web;
 using Newtonsoft.Json;
 using ONEbook.OTP.Services;
 using ViewModels.User;
 
-/// <summary>
-/// User controller.
-/// </summary>
-[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Reviewed")]
 [NapSuperAuth]
 public class UserController : BaseController
 {
     #region Member
-
-    private const string FormTokenKey = "_SecureChangePasswordFormToken";
 
     private readonly IUserService _userService;
     private readonly IGroupService _groupService;
     private readonly ISiteService _siteService;
     private readonly IFunctionService _functionService;
     private readonly HashAlgorithm _hashAlgorithm;
-    private readonly Fanex.NAP.Core.Service.IUserService adminUserService;
+    private readonly LoggedUserContext _loggedUserContext;
 
     #endregion Member
 
     #region Constructors
 
-    public UserController()
-        : this(null, null, null, null, null)
-    {
-    }
-
     public UserController(
         IUserService userService,
         IGroupService groupService,
         ISiteService siteService,
+        INapSession napSession,
+        INapSettings napSettings,
         IFunctionService functionService,
-        Fanex.NAP.Core.Service.IUserService adminUserService)
+        LoggedUserContext loggedUserContext)
+        : base(napSession, napSettings, userService)
     {
-        _userService = userService ?? new UserService { ServiceContext = ServiceContext };
-        _groupService = groupService ?? new GroupService { ServiceContext = ServiceContext };
-        _siteService = siteService ?? new SiteService { ServiceContext = ServiceContext };
-        _functionService = functionService ?? new FunctionService { ServiceContext = ServiceContext };
-        _hashAlgorithm = new SHA256Managed();
-        this.adminUserService = adminUserService ?? new Fanex.NAP.Core.Service.UserService();
+        _userService = userService;
+        _groupService = groupService;
+        _siteService = siteService;
+        _functionService = functionService;
+        _hashAlgorithm = SHA256.Create();
+        _loggedUserContext = loggedUserContext;
     }
 
     #endregion Constructors
 
-    #region Properties
-
-    public string FormToken
-    {
-        get
-        {
-            if (Session[FormTokenKey] == null)
-            {
-                return string.Empty;
-            }
-
-            return Session[FormTokenKey].ToString();
-        }
-
-        set
-        {
-            Session[FormTokenKey] = value;
-        }
-    }
-
-    #endregion Properties
 
     #region Manage
 
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
-#pragma warning disable S1541 // Methods and properties should not be too complex
     public ActionResult Manage(
-#pragma warning restore S1541 // Methods and properties should not be too complex
         int id = 1,
         int size = 20,
         string userName = EmptyString,
@@ -95,75 +77,67 @@ public class UserController : BaseController
         int siteId = -1,
         int statusId = 1)
     {
-        // declares paging params
-        int pageIndex = id;
-        int pageSize = size;
+        var pageIndex = id;
+        var pageSize = size;
         string username = ViewBag.Username = userName.Trim();
-        var siteIdValue = siteId < 0 && siteId != Constant.SearchAllSite ? SiteId : siteId;
+        var siteIdValue = siteId < 0 && siteId != AdminConstant.SearchAllSite ? SiteId : siteId;
 
-        // permission function manage user
-        int selectedSiteId = siteId == 0 || siteId == Constant.SearchAllSite ? SiteId : siteIdValue;
+        var selectedSiteId = siteId == 0 || siteId == AdminConstant.SearchAllSite ? SiteId : siteIdValue;
 
         ViewFlags.HasEditRight =
-            HasRight(FunctionKeys.ManageUser, Constant.Policy.Host)
-            && HasRightOnSite(selectedSiteId, FunctionKeys.ManageUser, Constant.Policy.Host);
+            HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Host)
+            && HasRightOnSite(selectedSiteId, FunctionKeys.ManageUser, AdminConstant.Policy.Host);
 
         ViewFlags.HasAssignSiteRight =
-            HasRight(FunctionKeys.AssignSiteToUser, Constant.Policy.Read)
-            && HasRightOnSite(selectedSiteId, FunctionKeys.AssignSiteToUser, Constant.Policy.Read);
+            HasRight(FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Read)
+            && HasRightOnSite(selectedSiteId, FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Read);
 
-        // if users choose a specific site (siteId == 0 means users choose [No Site])
-        bool isSpecificSiteChosen = siteIdValue != 0;
+        var isSpecificSiteChosen = siteIdValue != 0;
 
         ViewFlags.IsShowLevelColumn = isSpecificSiteChosen;
 
-        // is portal admin in NAP
-        ViewBag.IsPortalAdmin = _userService.GetUserSiteLevel(CurrentSession.UserId, NapAdminId)
-                                == (int)Constant.Level.PortalAdmin;
+        ViewBag.IsPortalAdmin = _userService.GetUserSiteLevel(NapSession.UserId, NapAdminId)
+                                == (int)AdminConstant.Level.PortalAdmin;
 
-        // detects "Assign Function" right
         if (isSpecificSiteChosen)
         {
             ViewFlags.HasAssignFunctionRight =
-                HasRight(FunctionKeys.AssignFunctionToUser, Constant.Policy.Read)
-                && HasRightOnSite(siteIdValue, FunctionKeys.AssignFunctionToUser, Constant.Policy.Read);
+                HasRight(FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Read)
+                && HasRightOnSite(siteIdValue, FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Read);
         }
 
         var listSite = new List<SelectListItem>();
 
         if (ThisSiteIsNapAdmin)
         {
-            // gets data for dropdownlist of sites
             var siteSelectList = new List<SelectListItem>();
 
             listSite = UserIsPortalAdmin
                 ? _siteService.GetAllSelectListItem(Environment, true, siteIdValue).ToList()
                 : _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    CurrentSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.ManageUser,
                     Environment,
                     selectedSiteId: siteIdValue).ToList();
 
-            siteSelectList.Add(new SelectListItem { Text = ViewResources.All_Site, Value = Constant.SearchAllSite.ToString() });
+            siteSelectList.Add(new SelectListItem { Text = ViewResources.All_Site, Value = AdminConstant.SearchAllSite.ToString() });
             siteSelectList.AddRange(listSite);
             siteSelectList.Add(new SelectListItem { Text = ViewResources.No_Site, Value = "0" });
 
             ViewBag.SiteSelectList = siteSelectList;
         }
 
-        // gets data for dropdownlist of groups
         ViewBag.GroupSelectList = _groupService.GetAllSelectListItem(selectedGroupId: groupId);
         ViewBag.SiteId = siteIdValue;
-        ViewBag.UserId = CurrentSession.UserId;
+        ViewBag.UserId = NapSession.UserId;
         ViewBag.ReturnGroupId = groupId;
 
-        // gets level of currently-login-user
         if (isSpecificSiteChosen)
         {
-            ViewBag.Level = _userService.GetUserSiteLevel(CurrentSession.UserId, siteIdValue);
+            ViewBag.Level = _userService.GetUserSiteLevel(NapSession.UserId, siteIdValue);
         }
 
-        if (siteIdValue == Constant.SearchAllSite)
+        if (siteIdValue == AdminConstant.SearchAllSite)
         {
             var searchAllSiteCriteria = new GetAllByUsernameGroupSiteUserCriteria
             {
@@ -177,22 +151,22 @@ public class UserController : BaseController
                 Environment = Environment
             };
 
-            IQueryable<UserLevel> users = _userService.GetAllByUsernameGroupSite(searchAllSiteCriteria);
+            var users = _userService.GetAllByUsernameGroupSite(searchAllSiteCriteria);
 
             var hashManageUserPolicy =
-                _userService.GetUserListSiteFunctionKeyPolicy(CurrentSession.UserId, FunctionKeys.ManageUser, listSite);
+                _userService.GetUserListSiteFunctionKeyPolicy(NapSession.UserId, FunctionKeys.ManageUser, listSite);
 
             var hashAssignFunctionPolicy = _userService.GetUserListSiteFunctionKeyPolicy(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToUser,
                 listSite);
 
             var hashAssignSite = _userService.GetUserListSiteFunctionKeyPolicy(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 listSite);
 
-            var listSiteLevel = _siteService.GetSiteLevelByUser(CurrentSession.UserId, Environment, true).ToList();
+            var listSiteLevel = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment, true).ToList();
 
             ViewBag.HashManageUser = hashManageUserPolicy;
             ViewBag.HashAssignFunction = hashAssignFunctionPolicy;
@@ -201,14 +175,14 @@ public class UserController : BaseController
 
             ViewBag.ViewFlagsCurrentSite = new ViewFlags
             {
-                HasManageUserRight = HasRight(FunctionKeys.ManageUser, Constant.Policy.Host),
-                HasAssignFunctionRight = HasRight(FunctionKeys.AssignFunctionToUser, Constant.Policy.Read),
-                HasAssignSiteRight = HasRight(FunctionKeys.AssignSiteToUser, Constant.Policy.Read)
+                HasManageUserRight = HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Host),
+                HasAssignFunctionRight = HasRight(FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Read),
+                HasAssignSiteRight = HasRight(FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Read)
             };
 
-            ViewFlags.IsShowActionColumn = hashAssignFunctionPolicy.Cast<DictionaryEntry>().Any(item => (int)item.Value >= (int)Constant.Policy.Read);
-            ViewFlags.IsShowActionColumn = hashAssignSite.Cast<DictionaryEntry>().Any(item => (int)item.Value >= (int)Constant.Policy.Read);
-            ViewFlags.IsShowActionColumn = hashManageUserPolicy.Cast<DictionaryEntry>().Any(item => (int)item.Value >= (int)Constant.Policy.Read);
+            ViewFlags.IsShowActionColumn = hashAssignFunctionPolicy.Cast<DictionaryEntry>().Any(item => (int)item.Value >= (int)AdminConstant.Policy.Read);
+            ViewFlags.IsShowActionColumn = hashAssignSite.Cast<DictionaryEntry>().Any(item => (int)item.Value >= (int)AdminConstant.Policy.Read);
+            ViewFlags.IsShowActionColumn = hashManageUserPolicy.Cast<DictionaryEntry>().Any(item => (int)item.Value >= (int)AdminConstant.Policy.Read);
 
             return View(new PagerList<UserLevel>(pageIndex, pageSize, searchAllSiteCriteria.TotalRows, users));
         }
@@ -226,7 +200,7 @@ public class UserController : BaseController
                 Environment = Environment
             };
 
-            IQueryable<UserLevel> users = _userService.SearchUser(criteria);
+            var users = _userService.SearchUser(criteria);
             ViewFlags.IsShowActionColumn = ViewFlags.HasEditRight || ViewFlags.HasAssignSiteRight
                                                                   || ViewFlags.HasAssignFunctionRight;
 
@@ -234,14 +208,6 @@ public class UserController : BaseController
         }
     }
 
-    /// <summary>
-    /// Manage user.
-    /// </summary>
-    /// <param name="size">The page size.</param>
-    /// <param name="userName">The username.</param>
-    /// <param name="groupId">The group ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult Manage(
@@ -268,15 +234,6 @@ public class UserController : BaseController
 
     #region Assign Site
 
-    /// <summary>
-    /// Assign site.
-    /// </summary>
-    /// <param name="id">The user ID.</param>
-    /// <param name="returnSiteId">The site ID.</param>
-    /// <param name="returnGroupId">The group ID.</param>
-    /// <param name="returnPageIndex">The page index.</param>
-    /// <returns>Action result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public ActionResult AssignSite(
@@ -287,9 +244,7 @@ public class UserController : BaseController
         int returnPageIndex = 1)
     {
         List<ISite> siteList;
-        List<ISite> editableSiteList = new List<ISite>();
-        List<SiteLevel> siteLevelList;
-        List<SiteLevel> currentUserSiteLevelList;
+        var editableSiteList = new List<ISite>();
 
         if (UserIsPortalAdmin)
         {
@@ -300,30 +255,30 @@ public class UserController : BaseController
         else
         {
             siteList = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment).ToList();
 
-            int assignSitePolicy = _userService.GetUserSiteFunctionKeyPolicy(
-                CurrentSession.UserId,
+            var assignSitePolicy = _userService.GetUserSiteFunctionKeyPolicy(
+                NapSession.UserId,
                 SiteId,
                 FunctionKeys.AssignSiteToUser);
 
-            ViewFlags.HasAssignSiteReadRight = HasRight(FunctionKeys.AssignSiteToUser, Constant.Policy.Read);
-            ViewFlags.HasAssignSiteRight = assignSitePolicy >= (int)Constant.Policy.Host;
+            ViewFlags.HasAssignSiteReadRight = HasRight(FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Read);
+            ViewFlags.HasAssignSiteRight = assignSitePolicy >= (int)AdminConstant.Policy.Host;
 
-            if (assignSitePolicy >= (int)Constant.Policy.Host)
+            if (assignSitePolicy >= (int)AdminConstant.Policy.Host)
             {
                 editableSiteList = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-                    CurrentSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.AssignSiteToUser,
                     Environment,
-                    policy: Constant.Policy.Host).ToList();
+                    policy: AdminConstant.Policy.Host).ToList();
             }
         }
 
-        currentUserSiteLevelList = _siteService.GetSiteLevelByUser(CurrentSession.UserId, Environment).ToList();
-        siteLevelList = _siteService.GetSiteLevelByUser(id, Environment).ToList();
+        var currentUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
+        var siteLevelList = _siteService.GetSiteLevelByUser(id, Environment).ToList();
 
         var assignSiteVM = new AssignSiteVM
         {
@@ -338,10 +293,10 @@ public class UserController : BaseController
             CurrentUserSiteLevelList = currentUserSiteLevelList,
             SiteLevelList = siteLevelList,
             EditableSiteList = editableSiteList,
-            CurrentSessionLevel = CurrentSession.Level,
+            CurrentSessionLevel = NapSession.Level,
             UserId = id,
             UserName = _userService.GetById(id).Username,
-            IsSelfEdit = CurrentSession.UserId == id,
+            IsSelfEdit = NapSession.UserId == id,
             CurrentSiteId = SiteId,
             IsPortalAdmin = UserIsPortalAdmin
         };
@@ -353,16 +308,6 @@ public class UserController : BaseController
 
     #region Get Available Sites for User
 
-    /// <summary>
-    /// Get available sites for user.
-    /// </summary>
-    /// <param name="userId">The user identity.</param>
-    /// <param name="username">The username.</param>
-    /// <param name="returnSiteId">The site identity.</param>
-    /// <param name="returnGroupId">The group identity.</param>
-    /// <param name="returnPageIndex">The page index.</param>
-    /// <param name="level">The level of current login user.</param>
-    /// <returns>The list sites available for user.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Host)]
     public ActionResult GetAvailableSitesForUser(
@@ -378,19 +323,19 @@ public class UserController : BaseController
         var hostRightSites = new List<ISite>();
         var currentUserSiteLevelList = new List<SiteLevel>();
 
-        if (CurrentSession.UserId != userId)
+        if (NapSession.UserId != userId)
         {
             availableSites = _siteService.GetAvailableSitesForUser(userId, Environment).ToList();
-            currentUserSiteLevelList = _siteService.GetSiteLevelByUser(CurrentSession.UserId, Environment, true).ToList();
-            bool isHasAssignRight = HasRight(FunctionKeys.AssignSiteToUser, Constant.Policy.Host);
+            currentUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment, true).ToList();
+            var isHasAssignRight = HasRight(FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Host);
 
             if (isHasAssignRight)
             {
                 hostRightSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-                    CurrentSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.AssignSiteToUser,
                     Environment,
-                    policy: Constant.Policy.Host).ToList();
+                    policy: AdminConstant.Policy.Host).ToList();
             }
         }
 
@@ -411,18 +356,13 @@ public class UserController : BaseController
             Level = level
         };
 
-        return View("~/Areas/UserControl/Views/User/AssignNewSite.cshtml", assignNewSiteVM);
+        return View("~/Views/User/AssignNewSite.cshtml", assignNewSiteVM);
     }
 
     #endregion Get Available Sites for User
 
     #region User Info
 
-    /// <summary>
-    /// View user information.
-    /// </summary>
-    /// <param name="id">The user ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult UserInfo(int id)
@@ -434,14 +374,6 @@ public class UserController : BaseController
 
     #region Add Existing User
 
-    /// <summary>
-    /// Add existing user.
-    /// </summary>
-    /// <param name="returnUserName">The username.</param>
-    /// <param name="returnSiteId">The site ID.</param>
-    /// <param name="returnGroupId">The group ID.</param>
-    /// <param name="returnPageIndex">The return page index.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult AddExisting(
         int id = 1,
@@ -493,11 +425,6 @@ public class UserController : BaseController
         return View(addExistingUserVM);
     }
 
-    /// <summary>
-    /// Add existing user.
-    /// </summary>
-    /// <param name="addExistingUserVM">AddExisting View Model</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult AddExisting(AddExistingUserVM viewModel)
@@ -520,13 +447,6 @@ public class UserController : BaseController
 
     #region Add New User
 
-    /// <summary>
-    /// Add new user.
-    /// </summary>
-    /// <param name="returnSiteId">The site ID.</param>
-    /// <param name="returnPageIndex">The page index.</param>
-    /// <param name="returnGroupId">The group ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(
@@ -552,11 +472,6 @@ public class UserController : BaseController
         });
     }
 
-    /// <summary>
-    /// Add new user.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(AddNewUserVM addNewUserVM)
@@ -567,23 +482,19 @@ public class UserController : BaseController
 
         if (ModelState.IsValid)
         {
-            // check username duplication
             if (_userService.CheckUsernameExist(criteria.Username))
             {
                 ModelState.AddModelError("Username", string.Format(ViewResources.DuplicateMsg, criteria.Username));
                 return View(addNewUserVM);
             }
 
-            // add new user
-            criteria.UserPwd = Cryptography.CfsEnCode(criteria.UserPwd);
-            criteria.FirstName = criteria.FirstName ?? string.Empty;
-            criteria.LastName = criteria.LastName ?? string.Empty;
-            criteria.Email = criteria.Email ?? string.Empty;
+            criteria.FirstName ??= string.Empty;
+            criteria.LastName ??= string.Empty;
+            criteria.Email ??= string.Empty;
 
-            // assign all functions to the new user if he is site admin or portal admin
-            ICommandResult result = _userService.Insert(criteria);
+            var result = _userService.Insert(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
                 ViewBag.UserId = criteria.CustId;
@@ -599,14 +510,6 @@ public class UserController : BaseController
 
     #region Edit User
 
-    /// <summary>
-    /// Update user.
-    /// </summary>
-    /// <param name="id">The user ID.</param>
-    /// <param name="returnSiteId">The site ID.</param>
-    /// <param name="returnGroupId">Return group ID.</param>
-    /// <param name="returnPageIndex">The page index.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult Edit(
@@ -618,7 +521,7 @@ public class UserController : BaseController
     {
         var criteria = new UpdateCustCriteria();
 
-        IUser user = _userService.GetById(id);
+        var user = _userService.GetById(id);
 
         if (user == null)
         {
@@ -630,7 +533,7 @@ public class UserController : BaseController
         criteria.LastName = user.LastName;
         criteria.Email = user.Email;
         criteria.Username = user.Username;
-        criteria.GroupId = user.Group != null ? user.Group.Id : 0;
+        criteria.GroupId = user.Group?.Id ?? 0;
 
         ViewBag.Groups = user.Group == null ?
             _groupService.GetAllSelectListItem() :
@@ -648,11 +551,6 @@ public class UserController : BaseController
         });
     }
 
-    /// <summary>
-    /// Update user.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult Edit(EditUserVM editUserVM)
@@ -661,13 +559,13 @@ public class UserController : BaseController
 
         if (ModelState.IsValid)
         {
-            criteria.FirstName = criteria.FirstName ?? string.Empty;
-            criteria.LastName = criteria.LastName ?? string.Empty;
-            criteria.Email = criteria.Email ?? string.Empty;
+            criteria.FirstName ??= string.Empty;
+            criteria.LastName ??= string.Empty;
+            criteria.Email ??= string.Empty;
 
-            ICommandResult result = _userService.InsertOrUpdate(criteria);
+            var result = _userService.InsertOrUpdate(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -683,14 +581,6 @@ public class UserController : BaseController
 
     #region Reset Password
 
-    /// <summary>
-    /// Reset user password.
-    /// </summary>
-    /// <param name="id">The user ID.</param>
-    /// <param name="returnSiteId">The site ID.</param>
-    /// <param name="returnGroupId">The group ID.</param>
-    /// <param name="returnPageIndex">The page index.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult ResetPassword(
@@ -700,7 +590,7 @@ public class UserController : BaseController
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        IUser user = _userService.GetById(id);
+        var user = _userService.GetById(id);
 
         if (user == null)
         {
@@ -722,18 +612,12 @@ public class UserController : BaseController
                 Username = user.Username,
                 UserPwd = string.Empty,
                 ConfirmUserPwd = string.Empty,
-                Token = GenerateToken()
             }
         };
 
         return View(resetPasswordVM);
     }
 
-    /// <summary>
-    /// Reset user password.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult ResetPassword(ResetPasswordVM resetPasswordVM)
@@ -742,24 +626,19 @@ public class UserController : BaseController
 
         var criteria = resetPasswordVM.Criteria;
 
-        if (CheckValidToken(criteria.Token))
+        var user = _userService.GetById(criteria.CustId);
+
+        if (user == null)
         {
-            IUser user = _userService.GetById(criteria.CustId);
-
-            if (user == null)
-            {
-                return RedirectToAction("Manage");
-            }
-
-            ICommandResult result = _userService.InsertOrUpdate(criteria);
-
-            if (result != null && result.IsSuccessful)
-            {
-                ViewBag.Success = true;
-            }
+            return RedirectToAction("Manage");
         }
 
-        criteria.Token = GenerateToken();
+        var result = _userService.InsertOrUpdate(criteria);
+
+        if (result is { IsSuccessful: true })
+        {
+            ViewBag.Success = true;
+        }
 
         resetPasswordVM.Criteria = criteria;
 
@@ -770,62 +649,41 @@ public class UserController : BaseController
 
     #region Change Password
 
-    /// <summary>
-    /// Change user password.
-    /// </summary>
-    /// <returns>Action result.</returns>
     [HttpGet]
     public ActionResult ChangePassword()
     {
         var criteria = new UpdatePasswordCustCriteria
         {
-            Username = CurrentSession.Username,
-            Token = GenerateToken()
+            Username = NapSession.UserName,
         };
 
         return View(criteria);
     }
 
-    /// <summary>
-    /// Change user password.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult ChangePassword(UpdatePasswordCustCriteria criteria)
     {
-        // The password values are encoded at client side by calling CryptoJS.CfsEnCode.
-        // The result of this action is the encrypted strings which totally break the password valiadtion rules.
-        // They also cannot be decoded to the original ones since CryptoJS.CfsEnCode is one-way encryption algorithm.
-        // Because of those reasons, so we will validate the form at client side only and not check the model state here.
-        ////if (ModelState.IsValid)
 
         ModelState.Clear();
 
-        if (CheckValidToken(criteria.Token))
+        var user = _userService.GetById(NapSession.UserId);
+        var hashPassword = GetHash(user.Password);
+
+        if (hashPassword.Equals(criteria.OldUserPwd))
         {
-            IUser user = _userService.GetById(CurrentSession.UserId);
-            string hashPassword = GetHash(user.Password + criteria.Token);
+            criteria.CustId = user.Id;
 
-            if (hashPassword.Equals(criteria.OldUserPwd))
+            var result = _userService.InsertOrUpdate(criteria);
+
+            if (result is { IsSuccessful: true })
             {
-                criteria.CustId = user.Id;
-
-                ICommandResult result = _userService.InsertOrUpdate(criteria);
-
-                if (result != null && result.IsSuccessful)
-                {
-                    ViewBag.Success = true;
-                }
-            }
-            else
-            {
-                ModelState.AddModelError("OldUserPwd", ViewResources.Wrong_password);
+                ViewBag.Success = true;
             }
         }
-
-        criteria.Token = GenerateToken();
-
+        else
+        {
+            ModelState.AddModelError("OldUserPwd", ViewResources.Wrong_password);
+        }
         return View(criteria);
     }
 
@@ -833,17 +691,6 @@ public class UserController : BaseController
 
     #region Assign Permission
 
-    /// <summary>
-    /// Assign user permission.
-    /// </summary>
-    /// <param name="id">The user ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="returnPageIndex">The page index.</param>
-    /// <param name="returnSiteId">Return site ID.</param>
-    /// <param name="returnGroupId">The group ID.</param>
-    /// <returns>Action result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed.")]
-    [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Reviewed.")]
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Read)]
     public ActionResult AssignPermission(
@@ -857,12 +704,12 @@ public class UserController : BaseController
         var assignPermissionVM = new AssignPermissionVM();
         var siteIdValue = siteId == 0 ? SiteId : siteId;
 
-        IUser user = _userService.GetById(id);
-        ISite site = _siteService.GetById(siteIdValue);
+        var user = _userService.GetById(id);
+        var site = _siteService.GetById(siteIdValue);
 
         if (ReferenceEquals(user, null) || ReferenceEquals(site, null))
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         var criteria = new AssignFunctionUserCriteria
@@ -878,13 +725,13 @@ public class UserController : BaseController
                 _functionService.GetByGroupAndSite(user.Group.Id, criteria.SiteId, Environment).ToList();
         }
 
-        ViewFlags.HasAssignFunctionRight = HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToUser, Constant.Policy.Host)
-                                           && id != CurrentSession.UserId;
+        ViewFlags.HasAssignFunctionRight = HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Host)
+                                           && id != NapSession.UserId;
 
-        assignPermissionVM.Sites = CurrentSession.Level == (int)Constant.Level.PortalAdmin ?
+        assignPermissionVM.Sites = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId).ToList() :
             _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToUser,
                 Environment,
                 selectedSiteId: criteria.SiteId).ToList();
@@ -893,8 +740,8 @@ public class UserController : BaseController
         assignPermissionVM.UserFuncPolicyList =
             _functionService.GetByUserAndSite(criteria.UserId, criteria.SiteId, Environment).ToList();
         assignPermissionVM.CurrentUserFuncPolicyList =
-            _functionService.GetByUserAndSiteIncludeGroup(CurrentSession.UserId, criteria.SiteId, Environment).ToList();
-        assignPermissionVM.AdminLevel = CurrentSession.Level;
+            _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
+        assignPermissionVM.AdminLevel = NapSession.Level;
         assignPermissionVM.UserLevel = _userService.GetUserSiteLevel(user.Id, site.Id);
 
         assignPermissionVM.Criteria = criteria;
@@ -909,71 +756,54 @@ public class UserController : BaseController
         return View(assignPermissionVM);
     }
 
-    /// <summary>
-    /// Assign user permission.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Host)]
-#pragma warning disable S1541 // Methods and properties should not be too complex
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
     public ActionResult AssignPermission(AssignPermissionVM assignPermissionVM)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
-#pragma warning restore S1541 // Methods and properties should not be too complex
     {
         var criteria = assignPermissionVM.Criteria;
 
-        // check user and site
-        IUser user = _userService.GetById(criteria.UserId);
-        ISite site = _siteService.GetById(criteria.SiteId);
+        var user = _userService.GetById(criteria.UserId);
+        var site = _siteService.GetById(criteria.SiteId);
 
         if (user == null || site == null)
         {
             return RedirectToAction("Manage");
         }
 
-        // check policy
-        int policy = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+        var policy = _userService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             criteria.SiteId,
             FunctionKeys.AssignFunctionToUser);
 
-        if (policy < (int)Constant.Policy.Host)
+        if (policy < (int)AdminConstant.Policy.Host)
         {
             return RedirectToAction("Unauthorize", "Common");
         }
 
-        ViewFlags.HasAssignFunctionRight = policy >= (int)Constant.Policy.Host;
+        ViewFlags.HasAssignFunctionRight = true;
 
         criteria.Username = user.Username;
-        criteria.ModifiedBy = CurrentSession.UserId;
+        criteria.ModifiedBy = NapSession.UserId;
         criteria.ModifiedDate = DateTime.Now;
 
-        // list function policy
-        List<IFunction> listFunc =
+        var listFunc =
             _functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true).ToList();
 
-        // list user function policy
-        List<FunctionPolicy> listUserFuncPolicy =
+        var listUserFuncPolicy =
             _functionService.GetByUserAndSite(criteria.UserId, criteria.SiteId, Environment)
                 .Where(f => f.Site.Id == criteria.SiteId).ToList();
 
-        // list function will be remove by current user login
         var listUserFuncRemove = new List<FunctionPolicy>();
         listUserFuncRemove.AddRange(listUserFuncPolicy);
 
-        // list current user login function policy
-        List<FunctionPolicy> listCurrentUserFuncPolicy =
-            _functionService.GetByUserAndSiteIncludeGroup(CurrentSession.UserId, criteria.SiteId, Environment).ToList();
+        var listCurrentUserFuncPolicy =
+            _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
 
-        // check function host,contains in list function
         if (!criteria.FuncHost.IsNullOrDBNull())
         {
-            foreach (int itemFunc in criteria.FuncHost)
+            foreach (var itemFunc in criteria.FuncHost)
             {
-                // function find from list function, policy is host
-                IFunction tempFuncHost = listFunc.FirstOrDefault(f => f.Id == itemFunc);
+                var tempFuncHost = listFunc.FirstOrDefault(f => f.Id == itemFunc);
 
                 if (tempFuncHost.IsNullOrDBNull())
                 {
@@ -981,26 +811,22 @@ public class UserController : BaseController
                     throw new ArgumentNullException(errorMessage);
                 }
 
-                // remove all function host
                 listUserFuncRemove.Remove(f => f.Function.Id == itemFunc);
             }
         }
 
-        // check function read, with current user login have permission
         if (!criteria.FuncRead.IsNullOrDBNull())
         {
-            foreach (int itemFunc in criteria.FuncRead)
+            foreach (var itemFunc in criteria.FuncRead)
             {
                 listUserFuncRemove.Remove(f => f.Function.Id == itemFunc);
             }
         }
 
-        // check permission current user login with user be assign permission
-        // check for function policy will be remove ( set policy = 0 )
         listUserFuncRemove = listUserFuncRemove.Where(f => f.Policy > 0).ToList();
-        foreach (FunctionPolicy itemFunc in listUserFuncRemove)
+        foreach (var itemFunc in listUserFuncRemove)
         {
-            FunctionPolicy tempFunc = listCurrentUserFuncPolicy
+            var tempFunc = listCurrentUserFuncPolicy
                 .FirstOrDefault(f =>
                     f.Function.Id == itemFunc.Function.Id
                     && f.Policy >= itemFunc.Policy);
@@ -1017,9 +843,9 @@ public class UserController : BaseController
             }
         }
 
-        ICommandResult result = _userService.AssignFunction(criteria);
+        var result = _userService.AssignFunction(criteria);
 
-        if (result != null && result.IsSuccessful)
+        if (result is { IsSuccessful: true })
         {
             ViewBag.Success = true;
 
@@ -1033,10 +859,10 @@ public class UserController : BaseController
                 _functionService.GetByGroupAndSite(user.Group.Id, criteria.SiteId, Environment).ToList();
         }
 
-        assignPermissionVM.Sites = CurrentSession.Level == (int)Constant.Level.PortalAdmin ?
+        assignPermissionVM.Sites = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId).ToList() :
             _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToUser,
                 Environment,
                 selectedSiteId: criteria.SiteId).ToList();
@@ -1044,7 +870,7 @@ public class UserController : BaseController
         assignPermissionVM.FunctionList = listFunc;
         assignPermissionVM.UserFuncPolicyList = listUserFuncPolicy;
         assignPermissionVM.CurrentUserFuncPolicyList = listCurrentUserFuncPolicy;
-        assignPermissionVM.AdminLevel = CurrentSession.Level;
+        assignPermissionVM.AdminLevel = NapSession.Level;
         assignPermissionVM.UserLevel = _userService.GetUserSiteLevel(user.Id, site.Id);
 
         assignPermissionVM.Criteria = criteria;
@@ -1052,54 +878,39 @@ public class UserController : BaseController
         return View(assignPermissionVM);
     }
 
-    /// <summary>
-    /// Assign user permission.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Host)]
-#pragma warning disable S1541 // Methods and properties should not be too complex
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
     public ActionResult UnassignPermission(int userId, int functionId)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
-#pragma warning restore S1541 // Methods and properties should not be too complex
     {
 
-        IUser user = _userService.GetById(userId);
+        var user = _userService.GetById(userId);
         var function = _functionService.GetById(functionId);
-        ISite site = function.Site;
-        List<FunctionPolicy> listUserFuncPolicy = _functionService.GetByUserAndSite(userId, site.Id, Environment).ToList();
+        var site = function.Site;
+        var listUserFuncPolicy = _functionService.GetByUserAndSite(userId, site.Id, Environment).ToList();
 
-        var criteria = new AssignFunctionUserCriteria();
-        criteria.FuncHost = listUserFuncPolicy.Where(p => p.Policy == 2 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray();
-        criteria.FuncRead = listUserFuncPolicy.Where(p => p.Policy == 1 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray();
-        criteria.ModifiedBy = CurrentSession.UserId;
-        criteria.ModifiedDate = DateTime.Now;
-        criteria.SiteId = site.Id;
-        criteria.Username = user.Username;
-        criteria.UserId = userId;
+        var criteria = new AssignFunctionUserCriteria
+        {
+            FuncHost = listUserFuncPolicy.Where(p => p.Policy == 2 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray(),
+            FuncRead = listUserFuncPolicy.Where(p => p.Policy == 1 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray(),
+            ModifiedBy = NapSession.UserId,
+            ModifiedDate = DateTime.Now,
+            SiteId = site.Id,
+            Username = user.Username,
+            UserId = userId
+        };
 
-        ICommandResult result = _userService.AssignFunction(criteria);
+        var result = _userService.AssignFunction(criteria);
 
         return Json(result);
     }
 
-    /// <summary>
-    /// Assign site to user.
-    /// </summary>
-    /// <param name="userId">The user ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="level">The user level.</param>
-    /// <param name="isActive">Is active or not.</param>
-    /// <returns>Result string.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Host)]
     public string AssignSiteToUser(int userId, int siteId, int level, bool isActive)
     {
         var criteria = new AssignSiteUserCriteria
         {
-            CreatedBy = CurrentSession.UserId,
+            CreatedBy = NapSession.UserId,
             CreatedDate = DateTime.Now,
             UserId = userId,
             SiteId = siteId,
@@ -1108,25 +919,25 @@ public class UserController : BaseController
             IsNeverExpired = true,
         };
 
-        ICommandResult result = _userService.AssignSite(criteria);
+        var result = _userService.AssignSite(criteria);
 
-        if (result != null && result.IsSuccessful)
+        if (result is { IsSuccessful: true })
         {
             if (siteId == AppSettings.OWPSiteID)
             {
-                adminUserService.SyncUserToOWP(userId);
+                userService.SyncUserToOWP(userId);
             }
 
-            return Constant.Ok;
+            return AdminConstant.Ok;
         }
 
-        return Constant.Error;
+        return AdminConstant.Error;
     }
 
     [HttpGet]
     public string SyncUserToOWP(int userId)
     {
-        adminUserService.SyncUserToOWP(userId);
+        userService.SyncUserToOWP(userId);
         return "OK";
     }
 
@@ -1134,26 +945,17 @@ public class UserController : BaseController
 
     #region Update Site To User
 
-    /// <summary>
-    /// Update information of site to user.
-    /// </summary>
-    /// <param name="userId">The user ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="level">The level.</param>
-    /// <param name="isActive">The is active.</param>
-    /// <returns>The result string.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Host)]
     public string UpdateSiteToUser(int userId, int siteId, int level, bool isActive, DateTime expiredDate, bool isNeverExpired)
     {
-        // check permission again in server
-        bool canUpdateSiteToUser = CheckPermissionToUpdateUser(userId, siteId, level);
+        var canUpdateSiteToUser = CheckPermissionToUpdateUser(userId, siteId, level);
 
         if (canUpdateSiteToUser)
         {
             var criteria = new UpdateSiteToUserCriteria
             {
-                ModifiedBy = CurrentSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now,
                 UserId = userId,
                 SiteId = siteId,
@@ -1163,60 +965,51 @@ public class UserController : BaseController
                 IsNeverExpired = isNeverExpired
             };
 
-            ICommandResult result = _userService.UpdateSite(criteria);
+            var result = _userService.UpdateSite(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Constant.Ok;
+                return AdminConstant.Ok;
             }
         }
 
-        return Constant.Error;
+        return AdminConstant.Error;
     }
 
     #endregion Update Site To User
 
     #region Profile
 
-    /// <summary>
-    /// View user profile.
-    /// </summary>
-    /// <returns>Action result.</returns>
     [HttpGet]
     public ActionResult UserProfile()
     {
         var criteria = new UpdateCustCriteria();
-        var user = _userService.GetById(CurrentSession.UserId);
+        var user = _userService.GetById(NapSession.UserId);
 
         criteria.CustId = user.Id;
         criteria.Username = user.Username;
         criteria.FirstName = user.FirstName;
         criteria.LastName = user.LastName;
         criteria.Email = user.Email;
-        criteria.GroupId = user.Group != null ? user.Group.Id : 0;
+        criteria.GroupId = user.Group?.Id ?? 0;
 
         return View(criteria);
     }
 
-    /// <summary>
-    /// View user profile.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult UserProfile(UpdateCustCriteria criteria)
     {
         if (ModelState.IsValid)
         {
-            criteria.CustId = CurrentSession.UserId;
-            criteria.Username = CurrentSession.Username;
-            criteria.FirstName = criteria.FirstName ?? string.Empty;
-            criteria.LastName = criteria.LastName ?? string.Empty;
-            criteria.Email = criteria.Email ?? string.Empty;
+            criteria.CustId = NapSession.UserId;
+            criteria.Username = NapSession.UserName;
+            criteria.FirstName ??= string.Empty;
+            criteria.LastName ??= string.Empty;
+            criteria.Email ??= string.Empty;
 
-            ICommandResult result = _userService.InsertOrUpdate(criteria);
+            var result = _userService.InsertOrUpdate(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -1240,25 +1033,25 @@ public class UserController : BaseController
         int returnPageIndex = 1)
     {
         var loginUserAssignSitePolicy = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+            NapSession.UserId,
             SiteId,
             FunctionKeys.AssignSiteToUser);
 
         var loginUserAssignFunctionPolicy = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+            NapSession.UserId,
             SiteId,
             FunctionKeys.AssignFunctionToUser);
 
         return View(new AssignSiteFunctionViewModel
         {
-            LoginUserId = CurrentSession.UserId,
+            LoginUserId = NapSession.UserId,
             UserName = _userService.GetById(id).Username,
             UserId = id,
             LoginUserIsPortalAdmin = UserIsPortalAdmin,
-            LoginUserHasAssignSitePermission = loginUserAssignSitePolicy >= (int)Constant.Policy.Host,
-            LoginUserHasAssignSiteReadPermission = loginUserAssignSitePolicy == (int)Constant.Policy.Read,
+            LoginUserHasAssignSitePermission = loginUserAssignSitePolicy >= (int)AdminConstant.Policy.Host,
+            LoginUserHasAssignSiteReadPermission = loginUserAssignSitePolicy == (int)AdminConstant.Policy.Read,
             LoginUserAssignFunctionPermission = loginUserAssignFunctionPolicy,
-            IsSelfEdit = CurrentSession.UserId == id,
+            IsSelfEdit = NapSession.UserId == id,
             CurrentSiteId = SiteId,
             ReturnData = new ReturnData
             {
@@ -1276,8 +1069,8 @@ public class UserController : BaseController
     {
         foreach (var data in payload)
         {
-            IUser user = _userService.GetById(data.UserId);
-            ISite site = _siteService.GetById(data.SiteId);
+            var user = _userService.GetById(data.UserId);
+            var site = _siteService.GetById(data.SiteId);
 
             if (user == null || site == null)
             {
@@ -1285,30 +1078,28 @@ public class UserController : BaseController
             }
 
             data.Username = user.Username;
-            data.ModifiedBy = CurrentSession.UserId;
+            data.ModifiedBy = NapSession.UserId;
             data.ModifiedDate = DateTime.Now;
 
             var result = _userService.AssignFunction(data);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Json(Constant.Ok);
+                return Json(AdminConstant.Ok);
             }
         }
 
-        return Json(Constant.Error);
+        return Json(AdminConstant.Error);
     }
 
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public JsonResult GetAllUserSites(int userId)
     {
-        IEnumerable<ISite> siteList;
-
-        siteList = UserIsPortalAdmin || CurrentSession.UserId == userId ?
+        IEnumerable<ISite> siteList = UserIsPortalAdmin || NapSession.UserId == userId ?
             _siteService.GetAll(Environment, true).ToList() :
             _siteService.GetByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment).ToList();
 
@@ -1318,19 +1109,19 @@ public class UserController : BaseController
         userSiteList = userSiteList.Union(GetUserUnassignedSites(userId)).ToList();
         GetUserHasFunctionPermissionSites(userSiteList);
 
-        return Json(userSiteList, JsonRequestBehavior.AllowGet);
+        return Json(userSiteList);
     }
 
     private void GetUserHasFunctionPermissionSites(List<ISite> userSiteList)
     {
-        var loginUserHasFuntionPermissionSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-            CurrentSession.UserId,
+        var loginUserHasFunctionPermissionSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
+            NapSession.UserId,
             FunctionKeys.AssignFunctionToUser,
             Environment);
 
-        foreach (var site in loginUserHasFuntionPermissionSites)
+        foreach (var site in loginUserHasFunctionPermissionSites)
         {
-            if (!userSiteList.Any(s => s.Id == site.Id))
+            if (userSiteList.All(s => s.Id != site.Id))
             {
                 userSiteList.Add(site);
             }
@@ -1351,14 +1142,14 @@ public class UserController : BaseController
 
         var functions = _functionService.GetBySiteInHierarchy(siteId, Environment, true).ToList();
         var functionPolicies = _functionService.GetByUserAndSite(userId, siteId, Environment).ToList();
-        var loginUserFunctionPolicies = _functionService.GetByUserAndSiteIncludeGroup(CurrentSession.UserId, siteId, Environment).ToList();
+        var loginUserFunctionPolicies = _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, siteId, Environment).ToList();
         var loginUserAssignFunctionPermission = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+            NapSession.UserId,
             siteId,
             FunctionKeys.AssignFunctionToUser);
 
         var loginUserAssignSitePermission = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+            NapSession.UserId,
             siteId,
             FunctionKeys.AssignSiteToUser);
 
@@ -1371,52 +1162,45 @@ public class UserController : BaseController
                 loginUserFunctionPolicies,
                 loginUserAssignFunctionPermission,
                 loginUserAssignSitePermission
-            },
-            JsonRequestBehavior.AllowGet);
+            });
     }
 
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public ActionResult GetUserSiteLevels(int userId)
     {
-        IEnumerable<SiteLevel> listSiteLive = _siteService.GetSiteLevelByUser(userId, Environment);
+        var listSiteLive = _siteService.GetSiteLevelByUser(userId, Environment);
 
-        return Json(listSiteLive, JsonRequestBehavior.AllowGet);
+        return Json(listSiteLive);
     }
 
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public ActionResult GetLoginUserHasAssignSiteHostPermissionSites()
     {
-        int assignSitePolicy = _userService.GetUserSiteFunctionKeyPolicy(
-            CurrentSession.UserId,
+        var assignSitePolicy = _userService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             SiteId,
             FunctionKeys.AssignSiteToUser);
 
         var editableSites = new List<ISite>();
 
-        if (assignSitePolicy >= (int)Constant.Policy.Host)
+        if (assignSitePolicy >= (int)AdminConstant.Policy.Host)
         {
             editableSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment,
-                policy: Constant.Policy.Host).ToList();
+                policy: AdminConstant.Policy.Host).ToList();
         }
 
-        return Json(editableSites, JsonRequestBehavior.AllowGet);
+        return Json(editableSites);
     }
 
     #endregion Assign Site/Function To User
 
     #region Ajax
 
-    /// <summary>
-    /// View user list.
-    /// </summary>
-    /// <param name="groupId">The group ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult UserList(int groupId, int siteId = 0)
@@ -1431,18 +1215,13 @@ public class UserController : BaseController
         return new EmptyResult();
     }
 
-    /// <summary>
-    /// Get user site.
-    /// </summary>
-    /// <param name="userId">The user ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult GetUserSite(int userId)
     {
         if (Request.IsAjaxRequest())
         {
-            IEnumerable<SiteLevel> listSiteLive = _siteService.GetSiteLevelByUser(userId, Environment);
+            var listSiteLive = _siteService.GetSiteLevelByUser(userId, Environment);
 
             return Json(listSiteLive);
         }
@@ -1450,17 +1229,12 @@ public class UserController : BaseController
         return Json(null);
     }
 
-    /// <summary>
-    /// Get user function policy.
-    /// </summary>
-    /// <param name="userId">The user ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult GetUserFunctionPolicy(int userId)
     {
         if (Request.IsAjaxRequest())
         {
-            IEnumerable<FunctionPolicy> listFunctionPolicy = _functionService.GetByUser(userId, Environment);
+            var listFunctionPolicy = _functionService.GetByUser(userId, Environment);
 
             return Json(listFunctionPolicy);
         }
@@ -1468,17 +1242,12 @@ public class UserController : BaseController
         return Json(null);
     }
 
-    /// <summary>
-    /// Get group function policy.
-    /// </summary>
-    /// <param name="groupId">The group ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult GetGroupFunctionPolicy(int groupId)
     {
         if (Request.IsAjaxRequest() && groupId != 0)
         {
-            IEnumerable<FunctionPolicy> listFunctionPolicy = _functionService.GetByGroup(groupId, Environment);
+            var listFunctionPolicy = _functionService.GetByGroup(groupId, Environment);
 
             return Json(listFunctionPolicy);
         }
@@ -1486,12 +1255,6 @@ public class UserController : BaseController
         return Json(null);
     }
 
-    /// <summary>
-    /// Add user to group.
-    /// </summary>
-    /// <param name="userId">The user ID.</param>
-    /// <param name="groupId">The group ID.</param>
-    /// <returns>Result string.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public string AddUserToGroup(int userId, int groupId)
@@ -1502,38 +1265,33 @@ public class UserController : BaseController
             {
                 UserId = userId,
                 GroupId = groupId,
-                CreatedBy = CurrentSession.UserId,
+                CreatedBy = NapSession.UserId,
                 CreatedDate = DateTime.Now
             };
 
-            IUser user = _userService.GetById(userId);
+            var user = _userService.GetById(userId);
 
             if (user == null)
             {
-                ICommandResult result = _userService.InsertOrUpdate(criteria);
+                var result = _userService.InsertOrUpdate(criteria);
 
-                if (result != null && result.IsSuccessful)
+                if (result is { IsSuccessful: true })
                 {
-                    return Constant.Ok;
+                    return AdminConstant.Ok;
                 }
             }
         }
 
-        return Constant.Error;
+        return AdminConstant.Error;
     }
 
-    /// <summary>
-    /// Get user by group.
-    /// </summary>
-    /// <param name="groupId">The group ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult GetUserByGroup(int groupId)
     {
         if (Request.IsAjaxRequest())
         {
-            IEnumerable<IUser> listUser = _userService.GetByGroupAndSite(groupId);
+            var listUser = _userService.GetByGroupAndSite(groupId);
 
             return Json(listUser);
         }
@@ -1545,67 +1303,57 @@ public class UserController : BaseController
 
     #region Private method
 
-#pragma warning disable S1541 // Methods and properties should not be too complex
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
 
     private bool CheckPermissionToUpdateUser(int userId, int siteId, int level)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
-#pragma warning restore S1541 // Methods and properties should not be too complex
     {
-        if (level == (int)Constant.Level.PortalAdmin)
+        if (level == (int)AdminConstant.Level.PortalAdmin)
         {
             return false;
         }
 
-        // if user is not edit himself
-        if (CurrentSession.UserId != userId)
+        if (NapSession.UserId != userId)
         {
             if (UserIsPortalAdmin)
             {
                 return true;
             }
 
-            // check assign site permission in current site
-            if (!HasRight(FunctionKeys.AssignSiteToUser, Constant.Policy.Host))
+            if (!HasRight(FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Host))
             {
                 return false;
             }
 
-            // check assign site permission in selected site
             var editableSiteList = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment,
-                policy: Constant.Policy.Host).ToList();
+                policy: AdminConstant.Policy.Host).ToList();
 
-            if (!editableSiteList.Any(s => s.Id == siteId))
+            if (editableSiteList.All(s => s.Id != siteId))
             {
                 return false;
             }
 
-            // check if current user is a user of selected site
-            List<SiteLevel> currentUserSiteLevelList = _siteService.GetSiteLevelByUser(CurrentSession.UserId, Environment).ToList();
+            var currentUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
 
-            if (!currentUserSiteLevelList.Any(s => s.Site.Id == siteId))
+            if (currentUserSiteLevelList.All(s => s.Site.Id != siteId))
             {
                 return false;
             }
 
-            int currentUserSiteLevel = currentUserSiteLevelList.FirstOrDefault(s => s.Site.Id == siteId).Level;
+            var currentUserSiteLevel = currentUserSiteLevelList.FirstOrDefault(s => s.Site.Id == siteId).Level;
 
-            // check if selected user is a user of selected site
-            List<SiteLevel> siteLevelList = _siteService.GetSiteLevelByUser(userId, Environment).ToList();
+            var siteLevelList = _siteService.GetSiteLevelByUser(userId, Environment).ToList();
 
-            if (!siteLevelList.Any(s => s.Site.Id == siteId))
+            if (siteLevelList.All(s => s.Site.Id != siteId))
             {
                 return false;
             }
 
-            int selectedUserSiteLevel = siteLevelList.FirstOrDefault(s => s.Site.Id == siteId).Level;
+            var selectedUserSiteLevel = siteLevelList.FirstOrDefault(s => s.Site.Id == siteId).Level;
 
-            // check if current user level, selected user current level and new level are ok
-            return currentUserSiteLevel == (int)Constant.Level.User ?
-                selectedUserSiteLevel == (int)Constant.Level.User && level == (int)Constant.Level.User :
+            return currentUserSiteLevel == (int)AdminConstant.Level.User ?
+                selectedUserSiteLevel == (int)AdminConstant.Level.User && level == (int)AdminConstant.Level.User :
                 currentUserSiteLevel > selectedUserSiteLevel && currentUserSiteLevel > level;
         }
         else
@@ -1618,62 +1366,8 @@ public class UserController : BaseController
             return false;
         }
     }
+    
 
-    /// <summary>
-    /// Generates the token for login form.
-    /// </summary>
-    /// <returns>Generated token.</returns>
-    private string GenerateToken()
-    {
-        string token = Guid.NewGuid().ToString("N");
-
-        FormToken = token;
-        AddTokenToCookie(token);
-
-        return token;
-    }
-
-    /// <summary>
-    /// Adds the login token to cookie.
-    /// </summary>
-    /// <param name="token">The changing password token.</param>
-    private void AddTokenToCookie(string token)
-    {
-        var responseCookie = new HttpCookie(FormTokenKey)
-        {
-            HttpOnly = true,
-            Value = token
-        };
-
-        // If we are using SSL, the cookie should be set to secure to
-        // prevent it from being sent over HTTP connections
-        if (FormsAuthentication.RequireSSL && Request.IsSecureConnection)
-        {
-            responseCookie.Secure = true;
-        }
-
-        // Add the cookie to the response
-        Response.Cookies.Set(responseCookie);
-    }
-
-    /// <summary>
-    /// Checks if the token is valid or not.
-    /// </summary>
-    /// <param name="token">The changing password token.</param>
-    /// <returns>Boolean value indicates if the login token is valid or not.</returns>
-    private bool CheckValidToken(string token)
-    {
-        return !string.IsNullOrWhiteSpace(token)
-               && FormToken == token
-               && Request.Cookies[FormTokenKey] != null
-               && token == Request.Cookies[FormTokenKey].Value;
-    }
-
-    /// <summary>
-    /// Gets the hash value of input.
-    /// </summary>
-    /// <param name="input">The input.</param>
-    /// <returns>Hash value of input.</returns>
     private string GetHash(string input)
     {
         var encrypted = string.Empty;
@@ -1690,12 +1384,12 @@ public class UserController : BaseController
 
     private List<ISite> GetUserUnassignedSites(int userId)
     {
-        var loginUserSiteLevelList = _siteService.GetSiteLevelByUser(CurrentSession.UserId, Environment).ToList();
+        var loginUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
         var loginUserHasAssignSiteHostRightSites = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-            CurrentSession.UserId,
+            NapSession.UserId,
             FunctionKeys.AssignSiteToUser,
             Environment,
-            policy: Constant.Policy.Host).ToList();
+            policy: AdminConstant.Policy.Host).ToList();
 
         var availableSites = _siteService.GetAvailableSitesForUser(userId, Environment).ToList();
         var unassignedSite = new List<ISite>();
@@ -1704,8 +1398,7 @@ public class UserController : BaseController
         {
             var loginUserSiteLevel = loginUserSiteLevelList.FirstOrDefault(s => s.Site.Id == site.Id);
 
-            if (loginUserSiteLevel != null && loginUserHasAssignSiteHostRightSites != null &&
-                loginUserSiteLevel.Level >= (int)Constant.Level.User &&
+            if (loginUserSiteLevel is { Level: >= (int)AdminConstant.Level.User } &&
                 loginUserHasAssignSiteHostRightSites.Any(s => s.Id == site.Id))
             {
                 unassignedSite.Add(site);
@@ -1723,13 +1416,13 @@ public class UserController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.SetupOTP, Policy = Constant.Policy.Read)]
     public ActionResult SetupOTP(int id = 1, int size = 20, string username = "", string system = "", int status = 1)
     {
-        int pageIndex = id;
-        int pageSize = size;
+        var pageIndex = id;
+        var pageSize = size;
         var trimmedUsername = username.Trim();
 
         ViewBag.Username = trimmedUsername;
 
-        ViewBag.HasEditRight = HasRight(FunctionKeys.SetupOTP, Constant.Policy.Host);
+        ViewBag.HasEditRight = HasRight(FunctionKeys.SetupOTP, AdminConstant.Policy.Host);
 
         var criteria = new SetupOTPListCriteria
         {
@@ -1758,15 +1451,12 @@ public class UserController : BaseController
             SecretKey = secretKey,
             System = system,
             IgnoreOTP = ignoreOTP,
-            LoginIP = CurrentContext.IP,
-            Modifier = CurrentSession.UserId
+            LoginIP = _loggedUserContext.GetIp(),
+            Modifier = NapSession.UserId
         };
-        using (var db = new ObjectDb(command.GetSettingKey()))
-        {
-            var hash = command.GetSpParams();
 
-            db.ExecuteNonQuery(hash);
-        }
+        using var db = ObjectDbFactory.CreateInstance(command.GetSettingKey());
+        db.ExecuteNonQuery(command);
 
         return string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
     }
@@ -1784,15 +1474,11 @@ public class UserController : BaseController
             SecretKey = secretKey,
             System = system,
             IgnoreOTP = ignoreOTP,
-            LoginIP = CurrentContext.IP,
-            Modifier = CurrentSession.UserId
+            LoginIP = _loggedUserContext.GetIp(),
+            Modifier = NapSession.UserId
         };
-        using (var db = new ObjectDb(command.GetSettingKey()))
-        {
-            var hash = command.GetSpParams();
-
-            db.ExecuteNonQuery(hash);
-        }
+        using var db = ObjectDbFactory.CreateInstance(command.GetSettingKey());
+        db.ExecuteNonQuery(command);
 
         var errMsg = string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
 

@@ -34,10 +34,10 @@
     <tbody>
 @if (Model != null && Model.Count() > 0)
 {
-    int i = 0;
+    var i = 0;
     foreach (var item in Model)
     {
-        string rowCss = i % 2 == 0 ? string.Empty : "class=\"alt\"";
+        var rowCss = i % 2 == 0 ? string.Empty : "class=\"alt\"";
         
         <tr @Html.Raw(rowCss)>
             <td class="text-center">

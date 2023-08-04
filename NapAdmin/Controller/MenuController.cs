@@ -1,12 +1,19 @@
-﻿namespace NapAdmin.Controller;
+namespace NapAdmin.Controller;
 
 using System;
 using System.Collections.Generic;
-using Fanex.NAP.Core.Business;
+using Fanex.NAP.Client.Attributes;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Business;
+using Fanex.NAP.Client.Helpers.Web;
+using Microsoft.AspNetCore.Mvc;
+using NapAdminCore.Configuration;
+using NapAdminCore.Criteria.MenuItem;
+using NapAdminCore.Domain;
+using NapAdminCore.Models;
+using NapAdminCore.Service;
+using NapAdminCore.Web;
 
-/// <summary>
-/// Menu controller.
-/// </summary>
 [NapSuperAuth]
 public class MenuController : BaseController
 {
@@ -19,31 +26,26 @@ public class MenuController : BaseController
     #endregion Properties
 
     #region Contructors
-
-    public MenuController()
-        : this(null, null, null)
-    {
-    }
+    
 
     public MenuController(
         IMenuItemService menuitemService,
         ISiteService siteService,
-        IFunctionService functionService)
+        IFunctionService functionService,
+        IUserService userService,
+        INapSession napSession,
+    INapSettings napSettings) :
+    base(napSession, napSettings, userService)
     {
-        _menuItemService = menuitemService ?? new MenuItemService { ServiceContext = ServiceContext };
-        _siteService = siteService ?? new SiteService { ServiceContext = ServiceContext };
-        _functionService = functionService ?? new FunctionService { ServiceContext = ServiceContext };
+        _menuItemService = menuitemService ;
+        _siteService = siteService ;
+        _functionService = functionService;
     }
 
     #endregion Contructors
 
     #region Manage Menu item
 
-    /// <summary>
-    /// Manage menu.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Read)]
     public ActionResult Manage(int? siteId)
@@ -59,11 +61,6 @@ public class MenuController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Manage menu.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Read)]
     public ActionResult Manage(GetBySiteMenuItemCriteria criteria)
@@ -77,11 +74,6 @@ public class MenuController : BaseController
 
     #region Add New Menu
 
-    /// <summary>
-    /// Add new menu item.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult AddNewMenuItem(int? siteId = null)
@@ -89,7 +81,7 @@ public class MenuController : BaseController
         var criteria = new InsertMenuItemCriteria
         {
             Environment = Environment,
-            Policy = (int)Constant.Policy.Read,
+            Policy = (int)AdminConstant.Policy.Read,
             SiteId = siteId ?? SiteId
         };
 
@@ -98,11 +90,6 @@ public class MenuController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Add new menu item.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult AddNewMenuItem(InsertMenuItemCriteria criteria)
@@ -111,15 +98,14 @@ public class MenuController : BaseController
 
         if (ModelState.IsValid)
         {
-            // Add new
-            criteria.CreatedBy = CurrentSession.UserId;
+            criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId == 0 || criteria.ParentId == null ? null : criteria.ParentName;
 
-            ICommandResult result = _menuItemService.Insert(criteria);
+            var result = _menuItemService.Insert(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -132,37 +118,33 @@ public class MenuController : BaseController
 
     #region Edit Menu Item
 
-    /// <summary>
-    /// Update menu item.
-    /// </summary>
-    /// <param name="menuItemId">Menu item ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult EditMenuItem(int menuItemId)
     {
-        IMenuItem menuItem = _menuItemService.GetById(menuItemId);
+        var menuItem = _menuItemService.GetById(menuItemId);
 
         if (menuItem == null)
         {
             return RedirectToAction("Manage");
         }
 
-        var criteria = new UpdateMenuItemCriteria();
-
-        criteria.MenuItemId = menuItem.Id;
-        criteria.MenuItemName = menuItem.Name;
-        criteria.Description = menuItem.Description;
-        criteria.DisplayOrder = menuItem.DisplayOrder;
-        criteria.FunctionId = menuItem.Function.Id;
-        criteria.IsActive = menuItem.IsActive;
-        criteria.ParentId = menuItem.Parent != null ? menuItem.Parent.Id : 0;
-        criteria.ParentName = menuItem.Parent != null ? menuItem.Parent.Name : string.Empty;
-        criteria.Policy = menuItem.Policy;
-        criteria.SiteId = menuItem.Site.Id;
-        criteria.SiteName = menuItem.Site.Name;
-        criteria.Url = menuItem.Url;
-        criteria.Environment = menuItem.Environment;
+        var criteria = new UpdateMenuItemCriteria
+        {
+            MenuItemId = menuItem.Id,
+            MenuItemName = menuItem.Name,
+            Description = menuItem.Description,
+            DisplayOrder = menuItem.DisplayOrder,
+            FunctionId = menuItem.Function.Id,
+            IsActive = menuItem.IsActive,
+            ParentId = menuItem.Parent?.Id ?? 0,
+            ParentName = menuItem.Parent != null ? menuItem.Parent.Name : string.Empty,
+            Policy = menuItem.Policy,
+            SiteId = menuItem.Site.Id,
+            SiteName = menuItem.Site.Name,
+            Url = menuItem.Url,
+            Environment = menuItem.Environment
+        };
 
         ViewBag.Function = _functionService.GetSelectListItemBySite(
             criteria.SiteId,
@@ -177,11 +159,6 @@ public class MenuController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Update menu item.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult EditMenuItem(UpdateMenuItemCriteria criteria)
@@ -198,16 +175,15 @@ public class MenuController : BaseController
 
         if (ModelState.IsValid)
         {
-            // Update menu item
-            criteria.ModifierId = CurrentSession.UserId;
+            criteria.ModifierId = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId == 0 || criteria.ParentId == null ? null
                 : criteria.ParentName;
 
-            ICommandResult result = _menuItemService.Update(criteria);
+            var result = _menuItemService.Update(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -220,16 +196,9 @@ public class MenuController : BaseController
 
     #region AjaxRequest
 
-    /// <summary>
-    /// Get list menu item by site id.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="menuItemId">The menu item ID.</param>
-    /// <param name="environment">The environment.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
-    public ActionResult ListMenuItemBySite(int? siteId, int? menuItemId, string environment = EmptyString)
+    public ActionResult ListMenuItemBySite(int siteId, int? menuItemId, string environment = EmptyString)
     {
         if (Request.IsAjaxRequest())
         {
@@ -238,9 +207,10 @@ public class MenuController : BaseController
             var environmentValue = !string.IsNullOrEmpty(environment) ? environment : Environment;
             menuItemList.Add(new MenuItem { Id = 0, Name = ViewResources.None });
 
-            menuItemList.AddRange(menuItemId != null ?
-                _menuItemService.GetParentById((int)menuItemId, env: environmentValue).ToList() :
-                _menuItemService.GetBySite((int)siteId, environmentValue).ToList());
+            var tempMenuItemList = menuItemId.HasValue
+                ? _menuItemService.GetParentById(menuItemId.Value, env: environmentValue).ToList()
+                : _menuItemService.GetBySite(siteId, environmentValue).ToList();
+            menuItemList.AddRange(tempMenuItemList);
 
             return Json(menuItemList);
         }
@@ -248,12 +218,6 @@ public class MenuController : BaseController
         return Json(new List<IMenuItem>());
     }
 
-    /// <summary>
-    /// Get list function by site id.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="environment">The environment.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult ListFunctionBySite(int siteId, string environment = EmptyString)
@@ -269,12 +233,6 @@ public class MenuController : BaseController
         return Json(null);
     }
 
-    /// <summary>
-    /// Update status menu.
-    /// </summary>
-    /// <param name="id">Menu item ID.</param>
-    /// <param name="isActive">Is active or not.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult Activate(int id, bool isActive)
@@ -285,15 +243,15 @@ public class MenuController : BaseController
             {
                 IsActive = isActive,
                 MenuItemId = id,
-                ModifiedBy = CurrentSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            ICommandResult result = _menuItemService.UpdateStatus(criteria);
+            var result = _menuItemService.UpdateStatus(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Json(Constant.Ok);
+                return Json(AdminConstant.Ok);
             }
         }
 
@@ -302,13 +260,9 @@ public class MenuController : BaseController
 
     #endregion AjaxRequest
 
-    /// <summary>
-    /// Prepare manage data.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
     private void PrepareManageData(GetBySiteMenuItemCriteria criteria)
     {
-        if (CurrentSession.Level == (int)Constant.Level.PortalAdmin)
+        if (NapSession.Level == (int)AdminConstant.Level.PortalAdmin)
         {
             ViewBag.Site = _siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId);
             ViewFlags.HasEditRight = true;
@@ -317,13 +271,13 @@ public class MenuController : BaseController
         {
             ViewBag.Site =
                 _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    CurrentSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.ManageMenu,
                     criteria.Environment,
                     selectedSiteId: criteria.SiteId);
             ViewFlags.HasEditRight =
-                HasRight(FunctionKeys.ManageMenu, Constant.Policy.Host)
-                && HasRightOnSite(criteria.SiteId, FunctionKeys.ManageMenu, Constant.Policy.Host);
+                HasRight(FunctionKeys.ManageMenu, AdminConstant.Policy.Host)
+                && HasRightOnSite(criteria.SiteId, FunctionKeys.ManageMenu, AdminConstant.Policy.Host);
         }
 
         ViewBag.MenuItemList = _menuItemService.GetBySiteInHierarchy(criteria.SiteId, criteria.Environment);
@@ -334,13 +288,13 @@ public class MenuController : BaseController
         ViewBag.Parent = _menuItemService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
         ViewBag.Function = _functionService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
 
-        ViewBag.Site = CurrentSession.Level == (int)Constant.Level.PortalAdmin ?
+        ViewBag.Site = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             _siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId) :
             _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                CurrentSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.ManageMenu,
                 criteria.Environment,
-                policy: Constant.Policy.Host,
+                policy: AdminConstant.Policy.Host,
                 selectedSiteId: criteria.SiteId);
     }
 }

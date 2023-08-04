@@ -3,16 +3,16 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Business;
 using Command;
 using Criteria.Group;
 using Domain;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Models;
 using Models.ValueObject;
 using Repository;
 
-public interface IGroupService : IBaseService
+public interface IGroupService
 {
     IGroup GetByUser(int userId);
 
@@ -28,7 +28,7 @@ public interface IGroupService : IBaseService
 
     IEnumerable<GroupPolicy> GetByFunctionAndSite(int functionId, int siteId);
 
-    IEnumerable<IGroup> GetAllWithNumOfUser(string name, string env = Constant.Uat, bool? isActive = null);
+    IEnumerable<IGroup> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null);
 
     ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria);
 
@@ -39,15 +39,16 @@ public interface IGroupService : IBaseService
     ICommandResult Update(UpdateGroupCriteria criteria);
 }
 
-public class GroupService : BaseService, IGroupService
+public class GroupService : IGroupService
 {
     private readonly IGroupRepository groupRepository;
     private readonly IDynamicRepository dynamicRepository;
-
-    public GroupService(IGroupRepository groupRepository, IDynamicRepository dynamicRepository)
+    private readonly LoggedUserContext loggedUserContext;
+    public GroupService(IGroupRepository groupRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     {
         this.groupRepository = groupRepository;
         this.dynamicRepository = dynamicRepository;
+        this.loggedUserContext = loggedUserContext;
     }
 
     public IGroup GetByUser(int userId)
@@ -107,7 +108,7 @@ public class GroupService : BaseService, IGroupService
         }).ToList();
     }
 
-    public IEnumerable<IGroup> GetAllWithNumOfUser(string name, string env = Constant.Uat, bool? isActive = null)
+    public IEnumerable<IGroup> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllWithNumOfUserGroupCriteria
         {
@@ -121,28 +122,28 @@ public class GroupService : BaseService, IGroupService
 
     public ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return groupRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return groupRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult Insert(InsertGroupCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return groupRepository.Insert(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateGroupCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return groupRepository.Update(criteria, logCriteria);
     }

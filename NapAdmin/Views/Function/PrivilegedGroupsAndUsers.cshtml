@@ -9,7 +9,7 @@
     var enableRemovePermission = !function.IsActive;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/themes/Function/PrivilegedGroupsAndUsers")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/function/PrivilegedGroupsAndUsers.css" />
 }
 @section Headline {
     <span class="title">
@@ -71,10 +71,10 @@
         <tbody>
             @if (groupList != null && groupList.Count > 0)
             {
-                int i = 0;
+                var i = 0;
                 foreach (GroupPolicy item in groupList)
                 {
-                    string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                    var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
                     <tr @Html.Raw(rowCss)>
                         <td class="text-center">
@@ -84,7 +84,7 @@
                             @item.Group.Name
                         </td>
                         <td class="text-center">
-                            @if (item.Policy == (int)Constant.Policy.Host)
+                            @if (item.Policy == (int)AdminConstant.Policy.Host)
                             {
                                 <span class="crud-host">@ViewResources.Host</span>
                             }
@@ -184,10 +184,10 @@
         <tbody>
             @if (userList != null && userList.Count > 0)
             {
-                int i = 0;
+                var i = 0;
                 foreach (var item in userList)
                 {
-                    string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                    var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
                     var groupPolicy = groupList == null || item.User.Group == null ? null
                         : groupList.Where(g => g.Group.Id == item.User.Group.Id).FirstOrDefault();
 
@@ -211,7 +211,7 @@
                             @(item.User.Group != null ? item.User.Group.Name : string.Empty)
                         </td>
                         <td class="text-center">
-                            @if (item.Policy == (int)Constant.Policy.Host)
+                            @if (item.Policy == (int)AdminConstant.Policy.Host)
                             {
                                 <span class="crud-host">@ViewResources.Host</span>
                             }
@@ -223,7 +223,7 @@
                         <td class="text-center">
                             @if (groupPolicy != null)
                             {
-                                if (groupPolicy.Policy == (int)Constant.Policy.Host)
+                                if (groupPolicy.Policy == (int)AdminConstant.Policy.Host)
                                 {
                                     <span class="crud-host">@ViewResources.Host</span>
                                 }
@@ -293,5 +293,5 @@
 @Html.Hidden("fid", function.Id)
 @Html.Hidden("fname", function.Name)
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/Function/PrivilegedGroupsAndUsers.js" type="text/javascript"></script>
+    <script src="~/scripts/Function/PrivilegedGroupsAndUsers.js" type="text/javascript"></script>
 }

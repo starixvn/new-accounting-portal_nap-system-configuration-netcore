@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdmin", "NapAdmin\NapAdmin.csproj", "{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2779B9A7-1686-492C-AD94-2BA30F71A46F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdminCore", "src\NapAdminCore\NapAdminCore.csproj", "{A3AB994D-510A-4926-A25E-656BB46C3F2B}"
 EndProject
 Global
@@ -26,9 +24,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{A3AB994D-510A-4926-A25E-656BB46C3F2B} = {2779B9A7-1686-492C-AD94-2BA30F71A46F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EC6FC1A-B000-4BB6-A923-F6CE28360663}

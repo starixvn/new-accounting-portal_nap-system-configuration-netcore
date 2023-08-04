@@ -2,5 +2,77 @@
   {
     "outputFile": "Areas/UserLogin/themes/login.css",
     "inputFile": "Areas/UserLogin/themes/login.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/style.css",
+    "inputFile": "wwwroot/themes/nap/style.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/function/edit.css",
+    "inputFile": "wwwroot/themes/nap/function/edit.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/function/PrivilegedGroupsAndUsers.css",
+    "inputFile": "wwwroot/themes/nap/function/PrivilegedGroupsAndUsers.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/group/assign-permission.css",
+    "inputFile": "wwwroot/themes/nap/group/assign-permission.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/site/add-new.css",
+    "inputFile": "wwwroot/themes/nap/site/add-new.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/site/edit.css",
+    "inputFile": "wwwroot/themes/nap/site/edit.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/site/edit-url.css",
+    "inputFile": "wwwroot/themes/nap/site/edit-url.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/site/manage.css",
+    "inputFile": "wwwroot/themes/nap/site/manage.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/trace/logexecsp.css",
+    "inputFile": "wwwroot/themes/nap/trace/logexecsp.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/user/add-existing.css",
+    "inputFile": "wwwroot/themes/nap/user/add-existing.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/user/assign-new-site.css",
+    "inputFile": "wwwroot/themes/nap/user/assign-new-site.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/user/assign-site.css",
+    "inputFile": "wwwroot/themes/nap/user/assign-site.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/user/manage.css",
+    "inputFile": "wwwroot/themes/nap/user/manage.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/otp/manage.css",
+    "inputFile": "wwwroot/themes/nap/otp/manage.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/common.css",
+    "inputFile": "wwwroot/themes/nap/common.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/fonts.css",
+    "inputFile": "wwwroot/themes/nap/fonts.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/grid.css",
+    "inputFile": "wwwroot/themes/nap/grid.less"
+  },
+  {
+    "outputFile": "wwwroot/themes/nap/themes.css",
+    "inputFile": "wwwroot/themes/nap/themes.less"
   }
 ]

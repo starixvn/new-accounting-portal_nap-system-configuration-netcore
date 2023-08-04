@@ -1,8 +1,7 @@
-
 namespace NapAdminCore.Models;
 
 using System;
-using Domain;
+using NapAdminCore.Domain;
 
 [Serializable]
 public class Group : IGroup

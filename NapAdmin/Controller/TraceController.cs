@@ -1,47 +1,48 @@
-﻿namespace NapAdmin.Controller;
+namespace NapAdmin.Controller;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
+using Fanex.NAP.Client.Attributes;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Web;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NapAdminCore.Configuration;
+using NapAdminCore.Criteria.Trace;
+using NapAdminCore.Domain;
+using NapAdminCore.Helpers;
+using NapAdminCore.Models;
+using NapAdminCore.Models.ValueObject;
+using NapAdminCore.Service;
+using NapAdminCore.Web;
 using ViewModels.Trace;
 
-/// <summary>
-/// Trace controller.
-/// </summary>
 public class TraceController : BaseController
 {
     private readonly ITraceService _traceService;
     private readonly IFunctionService _functionService;
     private readonly ISiteService _siteService;
 
-    public TraceController()
-        : this(null, null, null)
-    {
-    }
 
-    public TraceController(ITraceService traceService, IFunctionService functionService, ISiteService siteService)
+    public TraceController(ITraceService traceService,
+        IFunctionService functionService,
+        ISiteService siteService,
+        INapSession napSession,
+        INapSettings napSettings,
+        IUserService userService)
+        : base(napSession, napSettings, userService)
     {
-        _traceService = traceService ?? new TraceService();
-        _functionService = functionService ?? new FunctionService();
-        _siteService = siteService ?? new SiteService();
+
+        _traceService = traceService;
+        _functionService = functionService;
+        _siteService = siteService;
     }
 
     #region Log Exec Sp
 
-    /// <summary>
-    /// Manage execute SP log.
-    /// </summary>
-    /// <param name="id">The page index.</param>
-    /// <param name="size">The page size.</param>
-    /// <param name="q">The item name.</param>
-    /// <param name="username">The username.</param>
-    /// <param name="from">From date value.</param>
-    /// <param name="to">To date value.</param>
-    /// <param name="filterBy">Filter by option.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.ExecSpLog)]
     [HttpGet]
     public ActionResult LogExecSp(
@@ -65,17 +66,12 @@ public class TraceController : BaseController
             TotalRows = 0
         };
 
-        IQueryable<LogExecSp> listLog = _traceService.SearchExecSp(criteria);
+        var listLog = _traceService.SearchExecSp(criteria);
         ViewBag.ListLog = new PagerList<LogExecSp>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, listLog);
 
         return View(criteria);
     }
 
-    /// <summary>
-    /// Manage execute SP log.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult LogExecSp(GetAllLogCriteria criteria)
     {
@@ -97,16 +93,6 @@ public class TraceController : BaseController
 
     #region Log User Login
 
-    /// <summary>
-    /// Manage user login log.
-    /// </summary>
-    /// <param name="id">The page index.</param>
-    /// <param name="size">The page size.</param>
-    /// <param name="q">The username.</param>
-    /// <param name="from">From date value.</param>
-    /// <param name="to">To date value.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     public ActionResult LogUserLogin(
         int id = 1,
@@ -127,7 +113,7 @@ public class TraceController : BaseController
             TotalRows = 0
         };
 
-        IQueryable<LogUserLogin> listLog = _traceService.SearchUserLogin(criteria);
+        var listLog = _traceService.SearchUserLogin(criteria);
 
         var listSite = _siteService.GetAll().ToList();
         listSite.Add(new Site
@@ -147,11 +133,6 @@ public class TraceController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Manage user login log.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult LogUserLogin(GetAllLogUserLoginCriteria criteria)
     {
@@ -172,11 +153,6 @@ public class TraceController : BaseController
 
     #region Ajax
 
-    /// <summary>
-    /// Get log insert detail.
-    /// </summary>
-    /// <param name="id">The log ID.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     public ActionResult GetLogInsertDetail(int id)
     {
@@ -194,16 +170,11 @@ public class TraceController : BaseController
 
     #region View log
 
-    /// <summary>
-    /// Get user insert log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPUserInsert(LogExecSp log)
     {
         if (log.ActionId == (int)LogAction.NAP_User_Insert)
         {
-            XElement elementNew = XElement.Parse(log.Data);
+            var elementNew = XElement.Parse(log.Data);
 
             var listLogData = new List<LogData>();
             listLogData.Add(new LogData
@@ -221,17 +192,12 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogInsert.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    /// <summary>
-    /// Get customer insert log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPCustInsert(LogExecSp log)
     {
-        XElement element = XElement.Parse(log.Data);
+        var element = XElement.Parse(log.Data);
 
         if (log.ActionId == (int)LogAction.NAP_Cust_Insert)
         {
@@ -269,18 +235,12 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogInsert.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    /// <summary>
-    /// Get function insert log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPFunctionInsert(LogExecSp log)
     {
-        XElement element = XElement.Parse(log.Data);
+        var element = XElement.Parse(log.Data);
 
         if (log.ActionId == (int)LogAction.NAP_Function_Insert)
         {
@@ -342,17 +302,12 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogInsert.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    /// <summary>
-    /// Get group insert log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPGroupInsert(LogExecSp log)
     {
-        XElement element = XElement.Parse(log.Data);
+        var element = XElement.Parse(log.Data);
 
         if (log.ActionId == (int)LogAction.NAP_Group_Insert)
         {
@@ -378,18 +333,12 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogInsert.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    /// <summary>
-    /// Get menu item insert log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPMenuItemInsert(LogExecSp log)
     {
-        XElement element = XElement.Parse(log.Data);
+        var element = XElement.Parse(log.Data);
 
         if (log.ActionId == (int)LogAction.NAP_MenuItem_Insert)
         {
@@ -451,18 +400,12 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogInsert.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    /// <summary>
-    /// Get insert site log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPSiteInsertWithSiteUrl(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
+        var elementNew = XElement.Parse(log.Data);
 
         if (log.ActionId == (int)LogAction.NAP_Site_InsertWithSiteURL)
         {
@@ -503,13 +446,13 @@ public class TraceController : BaseController
                 NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
             });
 
-            string strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
+            var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
             var listSiteUrl = new List<SiteUrl>();
-            XDocument documentSiteUrl = XDocument.Parse(strUrl);
-            IEnumerable<XElement> siteUrl = documentSiteUrl.Descendants("ITEM");
+            var documentSiteUrl = XDocument.Parse(strUrl);
+            var siteUrl = documentSiteUrl.Descendants("ITEM");
 
-            foreach (XElement item in siteUrl)
+            foreach (var item in siteUrl)
             {
                 var objSiteUrl = new SiteUrl
                 {
@@ -525,19 +468,13 @@ public class TraceController : BaseController
             ViewBag.SiteUrl = listSiteUrl;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Site_InsertWithSiteURL.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Site_InsertWithSiteURL.cshtml");
     }
 
-    /// <summary>
-    /// Get update menu item log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPMenuItemUpdate(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_MenuItem_Update)
         {
@@ -608,18 +545,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update menu item status log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPMenuItemUpdateStatus(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_MenuItem_UpdateStatus)
         {
@@ -635,19 +567,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update function log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPFunctionUpdate(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Function_Update
             || log.ActionId == (int)LogAction.NAP_Function_Duplicate)
@@ -719,18 +645,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update function status log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPFunctionUpdateStatus(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Function_UpdateStatus)
         {
@@ -746,19 +667,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update site log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPSiteUpdate(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Site_Update)
         {
@@ -808,18 +723,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update site status log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPSiteUpdateStatus(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Site_UpdateStatus)
         {
@@ -835,18 +745,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update group log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPGroupUpdate(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Group_Update)
         {
@@ -875,18 +780,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update group status log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPGroupUpdateStatus(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Group_UpdateStatus)
         {
@@ -902,18 +802,13 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get update customer log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
     public PartialViewResult NAPCustUpdate(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data ?? "<ROOT/>");
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data ?? "<ROOT/>");
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Cust_Update)
         {
@@ -950,30 +845,22 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAPLogUpdate.cshtml");
+        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    /// <summary>
-    /// Get site URL log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPSiteUrl(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
-        // NAP_Site_UpdateSiteURL || NAP_Site_InsertSiteURL || NAP_Site_UpdateDefaultSiteURL
         if (log.ActionId == (int)LogAction.NAP_Site_UpdateSiteURL
             || log.ActionId == (int)LogAction.NAP_Site_InsertSiteURL
             || log.ActionId == (int)LogAction.NAP_Site_UpdateDefaultSiteURL)
         {
-            // Old data
-            string strUrlOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
+            var strUrlOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
             var listSiteUrlOld = new List<SiteUrl>();
-            XDocument documentSiteUrlOld = XDocument.Parse(strUrlOld);
+            var documentSiteUrlOld = XDocument.Parse(strUrlOld);
             var siteUrlOld = documentSiteUrlOld.Descendants("ITEM");
 
             foreach (var item in siteUrlOld)
@@ -990,11 +877,10 @@ public class TraceController : BaseController
 
             ViewBag.SiteUrlOld = listSiteUrlOld;
 
-            // New data
-            string strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
+            var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
             var listSiteUrl = new List<SiteUrl>();
-            XDocument documentSiteUrl = XDocument.Parse(strUrl);
+            var documentSiteUrl = XDocument.Parse(strUrl);
             var siteUrl = documentSiteUrl.Descendants("ITEM");
 
             foreach (var item in siteUrl)
@@ -1012,32 +898,22 @@ public class TraceController : BaseController
             ViewBag.SiteUrl = listSiteUrl;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Site_Url.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Site_Url.cshtml");
     }
 
-    /// <summary>
-    /// Get assign permission log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed")]
-    [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Reviewed", Scope = "method")]
     public PartialViewResult NAPAssignPermission(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
-        // NAP_Group_AssignFunction || NAP_User_AssignFunction
         if (log.ActionId == (int)LogAction.NAP_Group_AssignFunction
             || log.ActionId == (int)LogAction.NAP_User_AssignFunction
             || log.ActionId == (int)LogAction.NAP_Function_CopyPermission)
         {
-            // Get function list
-            int siteId = Convert.ToInt32(elementNew.Attribute("SiteId").Value);
+            var siteId = Convert.ToInt32(elementNew.Attribute("SiteId").Value);
 
             ViewBag.FunctionList = _functionService.GetBySiteInHierarchy(siteId, Environment, true);
 
-            // Old data
 
             if (elementOld.Attribute("Value") != null)
             {
@@ -1049,7 +925,6 @@ public class TraceController : BaseController
                 }
             }
 
-            // New data
             if (elementNew.Attribute("Value") != null)
             {
                 var strFunctionPolicy = elementNew.Attribute("Value").Value.DecodeXMLValue();
@@ -1067,20 +942,20 @@ public class TraceController : BaseController
 
         #endregion View log
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Assign_Permission.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Assign_Permission.cshtml");
     }
 
     private static Hashtable GetNewFunctionPolicyList(string strFunctionPolicy)
     {
         var hashNewPolicy = new Hashtable();
 
-        XDocument documentFunctionPolicy = XDocument.Parse(strFunctionPolicy);
-        IEnumerable<XElement> functionPolicy = documentFunctionPolicy.Descendants("ITEM");
+        var documentFunctionPolicy = XDocument.Parse(strFunctionPolicy);
+        var functionPolicy = documentFunctionPolicy.Descendants("ITEM");
 
-        foreach (XElement item in functionPolicy)
+        foreach (var item in functionPolicy)
         {
-            short id = Convert.ToInt16(item.Attribute("FunctionId").Value);
-            int policy = Convert.ToInt32(item.Attribute("Policy").Value);
+            var id = Convert.ToInt16(item.Attribute("FunctionId").Value);
+            var policy = Convert.ToInt32(item.Attribute("Policy").Value);
 
             if (!hashNewPolicy.Contains(id))
             {
@@ -1095,9 +970,9 @@ public class TraceController : BaseController
     {
         var listFunctionPolicyOld = new List<FunctionPolicy>();
         var documentFunctionPolicy = XDocument.Parse(strFunctionPolicy);
-        IEnumerable<XElement> functionPolicy = documentFunctionPolicy.Descendants("ITEM");
+        var functionPolicy = documentFunctionPolicy.Descendants("ITEM");
 
-        foreach (XElement item in functionPolicy)
+        foreach (var item in functionPolicy)
         {
             var objFunctionPolicy = new FunctionPolicy
             {
@@ -1114,27 +989,20 @@ public class TraceController : BaseController
         return listFunctionPolicyOld;
     }
 
-    /// <summary>
-    /// Get assign site log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPAssignSite(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_User_AssignSite)
         {
-            // Old data
             if (elementOld.Attribute("Value") != null
                 && !string.IsNullOrWhiteSpace(elementOld.Attribute("Value").Value))
             {
-                string strUrlOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
+                var strUrlOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
                 var listSiteUrlOld = new List<SiteLevel>();
-                XDocument documentSiteUrlOld = XDocument.Parse(strUrlOld);
+                var documentSiteUrlOld = XDocument.Parse(strUrlOld);
                 var siteUrlOld = documentSiteUrlOld.Descendants("ITEM");
 
                 foreach (var item in siteUrlOld)
@@ -1155,13 +1023,12 @@ public class TraceController : BaseController
                 ViewBag.SiteUrlOld = listSiteUrlOld;
             }
 
-            // New data
             if (elementNew.Attribute("Value") != null)
             {
-                string strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
+                var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
                 var listSiteUrl = new List<SiteLevel>();
-                XDocument documentSiteUrl = XDocument.Parse(strUrl);
+                var documentSiteUrl = XDocument.Parse(strUrl);
                 var siteUrl = documentSiteUrl.Descendants("ITEM");
                 foreach (var item in siteUrl)
                 {
@@ -1182,19 +1049,14 @@ public class TraceController : BaseController
             }
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Assign_Site.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Assign_Site.cshtml");
     }
 
-    /// <summary>
-    /// Assign new site.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>The partial view result.</returns>
     public PartialViewResult NAPAssignNewSite(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
+        var elementNew = XElement.Parse(log.Data);
 
-        if (log.ActionId == (int)LogAction.NAP_User_AssignNewSite && elementNew != null)
+        if (log.ActionId == (int)LogAction.NAP_User_AssignNewSite)
         {
             var newSite = new SiteLevel
             {
@@ -1210,18 +1072,13 @@ public class TraceController : BaseController
             ViewBag.NewLog = newSite;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Assign_New_Site.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Assign_New_Site.cshtml");
     }
 
-    /// <summary>
-    /// Update site.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>The partial view result.</returns>
     public PartialViewResult NAPUpdateSite(LogExecSp log)
     {
-        XElement newElement = XElement.Parse(log.Data);
-        XElement oldElement = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var newElement = XElement.Parse(log.Data);
+        var oldElement = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (oldElement.Attribute("UserId") != null)
         {
@@ -1265,27 +1122,20 @@ public class TraceController : BaseController
             ViewBag.newSite = newSite;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Update_Site.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Update_Site.cshtml");
     }
 
-    /// <summary>
-    /// Get assign permission to users log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPFunctionAssignToUsers(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Function_AssignFunctionToUsers)
         {
-            // Old data
-            string strUserPolicyOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
+            var strUserPolicyOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
             var listUserPolicyOld = new List<UserPolicy>();
-            XDocument documentUserPolicyOld = XDocument.Parse(strUserPolicyOld);
+            var documentUserPolicyOld = XDocument.Parse(strUserPolicyOld);
             var userPolicyOld = documentUserPolicyOld.Descendants("ITEM");
 
             foreach (var item in userPolicyOld)
@@ -1303,11 +1153,10 @@ public class TraceController : BaseController
 
             ViewBag.UserPolicyOld = listUserPolicyOld;
 
-            // New data
-            string strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
+            var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
             var listUserPolicy = new List<UserPolicy>();
-            XDocument documentUserPolicy = XDocument.Parse(strUrl);
+            var documentUserPolicy = XDocument.Parse(strUrl);
             var userPolicyNew = documentUserPolicy.Descendants("ITEM");
 
             foreach (var item in userPolicyNew)
@@ -1326,27 +1175,20 @@ public class TraceController : BaseController
             ViewBag.UserPolicyNew = listUserPolicy;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Function_AssignToUsers.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Function_AssignToUsers.cshtml");
     }
 
-    /// <summary>
-    /// Get assign permission to groups log detail.
-    /// </summary>
-    /// <param name="log">Execute SP log.</param>
-    /// <returns>Partial view result.</returns>
-    [SuppressMessage("StyleCop.CSharp.StylecopPlus.Rules", "SP2101:MethodMustNotContainMoreLinesThan", Justification = "Reviewed. Suppression is OK here.")]
     public PartialViewResult NAPFunctionAssignFunctionToGroups(LogExecSp log)
     {
-        XElement elementNew = XElement.Parse(log.Data);
-        XElement elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var elementNew = XElement.Parse(log.Data);
+        var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.NAP_Function_AssignFunctionToGroups)
         {
-            // Old data
-            string strGroupPolicyOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
+            var strGroupPolicyOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
             var listGroupPolicyOld = new List<GroupPolicy>();
-            XDocument documentGroupPolicyOld = XDocument.Parse(strGroupPolicyOld);
+            var documentGroupPolicyOld = XDocument.Parse(strGroupPolicyOld);
             var groupPolicyOld = documentGroupPolicyOld.Descendants("ITEM");
 
             foreach (var item in groupPolicyOld)
@@ -1364,11 +1206,10 @@ public class TraceController : BaseController
 
             ViewBag.GroupPolicyOld = listGroupPolicyOld;
 
-            // New data
-            string strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
+            var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
             var listGroupPolicy = new List<GroupPolicy>();
-            XDocument documentGroupPolicy = XDocument.Parse(strUrl);
+            var documentGroupPolicy = XDocument.Parse(strUrl);
             var groupPolicyNew = documentGroupPolicy.Descendants("ITEM");
 
             foreach (var item in groupPolicyNew)
@@ -1387,19 +1228,14 @@ public class TraceController : BaseController
             ViewBag.GroupPolicyNew = listGroupPolicy;
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_NAP_Function_AssignToGroups.cshtml");
+        return PartialView("~/Views/Trace/_NAP_Function_AssignToGroups.cshtml");
     }
 
-    /// <summary>
-    /// Get revoked sites when run job revoke user permission
-    /// </summary>
-    /// <param name="log"></param>
-    /// <returns></returns>
     public PartialViewResult TaskNAPRevokeUserPermission(LogExecSp log)
     {
         var taskNAPRevokeUserPermissionVM = new TaskNAPRevokeUserPermissionVM();
 
-        XElement element = XElement.Parse(log.OldData ?? "<ROOT/>");
+        var element = XElement.Parse(log.OldData ?? "<ROOT/>");
 
         if (log.ActionId == (int)LogAction.Task_NAP_RevokeUserPermission && element != null)
         {
@@ -1407,9 +1243,9 @@ public class TraceController : BaseController
 
             if (!string.IsNullOrWhiteSpace(elementValue))
             {
-                IEnumerable<XElement> items = XDocument.Parse(elementValue).Descendants("ITEM");
+                var items = XDocument.Parse(elementValue).Descendants("ITEM");
 
-                foreach (XElement item in items)
+                foreach (var item in items)
                 {
                     var revokedSite = new RevokedSite
                     {
@@ -1422,6 +1258,6 @@ public class TraceController : BaseController
             }
         }
 
-        return PartialView("~/Areas/UserControl/Views/Trace/_Task_NAP_RevokeUserPermission.cshtml", taskNAPRevokeUserPermissionVM);
+        return PartialView("~/Views/Trace/_Task_NAP_RevokeUserPermission.cshtml", taskNAPRevokeUserPermissionVM);
     }
 }

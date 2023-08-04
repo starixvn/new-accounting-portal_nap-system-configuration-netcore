@@ -11,7 +11,6 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 
 services.AddFanex(configuration);
-services.AddFanex(configuration);
 services.AddNapServices(configuration);
 services.AddNapAdminCore();
 services.AddNapSession(configuration);
@@ -42,13 +41,13 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+NapClientManager
+    .UseConfig(app.Services.GetRequiredService<INapSettings>())
+    .UseSession(app.Services.GetRequiredService<INapSession>());
+
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-NapClientManager
-    .UseConfig(app.Services.GetRequiredService<INapSettings>())
-    .UseSession(app.Services.GetRequiredService<INapSession>());
 
 app.Run();

@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Site;
 
 using Fanex.Data.Repository;
@@ -6,7 +5,7 @@ using Fanex.Data.Repository;
 public class GetSiteUrlByUserCriteria : CriteriaBase
 {
     public int UserId { get; set; }
-        
+
     public string Environment { get; set; }
 
     public override string GetSettingKey()

@@ -1,4 +1,4 @@
-﻿namespace NapAdmin.ViewModels.User;
+namespace NapAdmin.ViewModels.User;
 
 public class ReturnData
 {

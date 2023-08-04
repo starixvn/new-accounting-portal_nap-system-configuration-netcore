@@ -1,12 +1,11 @@
 ﻿@using System.Collections
-@using Fanex.NAP.Admin.Core.Models
 @model PagerList<SetupOTPItem>
 @{
     ViewBag.Title = "Set up OTP";
     var hasEditRight = (bool)ViewBag.HasEditRight;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/otp")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/otp/manage.css" />
 }
 @section Headline {
     <span class="title">
@@ -25,17 +24,17 @@
     <div class="form-group" style="display:none">
         @Html.Label("System", "System")
         @Html.DropDownList("System", new List<SelectListItem> {
-         new SelectListItem { Text = "All", Value = "", Selected = true },
-         new SelectListItem { Text = "NAP", Value = "NAP"  },
-         new SelectListItem { Text = "NAP SC", Value = "NAP SC"  }
+         new() { Text = "All", Value = "", Selected = true },
+         new() { Text = "NAP", Value = "NAP"  },
+         new() { Text = "NAP SC", Value = "NAP SC"  }
      })
     </div>
     <div class="form-group">
         @Html.Label("Status", "Status")
         @Html.DropDownList("Status", new List<SelectListItem> {
-        new SelectListItem { Text = "All", Value = "0"  },
-        new SelectListItem { Text = "Active", Value = "1" , Selected = true },
-        new SelectListItem { Text = "Closed", Value = "2"  }
+        new() { Text = "All", Value = "0"  },
+        new() { Text = "Active", Value = "1" , Selected = true },
+        new() { Text = "Closed", Value = "2"  }
     })
     </div>
 
@@ -75,10 +74,10 @@
         </tr>
     </thead>
     <tbody id="grid-user">
-        @{ int i = 0;}
+        @{ var i = 0;}
         @foreach (var item in Model)
         {
-            string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+            var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
             <tr @Html.Raw(rowCss)>
                 <td class="text-center">
@@ -105,7 +104,7 @@
                 <td class="text-center">
                     @if (hasEditRight)
                     {
-                        string activateText = item.IgnoreOTP ? "Apply OTP" : "Ignore OTP";
+                        var activateText = item.IgnoreOTP ? "Apply OTP" : "Ignore OTP";
 
                         @Html.CheckBox(string.Format("chk-ignore-otp-{0}", item.CustId), item.IgnoreOTP,
                             new
@@ -118,7 +117,7 @@
                     }
                     else if (item.IgnoreOTP)
                     {
-                        <img src="~/areas/usercontrol/themes/nap/img/blank.png" alt="" class="ico-tick" />
+                        <img src="~/themes/nap/img/blank.png" alt="" class="ico-tick" />
                     }
                 </td>
                 <td class="text-center">
@@ -160,12 +159,12 @@
                     <span class="items-per-page-wrp">
                         @ViewResources.PageSize
                         @Html.DropDownList("items-per-page", new List<SelectListItem> {
-                            new SelectListItem { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
-                            new SelectListItem { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
-                            new SelectListItem { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() }
+                            new() { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
+                            new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
+                            new() { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() }
                         }, new { id = string.Empty, @class = "items-per-page" })
                     </span>
-                    @Html.Pager(Model.TotalItemCount, Model.PageSize, Model.CurrentPageIndex, new PagerOptions()
+                   @* @Html.Pager(Model.TotalItemCount, Model.PageSize, Model.CurrentPageIndex, new PagerOptions()
                {
                    PageIndexParameterName = "id",
                    ShowFirstLast = true,
@@ -175,12 +174,12 @@
                    NumericPagerItemCount = 20,
                    CurrentPagerItemTemplate = "<a disabled='disabled'>{0}</a>",
                    CssClass = "jpages"
-               })
+               })*@
                 }
             </td>
         </tr>
     </tfoot>
 </table>
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/User/SetupOTP.js" type="text/javascript"></script>
+    <script src="~/scripts/User/SetupOTP.js" type="text/javascript"></script>
 }

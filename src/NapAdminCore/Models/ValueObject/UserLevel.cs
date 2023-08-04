@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Models.ValueObject;
 
 using System;
@@ -10,6 +9,8 @@ public class UserLevel
     public User User { get; set; }
 
     public bool IsActive { get; set; }
+
+    public int Status { get; set; }
 
     public DateTime LastLoginDate { get; set; }
 

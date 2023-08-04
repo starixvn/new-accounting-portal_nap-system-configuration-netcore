@@ -21,10 +21,10 @@
     </thead>
     <tbody>
         @{
-            int i = 1;
+            var i = 1;
             foreach (GroupPolicy item in listGroupOld)
             {
-                string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
         
             <tr @Html.Raw(rowCss)>
                 <td>
@@ -62,7 +62,7 @@
             i = 1;
             foreach (GroupPolicy item in ListGroupNew)
             {
-                string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
             <tr @Html.Raw(rowCss)>
                 <td>

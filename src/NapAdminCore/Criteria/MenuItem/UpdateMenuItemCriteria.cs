@@ -1,8 +1,8 @@
-
 namespace NapAdminCore.Criteria.MenuItem;
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Fanex.Data;
 using Fanex.Data.Repository;
 using Web;
@@ -42,6 +42,7 @@ public class UpdateMenuItemCriteria : CriteriaBase
     [Display(Name = "Policy", ResourceType = typeof(ViewResources))]
     public int Policy { get; set; }
 
+    [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed")]
     [Display(Name = "URL", ResourceType = typeof(ViewResources))]
     [StringLength(200, MinimumLength = 0,
         ErrorMessageResourceName = "InputLengthValidationMsg", ErrorMessageResourceType = typeof(ViewResources))]

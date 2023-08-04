@@ -1,14 +1,13 @@
-
 namespace NapAdminCore.Criteria.Site;
 
-using Business;
 using Fanex.Data.Repository;
+using Models;
 
 public class GetAllSiteCriteria : CriteriaBase
 {
     public GetAllSiteCriteria()
     {
-        Environment = Constant.Uat;
+        this.Environment = AdminConstant.Uat;
     }
 
     public string Environment { get; set; }

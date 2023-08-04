@@ -52,9 +52,9 @@ public interface IUserService
 
     int GetUserSiteFunctionKeyPolicy(int userId, int siteId, string functionKey);
 
-    bool HasPermissionUserSiteFunctionKey(int userId, int siteId, string functionKey, Constant.Policy policy);
+    bool HasPermissionUserSiteFunctionKey(int userId, int siteId, string functionKey, AdminConstant.Policy policy);
 
-    Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite = null);
+    Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite);
 
     ICommandResult ResetPassword(IUser user);
 
@@ -95,17 +95,18 @@ public interface IUserService
     string UserSSOGetTime();
 }
 
-public class UserService : BaseService, IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;
     private readonly ITraceRepository traceRepository;
     private readonly IDynamicRepository dynamicRepository;
-
-    public UserService(IUserRepository repository, ITraceRepository traceRepository, IDynamicRepository dynamicRepository)
+    private readonly LoggedUserContext loggedUserContext;
+    public UserService(IUserRepository repository, ITraceRepository traceRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     {
         userRepository = repository;
         this.traceRepository = traceRepository;
         this.dynamicRepository = dynamicRepository;
+        this.loggedUserContext = loggedUserContext;
     }
 
     public IUser GetById(int id)
@@ -203,7 +204,7 @@ public class UserService : BaseService, IUserService
 
     public ICommandResult Insert(InsertCustCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return userRepository.Insert(criteria, logCriteria);
     }
@@ -227,28 +228,28 @@ public class UserService : BaseService, IUserService
             IsActive = isActive
         };
 
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return userRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult AssignSite(AssignSiteUserCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return userRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult UpdateSite(UpdateSiteToUserCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return userRepository.Update(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunction(AssignFunctionUserCriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return userRepository.Update(criteria, logCriteria);
     }
@@ -360,7 +361,7 @@ public class UserService : BaseService, IUserService
 
     public ICommandResult InsertOrUpdate(ICriteria criteria)
     {
-        var logCriteria = GetLogExecSpCriteria();
+        var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         if (criteria.IsValid() && logCriteria.IsValid())
         {
@@ -386,7 +387,7 @@ public class UserService : BaseService, IUserService
         return null;
     }
 
-    public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite = null)
+    public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite)
     {
         var criteria = new GetUserListSiteFunctionKeyPolicyUserCriteria
         {
@@ -403,7 +404,7 @@ public class UserService : BaseService, IUserService
         return null;
     }
 
-    public bool HasPermissionUserSiteFunctionKey(int userId, int siteId, string functionKey, Constant.Policy policy)
+    public bool HasPermissionUserSiteFunctionKey(int userId, int siteId, string functionKey, AdminConstant.Policy policy)
     {
         var tempPolicy = GetUserSiteFunctionKeyPolicy(userId, siteId, functionKey);
 

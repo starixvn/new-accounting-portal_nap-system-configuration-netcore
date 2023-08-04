@@ -1,4 +1,4 @@
-﻿using ONEbook.UM.AspNetCore.Filters;
+using ONEbook.UM.AspNetCore.Filters;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 using ONEbook.UM.Services;

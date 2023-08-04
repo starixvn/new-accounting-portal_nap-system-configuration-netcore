@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Models.ValueObject;
 
 using System;
@@ -6,7 +5,7 @@ using System;
 public class LogFunction
 {
     public int Id { get; set; }
-               
+
     public string IP { get; set; }
 
     public DateTime LogDate { get; set; }

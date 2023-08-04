@@ -1,5 +1,4 @@
-﻿@using Fanex.NAP.Core.Criteria.Function
-@using Fanex.NAP.Core.Business
+﻿
 @model DuplicateFunctionCriteria
 @{
     ViewBag.Title = ViewResources.Duplicate_Function;
@@ -8,7 +7,7 @@
     var viewFlags = (ViewFlags)ViewBag.ViewFlags;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/themes/BasicStyles")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/style.css" />
 }
 @section Headline {
     <span class="title">
@@ -16,7 +15,7 @@
         @string.Format("Duplicate '{0}' Function", ViewBag.OriginFunctionName)
     </span>
     <div class="button-action">
-    @if (Model.ReturnSiteId == null)
+    @if (Model.ReturnSiteId == 0)
     { 
         @Html.ActionLink("← " + ViewResources.Back_To_List, "Manage", "Function", null, new { @class = "back-button" })
     }
@@ -122,10 +121,10 @@
     @Html.HiddenFor(m => m.ReturnSiteId)
 }
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/Function/Duplicate.js" type="text/javascript"></script>
+    <script src="~/scripts/Function/Duplicate.js" type="text/javascript"></script>
     @if (success)
     {
-        string dialogMsg = string.Format(ViewResources.AddSuccessMsg, ViewResources.Function + " '" + Model.FunctionName + "'", 3);
+        var dialogMsg = string.Format(ViewResources.AddSuccessMsg, ViewResources.Function + " '" + Model.FunctionName + "'", 3);
 
         <script type="text/javascript">
             $(function () {

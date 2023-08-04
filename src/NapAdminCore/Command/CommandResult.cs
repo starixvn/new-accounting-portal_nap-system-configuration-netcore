@@ -12,9 +12,6 @@ public interface ICommandResult
 
 public class CommandResultBase : ICommandResult
 {
-    private dynamic _code;
-    private dynamic _message;
-
     public CommandResultBase()
         : this(string.Empty, string.Empty)
     {
@@ -22,21 +19,13 @@ public class CommandResultBase : ICommandResult
 
     public CommandResultBase(dynamic code, dynamic message)
     {
-        _code = code;
-        _message = message;
+        Code = code;
+        Message = message;
     }
 
-    public dynamic Code
-    {
-        get => _code;
-        set => _code = value;
-    }
+    public dynamic Code { get; set; }
 
-    public dynamic Message
-    {
-        get => _message;
-        set => _message = value;
-    }
+    public dynamic Message { get; set; }
 
     public virtual bool IsSuccessful => true;
 }

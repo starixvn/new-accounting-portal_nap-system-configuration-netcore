@@ -28,6 +28,8 @@ public interface IFunctionRepository
     ICommandResult Update(ICriteria criteria, ICriteria logCriteria);
 
     ICommandResult Delete(ICriteria criteria, ICriteria logCriteria);
+
+    ICommandResult CopyPermission(CopyPermissionCriteria criteria, ICriteria logCriteria);
 }
 
 public class FunctionRepository : BaseRepository<IFunction>, IFunctionRepository
@@ -201,5 +203,18 @@ public class FunctionRepository : BaseRepository<IFunction>, IFunctionRepository
     public ICommandResult Delete(ICriteria criteria, ICriteria logCriteria)
     {
         throw new NotImplementedException();
+    }
+
+    public ICommandResult CopyPermission(CopyPermissionCriteria criteria, ICriteria logCriteria)
+    {
+        var hashtable = HashtableExtensions.ToHashtable(criteria, logCriteria, new ResultCriteria());
+
+
+        using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
+
+        db.ExecuteNonQuery(hashtable);
+
+        return this.GetCommandResult(hashtable);
+
     }
 }

@@ -19,7 +19,7 @@
     var isShowSite = siteId != 0;
 }
 @section Head {
-    @Styles.Render("~/Areas/UserControl/user")
+    <link type="text/css" rel="stylesheet" href="~/themes/nap/user/manage.css" />
 }
 @section Headline {
     <span class="title">
@@ -67,10 +67,10 @@
             <div class="form-group">
                 @Html.Label("StatusId", "Status")
                 @Html.DropDownList("StatusId", new List<SelectListItem> {
-                new SelectListItem { Text = "All", Value = "0"  },
-                new SelectListItem { Text = "Active", Value = "1" , Selected = true },
-                new SelectListItem { Text = "Inactive", Value = "2"  },
-                new SelectListItem { Text = "Closed", Value = "3"  }
+                new() { Text = "All", Value = "0"  },
+                new() { Text = "Active", Value = "1" , Selected = true },
+                new() { Text = "Inactive", Value = "2"  },
+                new() { Text = "Closed", Value = "3"  }
             })
             </div>
     }
@@ -129,10 +129,10 @@
     <tbody id="grid-user">
         @if (!ReferenceEquals(Model, null) && Model.Count() > 0)
             {
-                int i = 0;
+                var i = 0;
                 foreach (var item in Model)
                 {
-                    string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                    var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
                 <tr @Html.Raw(rowCss)>
                     <td class="text-center">
@@ -181,24 +181,24 @@
                     </td>
                     <td class="text-center">
                         @{
-                            var status = ((Constant.UserStatus)item.Status);
+                            var status = ((AdminConstant.UserStatus)item.Status);
 
-                            if (status != Constant.UserStatus.All)
+                            if (status != AdminConstant.UserStatus.All)
                             {
-                                <div class="@(status == Constant.UserStatus.Closed ? "text-danger": string.Empty)">
+                                <div class="@(status == AdminConstant.UserStatus.Closed ? "text-danger": string.Empty)">
                                     @status
                                 </div>
                             }
                         }
                     </td>
-                    @if (siteId != Constant.SearchAllSite)
+                    @if (siteId != AdminConstant.SearchAllSite)
                     {
                         if (viewFlags.HasEditRight || viewFlags.HasAssignSiteRight || viewFlags.HasAssignFunctionRight)
                         {
-                            bool visible = item.User.Id == userId || level > item.Level
-                                || (item.Level == (int)Constant.Level.User && level == item.Level);
+                            var visible = item.User.Id == userId || level > item.Level
+                                || (item.Level == (int)AdminConstant.Level.User && level == item.Level);
 
-                            bool isSiteAdmin = level >= (int)Constant.Level.SiteAdmin;
+                            var isSiteAdmin = level >= (int)AdminConstant.Level.SiteAdmin;
 
                             <td class="text-center">
                                 <div class="action-wrp">
@@ -286,11 +286,11 @@
                     {
                         if (!ReferenceEquals(item.Site, null))
                         {
-                            viewFlags.HasEditRight = (hashManageUser.Contains(item.Site.Id) ? ((int)hashManageUser[item.Site.Id] >= (int)Constant.Policy.Host) : false)
+                            viewFlags.HasEditRight = (hashManageUser.Contains(item.Site.Id) ? ((int)hashManageUser[item.Site.Id] >= (int)AdminConstant.Policy.Host) : false)
                                                         && viewFlagsCurrentSite.HasManageUserRight;
-                            viewFlags.HasAssignSiteRight = (hashAssignSite.Contains(item.Site.Id) ? ((int)hashAssignSite[item.Site.Id] >= (int)Constant.Policy.Read) : false)
+                            viewFlags.HasAssignSiteRight = (hashAssignSite.Contains(item.Site.Id) ? ((int)hashAssignSite[item.Site.Id] >= (int)AdminConstant.Policy.Read) : false)
                                                         && viewFlagsCurrentSite.HasAssignSiteRight;
-                            viewFlags.HasAssignFunctionRight = (hashAssignFunction.Contains(item.Site.Id) ? ((int)hashAssignFunction[item.Site.Id] >= (int)Constant.Policy.Read) : false)
+                            viewFlags.HasAssignFunctionRight = (hashAssignFunction.Contains(item.Site.Id) ? ((int)hashAssignFunction[item.Site.Id] >= (int)AdminConstant.Policy.Read) : false)
                                                         && viewFlagsCurrentSite.HasAssignFunctionRight;
                         }
                         else
@@ -302,15 +302,15 @@
 
                         if (viewFlags.HasEditRight || viewFlags.HasAssignSiteRight || viewFlags.HasAssignFunctionRight)
                         {
-                            bool visible =
+                            var visible =
                                 (isPortalAdmin)
                                 ||
                                 (item.User.Id == userId || (level > item.Level || !item.IsActive)
-                                || (item.User.Id == userId || item.Level == (int)Constant.Level.User) && level == item.Level);
+                                || (item.User.Id == userId || item.Level == (int)AdminConstant.Level.User) && level == item.Level);
 
-                            int returnSiteId = (int)Constant.SearchAllSite;
+                            var returnSiteId = (int)AdminConstant.SearchAllSite;
                             var currentSite = item.Site != null ? (listSiteLevel.Where(s => s.Site.Id == item.Site.Id).FirstOrDefault()) : null;
-                            bool isSiteAdmin = currentSite != null ? currentSite.Level >= (int)Constant.Level.SiteAdmin : false;
+                            var isSiteAdmin = currentSite != null ? currentSite.Level >= (int)AdminConstant.Level.SiteAdmin : false;
 
                             <td class="text-center">
                                 <div class="action-wrp">
@@ -319,7 +319,7 @@
                                         <span class="btn-action">@ViewResources.Action</span>
                                             <div class="relative">
                                                 <ul class="actions">
-                                                    @if (viewFlags.HasEditRight && visible && item.Level != (int)Constant.Level.SiteAdmin || item.User.Id == userId)
+                                                    @if (viewFlags.HasEditRight && visible && item.Level != (int)AdminConstant.Level.SiteAdmin || item.User.Id == userId)
                                                     {
                                                         <li>
                                                             @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Edit, item.User.Username, ViewResources.Details),
@@ -421,12 +421,12 @@
                     <span class="items-per-page-wrp">
                         @ViewResources.PageSize
                         @Html.DropDownList("items-per-page", new List<SelectListItem> {
-                            new SelectListItem { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
-                            new SelectListItem { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
-                            new SelectListItem { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() }
+                            new() { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
+                            new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
+                            new() { Value = "30", Text = "30", Selected = "30" == Model.PageSize.ToString() }
                         }, new { id = string.Empty, @class = "items-per-page" })
                     </span>
-                        @Html.Pager(Model.TotalItemCount, Model.PageSize, Model.CurrentPageIndex, new PagerOptions()
+                        @*@Html.Pager(Model.TotalItemCount, Model.PageSize, Model.CurrentPageIndex, new PagerOptions()
                    {
                        PageIndexParameterName = "id",
                        ShowFirstLast = true,
@@ -436,12 +436,12 @@
                        NumericPagerItemCount = 20,
                        CurrentPagerItemTemplate = "<a disabled='disabled'>{0}</a>",                       
                        CssClass = "jpages"
-                   })
+                   })*@
                 }
             </td>
         </tr>
     </tfoot>
 </table>
 @section Foot {
-    <script src="~/Areas/UserControl/scripts/User/Manage.js" type="text/javascript"></script>
+    <script src="~/scripts/User/Manage.js" type="text/javascript"></script>
 }

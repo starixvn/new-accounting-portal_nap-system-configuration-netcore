@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Function;
 
 using Fanex.Data.Repository;
@@ -24,6 +23,6 @@ public class GetByParentKeyAndSiteCriteria : CriteriaBase
 
     public override bool IsValid()
     {
-        return SiteId > 0;
+        return this.SiteId > 0;
     }
 }

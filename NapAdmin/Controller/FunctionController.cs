@@ -1,13 +1,22 @@
-﻿namespace NapAdmin.Controller;
+namespace NapAdmin.Controller;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Fanex.NAP.Core.Business;
+using Fanex.NAP.Client.Attributes;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Business;
+using Fanex.NAP.Client.Helpers.Web;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NapAdminCore.Configuration;
+using NapAdminCore.Criteria.Function;
+using NapAdminCore.Criteria.User;
+using NapAdminCore.Helpers;
+using NapAdminCore.Models;
+using NapAdminCore.Models.ValueObject;
+using NapAdminCore.Service;
+using NapAdminCore.Web;
 
-/// <summary>
-/// Function controller.
-/// </summary>
 [NapSuperAuth]
 public class FunctionController : BaseController
 {
@@ -21,33 +30,26 @@ public class FunctionController : BaseController
     #endregion Members
 
     #region Constructors
-
-    public FunctionController()
-        : this(null, null, null, null)
-    {
-    }
-
+    
     public FunctionController(
         IFunctionService functionService,
         ISiteService siteService,
         IUserService userService,
-        IGroupService groupService)
+        IGroupService groupService,
+        INapSession napSession,
+        INapSettings napSettings) :
+        base(napSession, napSettings, userService)
     {
-        _functionService = functionService ?? new FunctionService { ServiceContext = ServiceContext };
-        _siteService = siteService ?? new SiteService { ServiceContext = ServiceContext };
-        _userService = userService ?? new UserService { ServiceContext = ServiceContext };
-        _groupService = groupService ?? new GroupService { ServiceContext = ServiceContext };
+        _functionService = functionService;
+        _siteService = siteService;
+        _userService = userService;
+        _groupService = groupService;
     }
 
     #endregion Constructors
 
     #region Manage
 
-    /// <summary>
-    /// Manage function.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Read)]
     public ActionResult Manage(int? siteId)
@@ -63,11 +65,6 @@ public class FunctionController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Manage function.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Read)]
     public ActionResult Manage(GetBySiteFunctionCriteria criteria)
@@ -81,11 +78,6 @@ public class FunctionController : BaseController
 
     #region Add new
 
-    /// <summary>
-    /// Add new function.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(int? siteId = null)
@@ -101,11 +93,6 @@ public class FunctionController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Add new function.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(InsertFunctionCriteria criteria)
@@ -114,9 +101,8 @@ public class FunctionController : BaseController
 
         if (ModelState.IsValid)
         {
-            // checks duplicate function name
             criteria.FunctionName = criteria.FunctionName.Trim();
-            IFunction function = _functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
+            var function = _functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
 
             if (function != null)
             {
@@ -124,7 +110,6 @@ public class FunctionController : BaseController
                 return View(criteria);
             }
 
-            // checks duplicate function key
             criteria.FunctionKey = ConvertToKey(criteria.FunctionName);
             function = _functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId);
 
@@ -134,16 +119,14 @@ public class FunctionController : BaseController
                 return View(criteria);
             }
 
-            // adds function
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = (criteria.ParentId == null || criteria.ParentId == 0) ? null : criteria.ParentName;
-            criteria.CreatedBy = CurrentSession.UserId;
+            criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
-            // inserts function and assigns it to all site-admins of the current site and all portal admins
-            ICommandResult result = _functionService.Insert(criteria);
+            var result = _functionService.Insert(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -156,26 +139,20 @@ public class FunctionController : BaseController
 
     #region Duplicate Function
 
-    /// <summary>
-    /// Duplicate function.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult Duplicate(int id, int? siteId = null)
     {
-        IFunction function = _functionService.GetById(id);
+        var function = _functionService.GetById(id);
 
         if (function == null)
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         ViewBag.OriginFunctionName = function.Name;
 
-        ISite site = _siteService.GetById(function.Site.Id);
+        var site = _siteService.GetById(function.Site.Id);
 
         var criteria = new DuplicateFunctionCriteria
         {
@@ -185,7 +162,7 @@ public class FunctionController : BaseController
             SiteId = SiteId,
             SiteName = site.Name,
             Readonly = function.Readonly,
-            ParentId = function.Parent != null ? (int?)function.Parent.Id : null,
+            ParentId = function.Parent?.Id,
             DisplayOrder = function.DisplayOrder,
             IsActive = function.IsActive,
             Environment = function.Environment,
@@ -197,11 +174,6 @@ public class FunctionController : BaseController
         return View(criteria);
     }
 
-    /// <summary>
-    /// Duplicate function.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult Duplicate(DuplicateFunctionCriteria criteria)
@@ -210,7 +182,7 @@ public class FunctionController : BaseController
 
         if (function == null)
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         ViewBag.OriginFunctionName = function.Name;
@@ -219,7 +191,6 @@ public class FunctionController : BaseController
 
         if (ModelState.IsValid)
         {
-            // checks duplicate function name
             criteria.FunctionName = criteria.FunctionName.Trim();
 
             if (_functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId) != null)
@@ -228,7 +199,6 @@ public class FunctionController : BaseController
                 return View(criteria);
             }
 
-            // checks duplicate function key
             criteria.FunctionKey = ConvertToKey(criteria.FunctionName);
 
             if (_functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId) != null)
@@ -237,16 +207,15 @@ public class FunctionController : BaseController
                 return View(criteria);
             }
 
-            // duplicates function
             criteria.DuplicateFunctionId = function.Id;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = (criteria.ParentId == null || criteria.ParentId == 0) ? null : criteria.ParentName;
-            criteria.CreatedBy = CurrentSession.UserId;
+            criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
-            ICommandResult result = _functionService.Duplicate(criteria);
+            var result = _functionService.Duplicate(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -259,21 +228,15 @@ public class FunctionController : BaseController
 
     #region Copy Permisison
 
-    /// <summary>
-    /// Copy permission.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult CopyPermission(int id, int? siteId = null)
     {
-        IFunction function = _functionService.GetById(id);
+        var function = _functionService.GetById(id);
 
         if (function == null)
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         var criteria = new CopyPermissionCriteria
@@ -286,38 +249,33 @@ public class FunctionController : BaseController
         };
 
         ViewBag.FunctionList =
-            this._functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
+            _functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
 
         return View(criteria);
     }
 
-    /// <summary>
-    /// Copy permission.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <returns>Action result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult CopyPermission(CopyPermissionCriteria criteria)
     {
-        IFunction function = _functionService.GetById(criteria.ToFunctionId);
+        var function = _functionService.GetById(criteria.ToFunctionId);
 
         if (function == null)
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         ViewBag.FunctionList =
-            this._functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
+            _functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
 
         if (ModelState.IsValid)
         {
-            criteria.ModifiedBy = CurrentSession.UserId;
+            criteria.ModifiedBy = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
-            ICommandResult result = _functionService.CopyPermission(criteria);
+            var result = _functionService.CopyPermission(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -330,18 +288,13 @@ public class FunctionController : BaseController
 
     #region Update
 
-    /// <summary>
-    /// Update function.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <returns>Action result.</returns>
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult Edit(int id)
     {
-        IFunction function = _functionService.GetById(id);
+        var function = _functionService.GetById(id);
 
-        if (object.ReferenceEquals(function, null))
+        if (ReferenceEquals(function, null))
         {
             return RedirectToAction("Manage");
         }
@@ -354,16 +307,15 @@ public class FunctionController : BaseController
             FunctionName = function.Name,
             FunctionKey = function.Key,
             Description = function.Description,
-            ParentId = function.Parent == null ? null : (int?)function.Parent.Id,
-            ParentName = function.Parent == null ? null : function.Parent.Name,
+            ParentId = function.Parent?.Id,
+            ParentName = function.Parent?.Name,
             Readonly = function.Readonly,
             DisplayOrder = function.DisplayOrder,
             IsActive = function.IsActive,
             Environment = function.Environment
         };
 
-        // get parent function list
-        IEnumerable<IFunction> functionList = _functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
+        var functionList = _functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
 
         ViewBag.ParentFunctionItemList = functionList
             .Where(f => f.Id != id && (f.Parent == null || f.Parent.Id != id))
@@ -379,20 +331,16 @@ public class FunctionController : BaseController
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-#pragma warning disable S1541 // Methods and properties should not be too complex
     public ActionResult Edit(UpdateFunctionCriteria criteria)
-#pragma warning restore S1541 // Methods and properties should not be too complex
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
     {
-        IFunction currentFunction = _functionService.GetById(criteria.FunctionId);
+        var currentFunction = _functionService.GetById(criteria.FunctionId);
 
         if (ReferenceEquals(currentFunction, null))
         {
             return RedirectToAction("Manage");
         }
 
-        IEnumerable<IFunction> functionList = _functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
+        var functionList = _functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
 
         ViewBag.ParentFunctionItemList = functionList.Select(s => new SelectListItem
         {
@@ -403,9 +351,8 @@ public class FunctionController : BaseController
 
         if (ModelState.IsValid)
         {
-            // checks Function Name duplication
             criteria.FunctionName = criteria.FunctionName.Trim();
-            IFunction function = _functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
+            var function = _functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
 
             if (function != null && function.Id != criteria.FunctionId)
             {
@@ -416,7 +363,6 @@ public class FunctionController : BaseController
                 return View(criteria);
             }
 
-            // checks Function Key duplication
             if (criteria.FunctionKey != null)
             {
                 function = _functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId);
@@ -433,18 +379,15 @@ public class FunctionController : BaseController
                 criteria.FunctionKey = ConvertToKey(criteria.FunctionName);
             }
 
-            // check for all user,group has permission on this function when CRUD change
             if (criteria.Crud < currentFunction.Crud &&
-                CurrentSession.Level != (int)Constant.Level.SiteAdmin &&
-                CurrentSession.Level != (int)Constant.Level.PortalAdmin)
+                NapSession.Level != (int)AdminConstant.Level.SiteAdmin &&
+                NapSession.Level != (int)AdminConstant.Level.PortalAdmin)
             {
-                // list user has host permission in this function
                 var listUsers = _userService.GetByFunctionAndSite(currentFunction.Id, currentFunction.Site.Id)
-                    .Where(u => u.Policy == (int)Constant.Policy.Host).ToList();
+                    .Where(u => u.Policy == (int)AdminConstant.Policy.Host).ToList();
 
-                // list group has host permission in this function
                 var listGroups = _groupService.GetByFunctionAndSite(currentFunction.Id, currentFunction.Site.Id)
-                    .Where(u => u.Policy == (int)Constant.Policy.Host).ToList();
+                    .Where(u => u.Policy == (int)AdminConstant.Policy.Host).ToList();
 
                 if (listUsers.Count > 0 || listGroups.Count > 0)
                 {
@@ -454,15 +397,14 @@ public class FunctionController : BaseController
                 }
             }
 
-            // update function
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId == null || criteria.ParentId == 0 ? null : criteria.ParentName;
-            criteria.ModifiedBy = CurrentSession.UserId;
+            criteria.ModifiedBy = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
-            ICommandResult result = _functionService.Update(criteria);
+            var result = _functionService.Update(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
                 ViewBag.Success = true;
             }
@@ -475,12 +417,6 @@ public class FunctionController : BaseController
 
     #region Activation
 
-    /// <summary>
-    /// Update function status.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <param name="isActive">Is active or not.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult Activate(int id, bool isActive)
     {
@@ -490,15 +426,15 @@ public class FunctionController : BaseController
             {
                 FunctionId = id,
                 IsActive = isActive,
-                ModifiedBy = CurrentSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            ICommandResult result = _functionService.UpdateStatus(criteria);
+            var result = _functionService.UpdateStatus(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Json(Constant.Ok);
+                return Json(AdminConstant.Ok);
             }
         }
 
@@ -509,11 +445,6 @@ public class FunctionController : BaseController
 
     #region Privileged Groups And Users
 
-    /// <summary>
-    /// Get privileged group and user.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Read)]
     public ActionResult PrivilegedGroupsAndUsers(int id = 0)
     {
@@ -521,7 +452,7 @@ public class FunctionController : BaseController
 
         if (function == null)
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         int siteId = function.Site.Id;
@@ -536,11 +467,10 @@ public class FunctionController : BaseController
         ViewBag.Groups = _groupService.GetByFunctionAndSite(id, siteId).ToList();
         ViewBag.UserSiteLevels = userSiteLevels;
 
-        // gets logged-in-user privileges
         ViewFlags.HasAssignFunctionToUserRight =
-            HasRightOnSite(siteId, FunctionKeys.AssignFunctionToUser, Constant.Policy.Host);
+            HasRightOnSite(siteId, FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Host);
         ViewFlags.HasAssignFunctionToGroupRight =
-            HasRightOnSite(siteId, FunctionKeys.AssignFunctionToGroup, Constant.Policy.Host);
+            HasRightOnSite(siteId, FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Host);
 
         ViewBag.GroupSelectList = _groupService.GetAllSelectListItem();
         ViewBag.SiteId = siteId.ToString();
@@ -548,15 +478,6 @@ public class FunctionController : BaseController
         return View();
     }
 
-    /// <summary>
-    /// Manage privileged user.
-    /// </summary>
-    /// <param name="id">The page index.</param>
-    /// <param name="size">The page size.</param>
-    /// <param name="fid">The function ID.</param>
-    /// <param name="gid">The group ID.</param>
-    /// <param name="q">The username.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Host)]
     public ActionResult PrivilegedUsers(
         int id = 1,
@@ -568,11 +489,11 @@ public class FunctionController : BaseController
 
         if (Request.IsAjaxRequest())
         {
-            IFunction function = _functionService.GetById(fid);
+            var function = _functionService.GetById(fid);
 
             if (function == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var criteria = new SearchUserExcludeFunctionCriteria
@@ -586,13 +507,12 @@ public class FunctionController : BaseController
                 TotalRows = 0
             };
 
-            IQueryable<UserLevel> users = _userService.SearchUserExcludeFunction(criteria);
+            var users = _userService.SearchUserExcludeFunction(criteria);
 
             var userList = new PagerList<UserLevel>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, users);
 
-            // checks currently-logged-in user's policy on the function
-            int adminPolicy = _userService.GetUserFunctionPolicy(CurrentSession.UserId, fid);
-            ViewBag.IsReadonlyAssign = adminPolicy < (int)Constant.Policy.Host;
+            var adminPolicy = _userService.GetUserFunctionPolicy(NapSession.UserId, fid);
+            ViewBag.IsReadonlyAssign = adminPolicy < (int)AdminConstant.Policy.Host;
 
             return View(userList);
         }
@@ -600,24 +520,17 @@ public class FunctionController : BaseController
         return new EmptyResult();
     }
 
-    /// <summary>
-    /// Add privileged user.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <param name="readList">List of function which has read permission.</param>
-    /// <param name="hostList">List of function which has host permission.</param>
-    /// <returns>Result string.</returns>
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Host)]
     public string AddPrivilegedUsers(int id = 0, string readList = EmptyString, string hostList = EmptyString)
     {
         if (Request.IsAjaxRequest())
         {
-            int functionId = id;
+            var functionId = id;
             var function = _functionService.GetById(functionId);
 
             if (function == null)
             {
-                throw new ArgumentException(string.Format("Function (id={0}) not found", id));
+                throw new ArgumentException($"Function (id={id}) not found");
             }
 
             var criteria = new AssignFunctionToUsersCriteria
@@ -626,47 +539,40 @@ public class FunctionController : BaseController
                 SiteId = function.Site.Id,
                 UserRead = readList.Split(',').ToList(),
                 UserHost = hostList.Split(',').ToList(),
-                ModifiedBy = CurrentSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            ICommandResult result = _functionService.AssignFunctionToUsers(criteria);
+            var result = _functionService.AssignFunctionToUsers(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Constant.Ok;
+                return AdminConstant.Ok;
             }
         }
 
-        return Constant.Error;
+        return AdminConstant.Error;
     }
 
-    /// <summary>
-    /// Manage privileged group.
-    /// </summary>
-    /// <param name="fid">The function ID.</param>
-    /// <param name="q">The group name.</param>
-    /// <returns>Action result.</returns>
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Host)]
     public ActionResult PrivilegedGroups(int fid = 0, string q = EmptyString)
     {
         if (Request.IsAjaxRequest())
         {
-            int functionId = fid;
-            string groupName = q.Trim();
+            var functionId = fid;
+            var groupName = q.Trim();
 
-            IFunction function = _functionService.GetById(functionId);
+            var function = _functionService.GetById(functionId);
 
             if (function == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
-            IEnumerable<IGroup> group = _groupService.SearchGroupExcludeFunction(groupName, function.Site.Id, fid);
+            var group = _groupService.SearchGroupExcludeFunction(groupName, function.Site.Id, fid);
 
-            // checks currently-logged-in user's policy on the function
-            var adminPolicy = _userService.GetUserFunctionPolicy(CurrentSession.UserId, fid);
-            ViewBag.IsReadonlyAssign = adminPolicy < (int)Constant.Policy.Host;
+            var adminPolicy = _userService.GetUserFunctionPolicy(NapSession.UserId, fid);
+            ViewBag.IsReadonlyAssign = adminPolicy < (int)AdminConstant.Policy.Host;
 
             return View(group);
         }
@@ -674,24 +580,17 @@ public class FunctionController : BaseController
         return new EmptyResult();
     }
 
-    /// <summary>
-    /// Add privileged group.
-    /// </summary>
-    /// <param name="id">The function ID.</param>
-    /// <param name="readList">List of function which has read permission.</param>
-    /// <param name="hostList">List of function which has host permission.</param>
-    /// <returns>Result string.</returns>
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Host)]
     public string AddPrivilegedGroups(int id = 0, string readList = EmptyString, string hostList = EmptyString)
     {
         if (Request.IsAjaxRequest())
         {
-            int functionId = id;
-            IFunction function = _functionService.GetById(functionId);
+            var functionId = id;
+            var function = _functionService.GetById(functionId);
 
             if (function == null)
             {
-                throw new ArgumentException(string.Format("Function (id={0}) not found", id));
+                throw new ArgumentException($"Function (id={id}) not found");
             }
 
             var criteria = new AssignFunctionToGroupsCriteria
@@ -700,37 +599,32 @@ public class FunctionController : BaseController
                 SiteId = function.Site.Id,
                 GroupRead = readList.Split(',').ToList(),
                 GroupHost = hostList.Split(',').ToList(),
-                ModifiedBy = CurrentSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            ICommandResult result = _functionService.AssignFunctionToGroups(criteria);
+            var result = _functionService.AssignFunctionToGroups(criteria);
 
-            if (result != null && result.IsSuccessful)
+            if (result is { IsSuccessful: true })
             {
-                return Constant.Ok;
+                return AdminConstant.Ok;
             }
         }
 
-        return Constant.Error;
+        return AdminConstant.Error;
     }
 
     #endregion Privileged Groups And Users
 
     #region Ajax Request
 
-    /// <summary>
-    /// Get function by site.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <returns>JSON result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Read)]
     public JsonResult GetFunctionBySite(int siteId)
     {
         if (Request.IsAjaxRequest())
         {
-            List<IFunction> functionList = _functionService.GetBySite(siteId, Environment, true).ToList();
+            var functionList = _functionService.GetBySite(siteId, Environment, true).ToList();
 
             functionList.Insert(0, new Function { Id = 0, Name = ViewResources.None });
 
@@ -740,23 +634,16 @@ public class FunctionController : BaseController
         return Json(null);
     }
 
-    /// <summary>
-    /// Get parent function by environment.
-    /// </summary>
-    /// <param name="siteId">The site ID.</param>
-    /// <param name="functionId">The function ID.</param>
-    /// <param name="env">The environment.</param>
-    /// <returns>JSON result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public JsonResult GetFunctionParentByEnvironment(int siteId = 0, int functionId = 0, string env = Constant.Uat)
+    public JsonResult GetFunctionParentByEnvironment(int siteId = 0, int functionId = 0, string env = AdminConstant.Uat)
     {
         if (Request.IsAjaxRequest())
         {
             if (functionId != 0)
             {
-                IFunction function = _functionService.GetById(functionId);
-                List<IFunction> functionList = _functionService.GetBySite(function.Site.Id, env, true).ToList();
+                var function = _functionService.GetById(functionId);
+                var functionList = _functionService.GetBySite(function.Site.Id, env, true).ToList();
 
                 functionList = functionList.Where(f => f.Id != functionId && (f.Parent == null
                                                                               || f.Parent.Id != functionId)).ToList();
@@ -778,32 +665,25 @@ public class FunctionController : BaseController
         return Json(null);
     }
 
-    /// <summary>
-    /// Get function key.
-    /// </summary>
-    /// <param name="functionId">The function ID.</param>
-    /// <param name="functionName">The function name.</param>
-    /// <returns>JSON result.</returns>
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public JsonResult GetFunctionKey(int functionId, string functionName)
     {
-        IFunction tempFunction = _functionService.GetById(functionId);
+        var tempFunction = _functionService.GetById(functionId);
 
-        if (object.ReferenceEquals(tempFunction, null))
+        if (ReferenceEquals(tempFunction, null))
         {
             return Json(-1);
         }
 
-        // checks Function Name duplication
-        IFunction function = _functionService.GetByNameAndSite(functionName, tempFunction.Site.Id);
+        var function = _functionService.GetByNameAndSite(functionName, tempFunction.Site.Id);
 
         if (function != null && function.Id != tempFunction.Id)
         {
             return Json(0);
         }
 
-        string functionKey = ConvertToKey(functionName);
+        var functionKey = ConvertToKey(functionName);
 
         function = _functionService.GetByKeyAndSite(functionKey, tempFunction.Site.Id);
 
@@ -817,63 +697,29 @@ public class FunctionController : BaseController
 
     #endregion Ajax Request
 
-    #region Helpers
-
-    /// <summary>
-    /// Insert child function.
-    /// </summary>
-    /// <param name="orderedFunctionList">Ordered function list.</param>
-    /// <param name="functionList">List of function.</param>
-    /// <param name="parent">Parent function.</param>
-    private void InsertChildFunction(ref List<Function> orderedFunctionList, List<Function> functionList, Function parent)
-    {
-        var childFunctionList = functionList.Where(f => f.Parent != null && f.Parent.Id == parent.Id)
-            .OrderBy(f => f.DisplayOrder).ToList();
-
-        foreach (Function childFunction in childFunctionList)
-        {
-            orderedFunctionList.Add(childFunction);
-            InsertChildFunction(ref orderedFunctionList, functionList, childFunction);
-        }
-    }
-
-    #endregion Helpers
-
-    /// <summary>
-    /// Get site and functions for add new.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
-    /// <param name="getSiteList">Get site list or not.</param>
     private void GetSitesAndFunctionsForAddNew(dynamic criteria, bool getSiteList = true)
     {
-        // Gets site list
         if (getSiteList)
         {
-            // portal admin
             ViewBag.SiteItemList = UserIsPortalAdmin ?
-                this._siteService.GetAllSelectListItem(criteria.Environment, isActive: true, selectedSiteId: criteria.SiteId) :
-                this._siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    CurrentSession.UserId,
+                _siteService.GetAllSelectListItem(criteria.Environment, isActive: true, selectedSiteId: criteria.SiteId) :
+                _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+                    NapSession.UserId,
                     FunctionKeys.ManageFunction,
                     criteria.Environment,
-                    policy: Constant.Policy.Host,
+                    policy: AdminConstant.Policy.Host,
                     selectedSiteId: criteria.SiteId);
         }
 
-        // Gets function list
         ViewBag.FunctionList = criteria.ParentId == null ?
-            this._functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true) :
-            this._functionService.GetSelectListItemBySite(
+            _functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true) :
+            _functionService.GetSelectListItemBySite(
                 criteria.SiteId,
                 criteria.Environment,
                 isActive: true,
                 selectedFunctionId: (int)criteria.ParentId);
     }
 
-    /// <summary>
-    /// Prepare manage data.
-    /// </summary>
-    /// <param name="criteria">The criteria.</param>
     private void PrepareManageData(GetBySiteFunctionCriteria criteria)
     {
         ViewBag.FunctionList = _functionService.GetBySiteInHierarchy(criteria.SiteId, criteria.Environment);
@@ -887,14 +733,14 @@ public class FunctionController : BaseController
         {
             ViewBag.SiteItemList =
                 _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    CurrentSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.ManageFunction,
                     criteria.Environment,
                     selectedSiteId: criteria.SiteId);
 
             ViewFlags.HasEditRight =
-                HasRight(FunctionKeys.ManageFunction, Constant.Policy.Host)
-                && HasRightOnSite(criteria.SiteId, FunctionKeys.ManageFunction, Constant.Policy.Host);
+                HasRight(FunctionKeys.ManageFunction, AdminConstant.Policy.Host)
+                && HasRightOnSite(criteria.SiteId, FunctionKeys.ManageFunction, AdminConstant.Policy.Host);
         }
     }
 }

@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using System.ComponentModel.DataAnnotations;
@@ -39,7 +38,7 @@ public class UpdateCustCriteria : CriteriaBase
 
     [SpParam(Ignored = true)]
     public int PageIndex { get; set; }
-        
+
     [SpParam(Ignored = true)]
     public int ReturnGroupId { get; set; }
 

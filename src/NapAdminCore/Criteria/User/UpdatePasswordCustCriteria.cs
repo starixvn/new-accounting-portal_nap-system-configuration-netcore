@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.User;
 
 using System.ComponentModel.DataAnnotations;

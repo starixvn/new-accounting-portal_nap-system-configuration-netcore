@@ -27,10 +27,10 @@
     </thead>
     <tbody>
         @{
-            int i = 1;
+            var i = 1;
             foreach (var item in listSiteUrlOld)
             {
-                string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
             <tr @Html.Raw(rowCss)>
                 <td>
@@ -45,7 +45,7 @@
                 <td class="text-center">
                     @if (item.IsActive)
                     {
-                        <img src="~/Areas/UserControl/themes/nap/img/blank.png" alt="" class="ico-tick" />
+                        <img src="~/themes/nap/img/blank.png" alt="" class="ico-tick" />
                     }
                 </td>
             </tr>
@@ -82,7 +82,7 @@
             i = 1;
             foreach (var item in listSiteUrl)
             {
-                string rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
         
             <tr @Html.Raw(rowCss)>
                 <td>
@@ -97,7 +97,7 @@
                 <td class="text-center">
                     @if (item.IsActive)
                     {
-                        <img src="~/areas/usercontrol/themes/nap/img/blank.png" alt="" class="ico-tick" />
+                        <img src="~/themes/nap/img/blank.png" alt="" class="ico-tick" />
                     }
                 </td>
             </tr>

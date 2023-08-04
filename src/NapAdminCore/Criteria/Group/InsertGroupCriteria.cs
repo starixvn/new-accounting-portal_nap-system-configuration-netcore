@@ -1,4 +1,3 @@
-
 namespace NapAdminCore.Criteria.Group;
 
 using System;
