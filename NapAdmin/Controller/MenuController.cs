@@ -25,7 +25,7 @@ public class MenuController : BaseController
     #endregion Properties
 
     #region Contructors
-    
+
 
     public MenuController(
         IMenuItemService menuitemService,
@@ -36,8 +36,8 @@ public class MenuController : BaseController
     INapSettings napSettings) :
     base(napSession, napSettings, userService)
     {
-        _menuItemService = menuitemService ;
-        _siteService = siteService ;
+        _menuItemService = menuitemService;
+        _siteService = siteService;
         _functionService = functionService;
     }
 
@@ -100,7 +100,7 @@ public class MenuController : BaseController
             criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
-            criteria.ParentName = criteria.ParentId == 0 || criteria.ParentId == null ? null : criteria.ParentName;
+            criteria.ParentName = criteria.ParentId is 0 or null ? null : criteria.ParentName;
 
             var result = _menuItemService.Insert(criteria);
 
@@ -134,13 +134,13 @@ public class MenuController : BaseController
             MenuItemName = menuItem.Name,
             Description = menuItem.Description,
             DisplayOrder = menuItem.DisplayOrder,
-            FunctionId = menuItem.Function.Id,
+            FunctionId = menuItem.FunctionId,
             IsActive = menuItem.IsActive,
-            ParentId = menuItem.Parent?.Id ?? 0,
-            ParentName = menuItem.Parent != null ? menuItem.Parent.Name : string.Empty,
+            ParentId = menuItem.ParentId,
+            ParentName = menuItem.ParentId > 0 ? menuItem.ParentName : string.Empty,
             Policy = menuItem.Policy,
-            SiteId = menuItem.Site.Id,
-            SiteName = menuItem.Site.Name,
+            SiteId = menuItem.SiteId,
+            SiteName = menuItem.SiteName,
             Url = menuItem.Url,
             Environment = menuItem.Environment
         };
@@ -177,7 +177,7 @@ public class MenuController : BaseController
             criteria.ModifierId = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
-            criteria.ParentName = criteria.ParentId == 0 || criteria.ParentId == null ? null
+            criteria.ParentName = criteria.ParentId is 0 or null ? null
                 : criteria.ParentName;
 
             var result = _menuItemService.Update(criteria);

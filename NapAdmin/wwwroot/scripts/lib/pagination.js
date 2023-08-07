@@ -1192,6 +1192,10 @@
 (function ($) {
 
     $.fn.setupPagination = function (currentPage, pageSize, totalItemCount) {
+        if (totalItemCount <= 0) {
+            return;
+        }
+
         this.pagination({
             dataSource: function (done) {
                 var result = [];

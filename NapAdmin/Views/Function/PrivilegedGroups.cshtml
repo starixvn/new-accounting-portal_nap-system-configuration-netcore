@@ -36,44 +36,44 @@
             foreach (var item in Model)
             {
                 var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
-        
-            <tr @Html.Raw(rowCss)>
-                <td class="text-center">
-                    <input type="checkbox" gid="@item.Id" />
-                </td>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Description
-                </td>
-                <td>
-                    @item.ModifiedDate.ToFullDateString()
-                </td>
-                <td>
-                    @(item.Modifier != null ? item.Modifier.Username : string.Empty)
-                </td>
-                <td class="text-center">
-                    @if (item.IsActive)
-                    {
-                        <img src="~/themes/nap/img/blank.png" width="16" height="15" alt="" class="ico-tick" />
-                    }
-                </td>
-                <td>
-                    @if (ViewBag.IsReadonlyAssign)
-                    {
-                        @ViewResources.Readonly
-                    }
-                    else
-                    {
-                        <input type="radio" name="rdo-policy-@item.Id" id="rdo-read-@item.Id" checked="checked" />
-                        <label for="rdo-read-@item.Id">@ViewResources.Read</label>
-                        <input type="radio" name="rdo-policy-@item.Id" id="rdo-host-@item.Id" />
-                        <label for="rdo-host-@item.Id">@ViewResources.Host</label>
-                    }
-                </td>
-            </tr>
-                    i++;
+
+                <tr @Html.Raw(rowCss)>
+                    <td class="text-center">
+                        <input type="checkbox" gid="@item.Id" />
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.ModifiedDate.ToFullDateString()
+                    </td>
+                    <td>
+                        @item.ModifierUsername
+                    </td>
+                    <td class="text-center">
+                        @if (item.IsActive)
+                        {
+                            <img src="~/themes/nap/img/blank.png" width="16" height="15" alt="" class="ico-tick" />
+                        }
+                    </td>
+                    <td>
+                        @if (ViewBag.IsReadonlyAssign)
+                        {
+                            @ViewResources.Readonly
+                        }
+                        else
+                        {
+                            <input type="radio" name="rdo-policy-@item.Id" id="rdo-read-@item.Id" checked="checked" />
+                            <label for="rdo-read-@item.Id">@ViewResources.Read</label>
+                            <input type="radio" name="rdo-policy-@item.Id" id="rdo-host-@item.Id" />
+                            <label for="rdo-host-@item.Id">@ViewResources.Host</label>
+                        }
+                    </td>
+                </tr>
+                i++;
             }
         }
         else

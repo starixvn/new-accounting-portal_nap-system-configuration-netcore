@@ -50,15 +50,15 @@ export class SiteStatusComponent extends Vue {
     }
 
     public OnChangeSiteStatus(newStatus: boolean) {
-        if (!this.Site.EnableAssign && !this.Site.EnableEdit) {
+        if (!this.Site.enableAssign && !this.Site.enableEdit) {
             const activeMessage = newStatus ? ' activate ' : ' deactivate ';
             this.KeepOldSiteStatus(newStatus);
 
-            MessageBox.ShowWarning('Are you sure you want to' + activeMessage + '\'' + this.Site.Name + '\'',
+            MessageBox.ShowWarning('Are you sure you want to' + activeMessage + '\'' + this.Site.name + '\'',
                 (ok) => {
                     this.$store.dispatch(Type.Action.UpdateSiteStatus,
                         {
-                            siteId: this.Site.Id,
+                            siteId: this.Site.id,
                             siteStatus: newStatus
                         });
 
@@ -74,12 +74,12 @@ export class SiteStatusComponent extends Vue {
     }
 
     private KeepOldSiteStatus(newStatus: boolean) {
-        this.Site.SiteLevel.IsActive = !newStatus;
+        this.Site.siteLevel.isActive = !newStatus;
         this.$forceUpdate();
     }
 
     private UpdateNewSiteStatusWhenAccept(newStatus: boolean) {
-        this.Site.SiteLevel.IsActive = newStatus;
+        this.Site.siteLevel.isActive = newStatus;
         this.$forceUpdate();
     }
 }

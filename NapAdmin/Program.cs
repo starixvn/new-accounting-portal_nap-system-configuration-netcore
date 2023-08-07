@@ -48,6 +48,6 @@ NapClientManager
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{page?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

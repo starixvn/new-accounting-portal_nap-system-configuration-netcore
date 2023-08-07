@@ -65,7 +65,7 @@ export class SiteListComponent extends Vue {
     }
 
     public ToggleShowFunctionList(site: Site) {
-        this.$store.commit(Type.Mutation.ShowHideSiteFunctions, { siteId: site.Id, isShow: !site.ShowFunctionList });
+        this.$store.commit(Type.Mutation.ShowHideSiteFunctions, { siteId: site.id, isShow: !site.showFunctionList });
     }
 
     public ToggleSelectAllUserPolicy(siteId: number, currentPolicy: boolean, isRead: boolean) {
@@ -74,7 +74,7 @@ export class SiteListComponent extends Vue {
     }
 
     public ToggleAssignSite(site: Site) {
-        this.$store.commit(Type.Mutation.EnableAssignSite, site.Id);
+        this.$store.commit(Type.Mutation.EnableAssignSite, site.id);
     }
 
     public ShowExpiredDateColumn(): boolean {
@@ -86,7 +86,7 @@ export class SiteListComponent extends Vue {
     }
 
     public ColspanForUnassignedSite(site: Site) {
-        if (!this.ShowSiteLevel(site) && !site.EnableAssign) {
+        if (!this.ShowSiteLevel(site) && !site.enableAssign) {
             return 4;
         }
 
@@ -95,23 +95,23 @@ export class SiteListComponent extends Vue {
 
     public OnCheckFunctionPolicy(site: Site, func: Function, currentFuncUserPolicy: boolean, isRead: boolean) {
         this.$store.commit(Type.Mutation.SetFunctionUserPolicy,
-            { siteId: site.Id, functionId: func.Id, rootFuncUserPolicy: currentFuncUserPolicy, isRead });
+            { siteId: site.id, functionId: func.id, rootFuncUserPolicy: currentFuncUserPolicy, isRead });
     }
 
     public ShowHostPolicyCheckBox(func: Function) {
-        return func !== undefined && func.Crud > 0;
+        return func !== undefined && func.crud > 0;
     }
 
     public ShowAssignSiteButton(site: Site) {
         const loginUserSiteLevels: Array<SiteLevel> = this.$store.getters[Type.Getter.LoginUserSiteLevels];
-        const loginUserCurrentSiteLevel = loginUserSiteLevels.find(sl => sl.Site.Id === site.Id);
+        const loginUserCurrentSiteLevel = loginUserSiteLevels.find(sl => sl.siteId === site.id);
 
-        return site.LoginUserAssignSitePermission === FunctionPolicyValue.Host && SiteUtil.UserSiteIsActive(loginUserCurrentSiteLevel);
+        return site.loginUserAssignSitePermission === FunctionPolicyValue.Host && SiteUtil.UserSiteIsActive(loginUserCurrentSiteLevel);
     }
 
     public ShowSiteLevel(site: Site) {
         const isLoginUserSelfEdit: boolean = this.$store.getters[Type.Getter.IsSelfEdit];
 
-        return site.SiteLevel !== undefined && (site.LoginUserAssignSitePermission >= FunctionPolicyValue.Read || isLoginUserSelfEdit);
+        return site.siteLevel !== undefined && (site.loginUserAssignSitePermission >= FunctionPolicyValue.Read || isLoginUserSelfEdit);
     }
 }

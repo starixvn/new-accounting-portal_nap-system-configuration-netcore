@@ -83,7 +83,7 @@
 
             <tr @Html.Raw(rowCss)>
                 <td class="text-center">
-                    @((i + 1) + ((Model.CurrentPageIndex - 1) * Model.PageSize))
+                    @(i + 1 + (Model.CurrentPageIndex - 1) * Model.PageSize)
                 </td>
                 <td>
                     @item.Username
@@ -169,8 +169,8 @@
                     new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
                     new() { Value = "50", Text = "50", Selected = "50" == Model.PageSize.ToString() },
                     new() { Value = "100", Text = "100", Selected = "100" == Model.PageSize.ToString() },
-                    new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() },
-                    }, new { id = string.Empty, @class = "items-per-page" })
+                    new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() }
+                        }, new { id = string.Empty, @class = "items-per-page" })
                     </span>
                     <div id="jpages"></div>
                 }

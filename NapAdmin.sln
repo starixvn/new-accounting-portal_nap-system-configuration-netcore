@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdmin", "NapAdmin\NapAdmin.csproj", "{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdminCore", "src\NapAdminCore\NapAdminCore.csproj", "{A3AB994D-510A-4926-A25E-656BB46C3F2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdminCore", "NapAdminCore\NapAdminCore.csproj", "{A3AB994D-510A-4926-A25E-656BB46C3F2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

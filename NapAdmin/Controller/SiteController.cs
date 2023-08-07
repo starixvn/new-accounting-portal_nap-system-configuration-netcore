@@ -93,14 +93,11 @@ public class SiteController : BaseController
 
         if (!ReferenceEquals(criteria.Urls, null))
         {
-            foreach (var itemUrl in criteria.Urls)
+            if (criteria.Urls.Any(itemUrl => !Uri.IsWellFormedUriString(itemUrl.Url, UriKind.Absolute)))
             {
-                if (!Uri.IsWellFormedUriString(itemUrl.Url, UriKind.Absolute))
-                {
-                    ModelState.AddModelError("SiteUrls", string.Format(ViewResources.InvalidURLValidationMsg, criteria.SiteUrls));
+                ModelState.AddModelError("SiteUrls", string.Format(ViewResources.InvalidURLValidationMsg, criteria.SiteUrls));
 
-                    return View(criteria);
-                }
+                return View(criteria);
             }
         }
 
@@ -268,7 +265,7 @@ public class SiteController : BaseController
         }
         else
         {
-            var altUrls = _siteService.GetSiteUrlBySiteId(siteUrl.Site.Id, siteUrl.Environment);
+            var altUrls = _siteService.GetSiteUrlBySiteId(siteUrl.SiteId, siteUrl.Environment);
 
             if (altUrls.Any(x => x.SiteUrlId != id && x.Url == url.OriginalString))
             {
@@ -279,7 +276,7 @@ public class SiteController : BaseController
                 var criteria = new UpdateSiteUrlCriteria
                 {
                     SiteUrlId = id,
-                    SiteId = siteUrl.Site.Id,
+                    SiteId = siteUrl.SiteId,
                     Url = url.OriginalString,
                     Environment = siteUrlEnvironment,
                     IsActive = isActive,
@@ -288,7 +285,7 @@ public class SiteController : BaseController
 
                 var cmdResult = _siteService.UpdateSiteUrl(criteria);
 
-                if (cmdResult == null || !cmdResult.IsSuccessful)
+                if (cmdResult is not { IsSuccessful: true })
                 {
                     result = "error";
                 }
@@ -311,18 +308,13 @@ public class SiteController : BaseController
                 var criteria = new UpdateDefaultSiteUrlCriteria
                 {
                     SiteUrlId = id,
-                    SiteId = siteUrl.Site.Id,
+                    SiteId = siteUrl.SiteId,
                     Environment = siteUrlEnvironment
                 };
 
                 var cmdResult = _siteService.UpdateDefaultSiteUrl(criteria);
 
-                if (cmdResult == null || !cmdResult.IsSuccessful)
-                {
-                    return Json("error");
-                }
-
-                return Json(AdminConstant.Ok);
+                return Json(cmdResult is not { IsSuccessful: true } ? "error" : AdminConstant.Ok);
             }
         }
 

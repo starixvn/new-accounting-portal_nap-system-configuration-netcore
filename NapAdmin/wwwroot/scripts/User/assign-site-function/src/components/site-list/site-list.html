@@ -1,65 +1,65 @@
 ﻿<table class="grid no-scale">
     <header-row v-bind:viewed-user-name="viewedUserName"></header-row>
     <tbody v-for="site in siteList" is="transition-group" name="fade">
-        <tr class="site-row" :key="site.Id">
+        <tr class="site-row" :key="site.id">
             <td class="site-name">
-                <span @click="ToggleShowFunctionList(site)" v-if="!site.HideCheckBoxAllFunctionPolicy">
+                <span @click="ToggleShowFunctionList(site)" v-if="!site.hideCheckBoxAllFunctionPolicy">
                     <a href="#"
                        class="tree-grid-toggle"
-                       v-bind:class="{'tree-grid-toggle': !site.HideCheckBoxAllFunctionPolicy,
-                        'collapse': !site.ShowFunctionList}">
+                       v-bind:class="{'tree-grid-toggle': !site.hideCheckBoxAllFunctionPolicy,
+                        'collapse': !site.showFunctionList}">
                     </a>
-                    {{site.Name}}
+                    {{site.name}}
                 </span>
                 <span v-else style="margin-left: 23px">
-                    {{site.Name}}
+                    {{site.name}}
                 </span>
             </td>
 
             <td class="text-center func-read"
-                v-bind:class="{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy}">
+                v-bind:class="{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy}">
                 <input type="checkbox"
                        id="user-read-checkbox-all"
-                       v-model="site.HasAllFunctionUserReadPolicy"
-                       v-on:change="ToggleSelectAllUserPolicy(site.Id, site.HasAllFunctionUserReadPolicy, true)"
-                       :disabled="site.DisableCheckBoxAllFunctionReadPolicy"
-                       v-show="!site.HideCheckBoxAllFunctionPolicy" />
+                       v-model="site.hasAllFunctionUserReadPolicy"
+                       v-on:change="ToggleSelectAllUserPolicy(site.id, site.hasAllFunctionUserReadPolicy, true)"
+                       :disabled="site.disableCheckBoxAllFunctionReadPolicy"
+                       v-show="!site.hideCheckBoxAllFunctionPolicy" />
             </td>
 
             <td class="text-center func-host"
-                v-bind:class="{'disabled-cell': site.DisableCheckBoxAllFunctionHostPolicy}">
+                v-bind:class="{'disabled-cell': site.disableCheckBoxAllFunctionHostPolicy}">
                 <input type="checkbox"
                        id="user-host-checkbox-all"
-                       v-model="site.HasAllFunctionUserHostPolicy"
-                       v-on:change="ToggleSelectAllUserPolicy(site.Id, site.HasAllFunctionUserHostPolicy,  false)"
-                       :disabled="site.DisableCheckBoxAllFunctionHostPolicy"
-                       v-show="!site.HideCheckBoxAllFunctionPolicy" />
+                       v-model="site.hasAllFunctionUserHostPolicy"
+                       v-on:change="ToggleSelectAllUserPolicy(site.id, site.hasAllFunctionUserHostPolicy,  false)"
+                       :disabled="site.disableCheckBoxAllFunctionHostPolicy"
+                       v-show="!site.hideCheckBoxAllFunctionPolicy" />
             </td>
 
             <td class="text-center func-group-read"
-                v-bind:class="{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy &&
-                site.DisableCheckBoxAllFunctionHostPolicy}">
+                v-bind:class="{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy &&
+                site.disableCheckBoxAllFunctionHostPolicy}">
                 <input type="checkbox"
                        disabled="disabled"
                        id="group-read-checkbox-all"
-                       v-show="!site.HideCheckBoxAllFunctionPolicy" />
+                       v-show="!site.hideCheckBoxAllFunctionPolicy" />
             </td>
 
             <td class="text-center func-group-host"
-                v-bind:class="{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy &&
-                site.DisableCheckBoxAllFunctionHostPolicy}">
+                v-bind:class="{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy &&
+                site.disableCheckBoxAllFunctionHostPolicy}">
                 <input type="checkbox"
                        disabled="disabled"
                        id="group-host-checkbox-all"
-                       v-show="!site.HideCheckBoxAllFunctionPolicy" />
+                       v-show="!site.hideCheckBoxAllFunctionPolicy" />
             </td>
 
             <td class="text-center save-func"
-                v-bind:class="{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy &&
-                    site.DisableCheckBoxAllFunctionHostPolicy}">
+                v-bind:class="{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy &&
+                    site.disableCheckBoxAllFunctionHostPolicy}">
                 <a href="#" class="table-icon">
-                    <span v-show="!site.DisableCheckBoxAllFunctionReadPolicy
-                          && !site.DisableCheckBoxAllFunctionHostPolicy"
+                    <span v-show="!site.disableCheckBoxAllFunctionReadPolicy
+                          && !site.disableCheckBoxAllFunctionHostPolicy"
                           class="glyphicon glyphicon-floppy-saved"
                           @click="SaveFunctionsForSite(site)">
                     </span>
@@ -69,12 +69,12 @@
             <td class="text-center site-level" :colspan="ColspanForUnassignedSite(site)">
                 <div>
                     <div v-if="ShowSiteLevel(site)">
-                        <site-level v-bind:enable-edit-site="site.EnableEdit"
+                        <site-level v-bind:enable-edit-site="site.enableEdit"
                                     v-bind:site="site">
                         </site-level>
                     </div>
                     <div v-else>
-                        <button v-if="ShowAssignSiteButton(site)" 
+                        <button v-if="ShowAssignSiteButton(site)"
                                 type="button"
                                  class="btn btn-success btn-sm"
                                  @click="ToggleAssignSite(site)">
@@ -86,49 +86,49 @@
 
             <td class="text-center site-status" v-if="ShowSiteLevel(site)">
                 <site-status v-bind:site="site"
-                             v-bind:enable-edit="site.EnableEdit">
+                             v-bind:enable-edit="site.enableEdit">
                 </site-status>
             </td>
 
             <td class="text-center site-expired-date" v-if="ShowSiteLevel(site) && ShowExpiredDateColumn()">
-                <expired-date v-bind:enable-edit-site="site.EnableEdit"
+                <expired-date v-bind:enable-edit-site="site.enableEdit"
                               v-bind:site="site">
                 </expired-date>
             </td>
 
             <td class="text-center edit-field" v-if="ShowSiteLevel(site)">
-                <edit-field v-bind:enable-edit-site="site.EnableEdit"
-                            v-bind:enable-assign-site="site.EnableAssign"
+                <edit-field v-bind:enable-edit-site="site.enableEdit"
+                            v-bind:enable-assign-site="site.enableAssign"
                             v-bind:site="site">
                 </edit-field>
             </td>
         </tr>
-        <tr class="function-row" v-show="site.ShowFunctionList && !site.HideCheckBoxAllFunctionPolicy"
-            v-for="func in site.Functions" :key="func.Id">
-            <td><function-name v-bind:current-function=func v-bind:function-list=site.Functions></function-name></td>
-            <td class="text-center" v-bind:class="{'disabled-cell': func.DisableRead }">
+        <tr class="function-row" v-show="site.showFunctionList && !site.hideCheckBoxAllFunctionPolicy"
+            v-for="func in site.functions" :key="func.id">
+            <td><function-name v-bind:current-function=func v-bind:function-list=site.functions></function-name></td>
+            <td class="text-center" v-bind:class="{'disabled-cell': func.disableRead }">
                 <input type="checkbox"
-                       v-model="func.HasUserReadPolicy"
-                       @change="OnCheckFunctionPolicy(site, func, func.HasUserReadPolicy, true)"
-                       :disabled="func.DisableRead" />
+                       v-model="func.hasUserReadPolicy"
+                       @change="OnCheckFunctionPolicy(site, func, func.hasUserReadPolicy, true)"
+                       :disabled="func.disableRead" />
             </td>
-            <td class="text-center" v-bind:class="{'disabled-cell': func.DisableHost }">
+            <td class="text-center" v-bind:class="{'disabled-cell': func.disableHost }">
                 <input type="checkbox"
                        v-show="ShowHostPolicyCheckBox(func)"
-                       v-model="func.HasUserHostPolicy"
-                       @change="OnCheckFunctionPolicy(site, func, func.HasUserHostPolicy, false)"
-                       :disabled="func.DisableHost" />
+                       v-model="func.hasUserHostPolicy"
+                       @change="OnCheckFunctionPolicy(site, func, func.hasUserHostPolicy, false)"
+                       :disabled="func.disableHost" />
             </td>
-            <td class="text-center" v-bind:class="{'disabled-cell': func.DisableHost }">
+            <td class="text-center" v-bind:class="{'disabled-cell': func.disableHost }">
                 <input type="checkbox"
                        disabled="disabled"
-                       v-model="func.HasGroupReadPolicy" />
+                       v-model="func.hasGroupReadPolicy" />
             </td>
-            <td class="text-center" v-bind:class="{'disabled-cell': func.DisableHost }">
+            <td class="text-center" v-bind:class="{'disabled-cell': func.disableHost }">
                 <input type="checkbox"
                        v-show="ShowHostPolicyCheckBox(func)"
                        disabled="disabled"
-                       v-model="func.HasGroupHostPolicy" />
+                       v-model="func.hasGroupHostPolicy" />
             </td>
             <td></td>
             <td :colspan="4"></td>

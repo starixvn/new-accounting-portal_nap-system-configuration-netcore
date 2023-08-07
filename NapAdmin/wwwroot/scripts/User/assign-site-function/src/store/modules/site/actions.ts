@@ -16,8 +16,8 @@ export const actions: Vuex.ActionTree<SiteState, SiteState> = {
 
             SiteService.GetUserSitesLevels(state.RootRoute, state.ViewedUserId, siteLevels => {
                 for (const site of sites) {
-                    const siteId = site.Id;
-                    const siteLevel = siteLevels.find(sl => sl.Site.Id === siteId);
+                    const siteId = site.id;
+                    const siteLevel = siteLevels.find(sl => sl.siteId === siteId);
 
                     commit(Type.Mutation.SetSiteLevelToSite, { siteId, siteLevel });
                     commit(Type.Mutation.SetViewedUserSiteLevels, siteLevels);
@@ -44,19 +44,19 @@ export const actions: Vuex.ActionTree<SiteState, SiteState> = {
     },
 
     [Type.Action.UpdateSiteStatus]({ commit, state }, { siteId, siteStatus }) {
-        const site = state.All.find(s => s.Id === siteId);
+        const site = state.All.find(s => s.id === siteId);
 
-        _.assign(site.SiteLevel, state.ViewedUserSiteLevels.find(sl => sl.Site.Id === siteId));
-        site.SiteLevel.IsActive = siteStatus;
+        _.assign(site.siteLevel, state.ViewedUserSiteLevels.find(sl => sl.siteId === siteId));
+        site.siteLevel.isActive = siteStatus;
 
-        if (!DateTimeUtil.IsValid(site.SiteLevel.ExpiredDate)) {
-            site.SiteLevel.ExpiredDate = new Date().toDateString();
-            site.SiteLevel.IsNeverExpired = true;
+        if (!DateTimeUtil.IsValid(site.siteLevel.expiredDate)) {
+            site.siteLevel.expiredDate = new Date().toDateString();
+            site.siteLevel.isNeverExpired = true;
         }
 
         SiteService.UpdateSiteToUser(state.RootRoute, state.ViewedUserId, site, (result) => {
             if (result === 'OK') {
-                commit(Type.Mutation.ChangeSiteStatus, { siteId: siteId, rootStatus: site.SiteLevel.IsActive });
+                commit(Type.Mutation.ChangeSiteStatus, { siteId: siteId, rootStatus: site.siteLevel.isActive });
                 MessageBox.ShowUpdateSuccessfully();
             } else {
                 MessageBox.ShowError();
@@ -69,31 +69,31 @@ export const actions: Vuex.ActionTree<SiteState, SiteState> = {
     },
 
     [Type.Action.UpdateFunctionsForSite]({ commit, state }, site: Site) {
-        if (site.HasFunctionsChange) {
+        if (site.hasFunctionsChange) {
             const funcHost: Array<number> = [];
             const funcRead: Array<number> = [];
 
-            for (const func of site.Functions) {
-                if (func.HasUserReadPolicy && (!func.HasUserHostPolicy || (func.HasUserHostPolicy && func.Crud <= 0))) {
-                    funcRead.push(func.Id);
+            for (const func of site.functions) {
+                if (func.hasUserReadPolicy && (!func.hasUserHostPolicy || (func.hasUserHostPolicy && func.crud <= 0))) {
+                    funcRead.push(func.id);
                 }
 
-                if (func.HasUserHostPolicy && func.Crud > 0) {
-                    funcHost.push(func.Id);
+                if (func.hasUserHostPolicy && func.crud > 0) {
+                    funcHost.push(func.id);
                 }
             }
 
             const data = [{
-                FuncHost: funcHost,
-                FuncRead: funcRead,
-                SiteId: site.Id,
-                UserId: state.ViewedUserId
+                funcHost: funcHost,
+                funcRead: funcRead,
+                siteId: site.id,
+                userId: state.ViewedUserId
             }];
 
             FunctionService.UpdateFunctions(state.RootRoute, data, (result) => {
                 if (result === 'OK') {
                     MessageBox.ShowUpdateSuccessfully();
-                    GetFunctionsForSite(commit, state, site.Id);
+                    GetFunctionsForSite(commit, state, site.id);
                 } else {
                     MessageBox.ShowError();
                 }
@@ -117,7 +117,7 @@ export const actions: Vuex.ActionTree<SiteState, SiteState> = {
     [Type.Action.SetAllFunctionsUserPolicyForAllSites]({ commit, state }, payLoad: { rootPolicy: boolean, isRead: boolean }) {
         for (const site of state.All) {
             commit(Type.Mutation.SetAllFunctionsUserPolicyForSite,
-                { siteId: site.Id, rootPolicy: payLoad.rootPolicy, isRead: payLoad.isRead });
+                { siteId: site.id, rootPolicy: payLoad.rootPolicy, isRead: payLoad.isRead });
         }
     }
 };
@@ -144,32 +144,32 @@ const GetFunctionsForSite = (commit: Vuex.Commit, state: SiteState, siteId: numb
 };
 
 const ResetSiteLevel = (commit: Vuex.Commit, state: SiteState, siteId: number) => {
-    const siteLevel = _.cloneDeep(state.ViewedUserSiteLevels.find(sl => sl.Site.Id === siteId));
+    const siteLevel = _.cloneDeep(state.ViewedUserSiteLevels.find(sl => sl.siteId === siteId));
     commit(Type.Mutation.SetSiteLevelToSite, { siteId, siteLevel });
     commit(Type.Mutation.EnableEditSite, siteId);
 };
 
 const UpdateSite = (commit: Vuex.Commit, state: SiteState, site: Site, isEdit: boolean) => {
-    if (!DateTimeUtil.IsValid(site.SiteLevel.ExpiredDate)) {
-        site.SiteLevel.ExpiredDate = new Date().toDateString();
-        site.SiteLevel.IsNeverExpired = true;
+    if (!DateTimeUtil.IsValid(site.siteLevel.expiredDate)) {
+        site.siteLevel.expiredDate = new Date().toDateString();
+        site.siteLevel.isNeverExpired = true;
     }
 
     SiteService.UpdateSiteToUser(state.RootRoute, state.ViewedUserId, site, (result) => {
         if (result === 'OK') {
             MessageBox.ShowUpdateSuccessfully();
 
-            GetFunctionsForSite(commit, state, site.Id);
+            GetFunctionsForSite(commit, state, site.id);
 
             if (isEdit) {
-                commit(Type.Mutation.EnableEditSite, site.Id);
-                commit(Type.Mutation.UpdateSiteLevel, { siteId: site.Id, siteLevel: site.SiteLevel });
+                commit(Type.Mutation.EnableEditSite, site.id);
+                commit(Type.Mutation.UpdateSiteLevel, { siteId: site.id, siteLevel: site.siteLevel });
             } else {
-                commit(Type.Mutation.DoneAssignSite, site.Id);
+                commit(Type.Mutation.DoneAssignSite, site.id);
             }
         } else {
             MessageBox.ShowError();
-            ResetSiteLevel(commit, state, site.Id);
+            ResetSiteLevel(commit, state, site.id);
         }
     });
 };

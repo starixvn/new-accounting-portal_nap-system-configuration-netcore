@@ -18,20 +18,20 @@
       <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
     <Setting Key="NAP_Site_GetSiteURLByUser" SpName="NAP_Site_GetSiteURLByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="SiteIsActive" ObjectProperty="IsActive" />
-      <Mapping DataField="SiteEnvironment" ObjectProperty="Environment" />
+      <Mapping DataField="Id" ObjectProperty="SiteId" />
+      <Mapping DataField="Name" ObjectProperty="SiteName" />
     </Setting>
     <Setting Key="NAP_Site_GetSiteURLBySiteId" SpName="NAP_Site_GetSiteURLBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="SiteIsActive" ObjectProperty="IsActive" />
-      <Mapping DataField="SiteEnvironment" ObjectProperty="Environment" />
+      <Mapping DataField="Id" ObjectProperty="SiteId" />
+      <Mapping DataField="Name" ObjectProperty="SiteName" />
     </Setting>
     <Setting Key="NAP_Site_GetSiteURLById" SpName="NAP_Site_GetSiteURLById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="SiteIsActive" ObjectProperty="IsActive" />
-      <Mapping DataField="SiteEnvironment" ObjectProperty="Environment" />
+      <Mapping DataField="Id" ObjectProperty="SiteId" />
+      <Mapping DataField="Name" ObjectProperty="SiteName" />
     </Setting>
     <Setting Key="NAP_Site_GetAllSiteUrl" SpName="NAP_Site_GetAllSiteUrl" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="SiteIsActive" ObjectProperty="IsActive" />
-      <Mapping DataField="SiteEnvironment" ObjectProperty="Environment" />
+      <Mapping DataField="Id" ObjectProperty="SiteId" />
+      <Mapping DataField="Name" ObjectProperty="SiteName" />
     </Setting>
     <Setting Key="NAP_Site_GetUserSiteLevel" SpName="NAP_Site_GetUserSiteLevel" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Site_GetSiteKey" SpName="NAP_Site_GetByKey" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
@@ -56,7 +56,7 @@
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      
+
     </Setting>
     <Setting Key="NAP_Function_GetByNameAndSite" SpName="NAP_Function_GetByNameAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
@@ -72,12 +72,32 @@
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
-      
+
     </Setting>
-    <Setting Key="NAP_Function_GetByUser" SpName="NAP_Function_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_GetByUserAndSite" SpName="NAP_Function_GetByUserAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_GetByUserAndSiteIncludeGroup" SpName="NAP_Function_GetByUserAndSiteIncludeGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_GetByUserAndFunctionKeyIncludeGroup" SpName="NAP_Function_GetByUserAndFunctionKeyIncludeGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_Function_GetByUser" SpName="NAP_Function_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="FunctionId" ObjectProperty="Id" />
+      <Mapping DataField="FunctionName" ObjectProperty="Name" />
+      <Mapping DataField="FunctionKey" ObjectProperty="Key" />
+
+    </Setting>
+    <Setting Key="NAP_Function_GetByUserAndSite" SpName="NAP_Function_GetByUserAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="FunctionId" ObjectProperty="Id" />
+      <Mapping DataField="FunctionName" ObjectProperty="Name" />
+      <Mapping DataField="FunctionKey" ObjectProperty="Key" />
+
+    </Setting>
+    <Setting Key="NAP_Function_GetByUserAndSiteIncludeGroup" SpName="NAP_Function_GetByUserAndSiteIncludeGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="FunctionId" ObjectProperty="Id" />
+      <Mapping DataField="FunctionName" ObjectProperty="Name" />
+      <Mapping DataField="FunctionKey" ObjectProperty="Key" />
+
+    </Setting>
+    <Setting Key="NAP_Function_GetByUserAndFunctionKeyIncludeGroup" SpName="NAP_Function_GetByUserAndFunctionKeyIncludeGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="FunctionId" ObjectProperty="Id" />
+      <Mapping DataField="FunctionName" ObjectProperty="Name" />
+      <Mapping DataField="FunctionKey" ObjectProperty="Key" />
+
+    </Setting>
     <Setting Key="NAP_Function_AssignFunctionToGroups" SpName="NAP_Function_AssignFunctionToGroups" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Function_AssignFunctionToUsers" SpName="NAP_Function_AssignFunctionToUsers" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
   </Function>
@@ -85,7 +105,10 @@
     <Setting Key="NAP_MenuItem_GetAll" SpName="NAP_MenuItem_GetAll" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_MenuItem_GetById" SpName="NAP_MenuItem_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_MenuItem_GetByNameAndSite" SpName="NAP_MenuItem_GetByNameAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_GetBySite" SpName="NAP_MenuItem_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_MenuItem_GetBySite" SpName="NAP_MenuItem_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
+    </Setting>
     <Setting Key="NAP_MenuItem_GetByUserAndSiteIncludeGroup" SpName="NAP_MenuItem_GetByUserAndSiteIncludeGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
   </Function>
   <Function Name="Group">
@@ -96,22 +119,22 @@
     <Setting Key="NAP_Group_GetAllWithNumOfUser" SpName="NAP_Group_GetAllWithNumOfUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      
+
     </Setting>
     <Setting Key="NAP_Group_GetById" SpName="NAP_Group_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      
+
     </Setting>
     <Setting Key="NAP_Group_GetByUser" SpName="NAP_Group_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      
+
     </Setting>
     <Setting Key="NAP_Group_GetByName" SpName="NAP_Group_GetByName" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      
+
     </Setting>
     <Setting Key="NAP_Group_GetGroupByFunctionAndSite" SpName="NAP_Group_GetGroupByFunctionAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
@@ -124,7 +147,7 @@
     <Setting Key="NAP_Group_SearchExcludeFunction" SpName="NAP_Group_SearchExcludeFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
-      
+
     </Setting>
   </Function>
   <Function Name="User">
@@ -151,12 +174,12 @@
     <Setting Key="NAP_User_GetBySite" SpName="NAP_User_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      
+
     </Setting>
     <Setting Key="NAP_User_GetByGroupAndSite" SpName="NAP_User_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      
+
     </Setting>
     <Setting Key="NAP_User_Search" SpName="NAP_User_Search" DbName="DBPOL.NAP_UserControl.bodbAdminNet"> </Setting>
     <Setting Key="NAP_User_SearchExcludeFunction" SpName="NAP_User_SearchExcludeFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet"> </Setting>
@@ -164,22 +187,18 @@
       <Mapping DataField="UserId" ObjectProperty="Id" />
     </Setting>
     <Setting Key="NAP_User_GetUserByFunctionAndSite" SpName="NAP_User_GetUserByFunctionAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="UserId" ObjectProperty="Id" />
-      <Mapping DataField="userpwd" ObjectProperty="Password" />
-      
+
     </Setting>
     <Setting Key="NAP_User_GetUserByFunction" SpName="NAP_User_GetUserByFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
-      
+
     </Setting>
     <Setting Key="NAP_User_GetAllByUsernameGroupSite" SpName="NAP_User_GetAllByUsernameGroupSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
     <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
   </Function>
   <Function Name="Site">
     <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
   </Function>
   <Function Name="Cust">
@@ -192,7 +211,7 @@
   <Function Name="LogUserLogin">
     <Setting Key="NAP_LogUserLogin_Insert" SpName="NAP_LogUserLogin_Insert" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet" />
     <Setting Key="NAP_LogUserLogin_Search" SpName="NAP_LogUserLogin_Search" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet">
-      
+
     </Setting>
-  </Function> 
+  </Function>
 </Functions>

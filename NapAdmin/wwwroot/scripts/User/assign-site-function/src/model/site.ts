@@ -1,40 +1,41 @@
 ﻿import { Function, FunctionPolicy } from './function';
 
 export interface Site {
-    Description?: string;
-    Enviroment?: string;
-    IsActive?: boolean;
-    NumOfUser?: number;
-    SecretAccessKey?: string;
-    SiteKey?: string;
-    Id?: number;
-    Name?: string;
-    ShowFunctionList?: boolean;
-    HasAllFunctionUserReadPolicy?: boolean;
-    HasAllFunctionUserHostPolicy?: boolean;
-    HasAllFunctionGroupReadPolicy?: boolean;
-    HasAllFunctionGroupHostPolicy?: boolean;
-    DisableCheckBoxAllFunctionReadPolicy?: boolean;
-    DisableCheckBoxAllFunctionHostPolicy?: boolean;
-    HideCheckBoxAllFunctionPolicy?: boolean;
-    Functions?: Array<Function>;
-    ViewedUserFunctionPolicies?: Array<FunctionPolicy>;
-    ViewedUserGroupFunctionPolicies?: Array<FunctionPolicy>;
-    LoginUserFunctionPolicies?: Array<FunctionPolicy>;
-    LoginUserAssignFunctionPermission?: number;
-    LoginUserAssignSitePermission?: number;
-    SiteLevel?: SiteLevel;
-    EnableEdit?: boolean;
-    EnableAssign?: boolean;
-    HasFunctionsChange?: boolean;
+    description?: string;
+    environment?: string;
+    isActive?: boolean;
+    numOfUser?: number;
+    secretAccessKey?: string;
+    siteKey?: string;
+    id?: number;
+    name?: string;
+    showFunctionList?: boolean;
+    hasAllFunctionUserReadPolicy?: boolean;
+    hasAllFunctionUserHostPolicy?: boolean;
+    hasAllFunctionGroupReadPolicy?: boolean;
+    hasAllFunctionGroupHostPolicy?: boolean;
+    disableCheckBoxAllFunctionReadPolicy?: boolean;
+    disableCheckBoxAllFunctionHostPolicy?: boolean;
+    hideCheckBoxAllFunctionPolicy?: boolean;
+    functions?: Array<Function>;
+    viewedUserFunctionPolicies?: Array<FunctionPolicy>;
+    viewedUserGroupFunctionPolicies?: Array<FunctionPolicy>;
+    loginUserFunctionPolicies?: Array<FunctionPolicy>;
+    loginUserAssignFunctionPermission?: number;
+    loginUserAssignSitePermission?: number;
+    siteLevel?: SiteLevel;
+    enableEdit?: boolean;
+    enableAssign?: boolean;
+    hasFunctionsChange?: boolean;
 }
 
 export interface SiteLevel {
-    Level?: number;
-    IsActive?: boolean;
-    IsNeverExpired?: boolean;
-    ExpiredDate?: string;
-    Site?: Site;
+    level?: number;
+    isActive?: boolean;
+    isNeverExpired?: boolean;
+    expiredDate?: string;
+    siteId?: number;
+    siteName?: string;
 }
 
 export enum SiteLevelValue {

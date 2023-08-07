@@ -96,15 +96,4 @@ public class BaseController : Controller
 
         return sb.ToString();
     }
-
-    private string GetClientIP()
-    {
-        var clientIP = HttpContext.Request.Headers["x-forwarded-for"].ToString();
-        if (string.IsNullOrWhiteSpace(clientIP))
-        {
-            clientIP = HttpContext?.Connection.RemoteIpAddress?.ToString();
-        }
-
-        return clientIP;
-    }
 }

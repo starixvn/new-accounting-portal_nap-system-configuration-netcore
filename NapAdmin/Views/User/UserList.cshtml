@@ -56,7 +56,7 @@
                 @item.Email
             </td>
             <td>
-                @(item.Creator != null ? item.Creator.Username : string.Empty)
+                @item.CreatorUsername
             </td>
             <td>
                 @item.CreatedDate.ToFullDateString()

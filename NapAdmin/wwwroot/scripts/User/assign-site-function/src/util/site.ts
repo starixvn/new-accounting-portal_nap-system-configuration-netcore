@@ -10,10 +10,10 @@ export default class SiteUtil {
         isSelfEdit: boolean,
         currentSiteId: number): boolean {
         if (isSelfEdit) {
-            return loginUserIsPortalAdmin && site.Id !== currentSiteId;
+            return loginUserIsPortalAdmin && site.id !== currentSiteId;
         }
 
-        const loginUserCurrentSiteLevel = loginUserSiteLevels.find(sl => sl.Site.Id === site.Id);
+        const loginUserCurrentSiteLevel = loginUserSiteLevels.find(sl => sl.siteId === site.id);
 
         return this.IsPortalAdmin(site, loginUserIsPortalAdmin) ||
             (loginUserHasAssignSitePermission &&
@@ -24,22 +24,22 @@ export default class SiteUtil {
 
     public static IsPortalAdmin(site: Site, loginUserIsPortalAdmin: boolean): boolean {
         return loginUserIsPortalAdmin &&
-            (site.SiteLevel === undefined || site.SiteLevel.Level < SiteLevelValue.PortalAdmin);
+            (site.siteLevel === undefined || site.siteLevel.level < SiteLevelValue.PortalAdmin);
     }
 
     public static LoginUserHasAssignSiteHostPermissionInSite(site: Site, loginUserHasAssignSiteHostPermissionSites: Array<Site>): boolean {
-        return loginUserHasAssignSiteHostPermissionSites.some(s => s.Id === site.Id);
+        return loginUserHasAssignSiteHostPermissionSites.some(s => s.id === site.id);
     }
 
     public static UserSiteIsActive(siteLevel: SiteLevel): boolean {
-        return siteLevel !== undefined && siteLevel.IsActive;
+        return siteLevel !== undefined && siteLevel.isActive;
     }
 
     public static LoginUserSiteLevelIsGreaterThanViewedUserSiteLevel(
         site: Site,
         loginUserCurrentSiteLevel: SiteLevel): boolean {
-        return site.SiteLevel === undefined || loginUserCurrentSiteLevel.Level > site.SiteLevel.Level ||
-            (loginUserCurrentSiteLevel.Level === SiteLevelValue.User && site.SiteLevel.Level === SiteLevelValue.User);
+        return site.siteLevel === undefined || loginUserCurrentSiteLevel.level > site.siteLevel.level ||
+            (loginUserCurrentSiteLevel.level === SiteLevelValue.User && site.siteLevel.level === SiteLevelValue.User);
     }
 
     public static ShowExpiredDateColumn(viewedUserName: string) {

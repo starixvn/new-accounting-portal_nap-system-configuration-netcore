@@ -57,7 +57,7 @@ describe('HeaderRowComponent', () => {
 
     it('has disabled [all-read-function-policies-for-all-sites-checkbox]', () => {
         const sites: Array<Site> = [
-            { DisableCheckBoxAllFunctionReadPolicy: true }
+            { disableCheckBoxAllFunctionReadPolicy: true }
         ];
         store.state.All = sites;
         componentTest.mount({
@@ -71,7 +71,7 @@ describe('HeaderRowComponent', () => {
 
     it('has enabled [all-read-function-policies-for-all-sites-checkbox]', () => {
         const sites: Array<Site> = [
-            { DisableCheckBoxAllFunctionReadPolicy: false }
+            { disableCheckBoxAllFunctionReadPolicy: false }
         ];
         store.state.All = sites;
         componentTest.mount({
@@ -108,7 +108,7 @@ describe('HeaderRowComponent', () => {
 
     it('has disabled [all-host-function-policies-for-all-sites-checkbox]', () => {
         const sites: Array<Site> = [
-            { DisableCheckBoxAllFunctionHostPolicy: true }
+            { disableCheckBoxAllFunctionHostPolicy: true }
         ];
         store.state.All = sites;
         componentTest.mount({
@@ -123,7 +123,7 @@ describe('HeaderRowComponent', () => {
 
     it('has enabled [all-host-function-policies-for-all-sites-checkbox]', () => {
         const sites: Array<Site> = [
-            { DisableCheckBoxAllFunctionHostPolicy: false }
+            { disableCheckBoxAllFunctionHostPolicy: false }
         ];
         store.state.All = sites;
         componentTest.mount({
@@ -160,8 +160,8 @@ describe('HeaderRowComponent', () => {
 
     it('calls store commit ShowHideSiteFunctions when click on resize button', () => {
         const sites: Array<Site> = [
-            { DisableCheckBoxAllFunctionHostPolicy: false, Id: 1 },
-            { DisableCheckBoxAllFunctionHostPolicy: false, Id: 2 },
+            { disableCheckBoxAllFunctionHostPolicy: false, id: 1 },
+            { disableCheckBoxAllFunctionHostPolicy: false, id: 2 },
         ];
         store.state.All = sites;
         componentTest.mount({

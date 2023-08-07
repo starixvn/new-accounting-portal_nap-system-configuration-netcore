@@ -39,7 +39,7 @@
         <div class="form-group line">
             <div class="col-sm-4 text-right">@Html.Label(ViewResources.Creator)</div>
             <div class="col-sm-8">
-                @(Model.Creator != null ? Model.Creator.Username : string.Empty)
+                @Model.CreatorUsername
             </div>
         </div>
         <div class="form-group line">
@@ -58,7 +58,7 @@
         <div class="form-group line">
             <div class="col-sm-4 text-right">@Html.Label(ViewResources.Modifier)</div>
             <div class="col-sm-8">
-                @(Model.Modifier != null ? Model.Modifier.Username : string.Empty)
+                @Model.ModifierUsername
             </div>
         </div>
     </div>

@@ -64,8 +64,8 @@
                 for (var i = 0; i < functionCount; i++)
                 {
                     var function = functionList[i];
-                    var groupFuncPolicy = groupFuncPolicyList.Where(x => x.Function.Id == function.Id).SingleOrDefault();
-                    var userFuncPolicy = userFuncPolicyList.Where(x => x.Function.Id == function.Id).SingleOrDefault();
+                    var groupFuncPolicy = groupFuncPolicyList.Where(x => x.Id == function.Id).SingleOrDefault();
+                    var userFuncPolicy = userFuncPolicyList.Where(x => x.Id == function.Id).SingleOrDefault();
                     var parentId = function.ParentId > 0 ? function.ParentId.ToString() : string.Empty;
 
                     var funcNameStyle = i == functionCount - 1 ? "nbt" : "nbt nbb";

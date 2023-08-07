@@ -36,11 +36,6 @@ public class LoggedUserContextImp: LoggedUserContext
     public string GetIp()
     {
         var clientIP = httpContextAccessor.HttpContext.Request.Headers["x-forwarded-for"].ToString();
-        if (!string.IsNullOrWhiteSpace(clientIP))
-        {
-            return clientIP;
-        }
-
-        return httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+        return !string.IsNullOrWhiteSpace(clientIP) ? clientIP : httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
     }
 }

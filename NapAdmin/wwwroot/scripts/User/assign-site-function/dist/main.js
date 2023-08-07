@@ -16507,9 +16507,9 @@ var SiteUtil = /** @class */ (function () {
     }
     SiteUtil.CheckForEnablingStatus = function (site, loginUserSiteLevels, loginUserHasAssignSitePermission, loginUserIsPortalAdmin, loginUserHasAssignSiteHostPermissionSites, isSelfEdit, currentSiteId) {
         if (isSelfEdit) {
-            return loginUserIsPortalAdmin && site.Id !== currentSiteId;
+            return loginUserIsPortalAdmin && site.id !== currentSiteId;
         }
-        var loginUserCurrentSiteLevel = loginUserSiteLevels.find(function (sl) { return sl.Site.Id === site.Id; });
+        var loginUserCurrentSiteLevel = loginUserSiteLevels.find(function (sl) { return sl.siteId === site.id; });
         return this.IsPortalAdmin(site, loginUserIsPortalAdmin) ||
             (loginUserHasAssignSitePermission &&
                 this.LoginUserHasAssignSiteHostPermissionInSite(site, loginUserHasAssignSiteHostPermissionSites) &&
@@ -16518,17 +16518,17 @@ var SiteUtil = /** @class */ (function () {
     };
     SiteUtil.IsPortalAdmin = function (site, loginUserIsPortalAdmin) {
         return loginUserIsPortalAdmin &&
-            (site.SiteLevel === undefined || site.SiteLevel.Level < __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].PortalAdmin);
+            (site.siteLevel === undefined || site.siteLevel.level < __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].PortalAdmin);
     };
     SiteUtil.LoginUserHasAssignSiteHostPermissionInSite = function (site, loginUserHasAssignSiteHostPermissionSites) {
-        return loginUserHasAssignSiteHostPermissionSites.some(function (s) { return s.Id === site.Id; });
+        return loginUserHasAssignSiteHostPermissionSites.some(function (s) { return s.id === site.id; });
     };
     SiteUtil.UserSiteIsActive = function (siteLevel) {
-        return siteLevel !== undefined && siteLevel.IsActive;
+        return siteLevel !== undefined && siteLevel.isActive;
     };
     SiteUtil.LoginUserSiteLevelIsGreaterThanViewedUserSiteLevel = function (site, loginUserCurrentSiteLevel) {
-        return site.SiteLevel === undefined || loginUserCurrentSiteLevel.Level > site.SiteLevel.Level ||
-            (loginUserCurrentSiteLevel.Level === __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].User && site.SiteLevel.Level === __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].User);
+        return site.siteLevel === undefined || loginUserCurrentSiteLevel.level > site.siteLevel.level ||
+            (loginUserCurrentSiteLevel.level === __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].User && site.siteLevel.level === __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].User);
     };
     SiteUtil.ShowExpiredDateColumn = function (viewedUserName) {
         return viewedUserName.toLowerCase().startsWith('starix');
@@ -49581,13 +49581,13 @@ var SiteListComponent = /** @class */ (function (_super) {
         configurable: true
     });
     SiteListComponent.prototype.ToggleShowFunctionList = function (site) {
-        this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].ShowHideSiteFunctions, { siteId: site.Id, isShow: !site.ShowFunctionList });
+        this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].ShowHideSiteFunctions, { siteId: site.id, isShow: !site.showFunctionList });
     };
     SiteListComponent.prototype.ToggleSelectAllUserPolicy = function (siteId, currentPolicy, isRead) {
         this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].SetAllFunctionsUserPolicyForSite, { siteId: siteId, rootPolicy: currentPolicy, isRead: isRead });
     };
     SiteListComponent.prototype.ToggleAssignSite = function (site) {
-        this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].EnableAssignSite, site.Id);
+        this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].EnableAssignSite, site.id);
     };
     SiteListComponent.prototype.ShowExpiredDateColumn = function () {
         return __WEBPACK_IMPORTED_MODULE_11__util_site__["a" /* default */].ShowExpiredDateColumn(this.viewedUserName);
@@ -49596,25 +49596,25 @@ var SiteListComponent = /** @class */ (function (_super) {
         this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_10__store_types__["a" /* Action */].UpdateFunctionsForSite, site);
     };
     SiteListComponent.prototype.ColspanForUnassignedSite = function (site) {
-        if (!this.ShowSiteLevel(site) && !site.EnableAssign) {
+        if (!this.ShowSiteLevel(site) && !site.enableAssign) {
             return 4;
         }
         return 1;
     };
     SiteListComponent.prototype.OnCheckFunctionPolicy = function (site, func, currentFuncUserPolicy, isRead) {
-        this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].SetFunctionUserPolicy, { siteId: site.Id, functionId: func.Id, rootFuncUserPolicy: currentFuncUserPolicy, isRead: isRead });
+        this.$store.commit(__WEBPACK_IMPORTED_MODULE_10__store_types__["c" /* Mutation */].SetFunctionUserPolicy, { siteId: site.id, functionId: func.id, rootFuncUserPolicy: currentFuncUserPolicy, isRead: isRead });
     };
     SiteListComponent.prototype.ShowHostPolicyCheckBox = function (func) {
-        return func !== undefined && func.Crud > 0;
+        return func !== undefined && func.crud > 0;
     };
     SiteListComponent.prototype.ShowAssignSiteButton = function (site) {
         var loginUserSiteLevels = this.$store.getters[__WEBPACK_IMPORTED_MODULE_10__store_types__["b" /* Getter */].LoginUserSiteLevels];
-        var loginUserCurrentSiteLevel = loginUserSiteLevels.find(function (sl) { return sl.Site.Id === site.Id; });
-        return site.LoginUserAssignSitePermission === __WEBPACK_IMPORTED_MODULE_2__model_function__["a" /* FunctionPolicyValue */].Host && __WEBPACK_IMPORTED_MODULE_11__util_site__["a" /* default */].UserSiteIsActive(loginUserCurrentSiteLevel);
+        var loginUserCurrentSiteLevel = loginUserSiteLevels.find(function (sl) { return sl.siteId === site.id; });
+        return site.loginUserAssignSitePermission === __WEBPACK_IMPORTED_MODULE_2__model_function__["a" /* FunctionPolicyValue */].Host && __WEBPACK_IMPORTED_MODULE_11__util_site__["a" /* default */].UserSiteIsActive(loginUserCurrentSiteLevel);
     };
     SiteListComponent.prototype.ShowSiteLevel = function (site) {
         var isLoginUserSelfEdit = this.$store.getters[__WEBPACK_IMPORTED_MODULE_10__store_types__["b" /* Getter */].IsSelfEdit];
-        return site.SiteLevel !== undefined && (site.LoginUserAssignSitePermission >= __WEBPACK_IMPORTED_MODULE_2__model_function__["a" /* FunctionPolicyValue */].Read || isLoginUserSelfEdit);
+        return site.siteLevel !== undefined && (site.loginUserAssignSitePermission >= __WEBPACK_IMPORTED_MODULE_2__model_function__["a" /* FunctionPolicyValue */].Read || isLoginUserSelfEdit);
     };
     SiteListComponent = __decorate([
         __WEBPACK_IMPORTED_MODULE_1_vue_class_component___default()({
@@ -49692,10 +49692,10 @@ var FunctionNameComponent = /** @class */ (function (_super) {
         configurable: true
     });
     FunctionNameComponent.prototype.generateFunctionLevel = function (functionList, currentFunction, level) {
-        if (currentFunction.Parent === null) {
+        if (!currentFunction.parentId) {
             return level;
         }
-        var parent = functionList.find(function (f) { return f.Id === currentFunction.Parent.Id; });
+        var parent = functionList.find(function (f) { return f.id === currentFunction.parentId; });
         return this.generateFunctionLevel(functionList, parent, level + 1);
     };
     FunctionNameComponent = __decorate([
@@ -49716,7 +49716,7 @@ var FunctionNameComponent = /** @class */ (function (_super) {
 /* 162 */
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"margin-left: 20px\">\r\n    <span v-for=\"level in FunctionLevel\">\r\n        <span v-show=\"level != FunctionLevel\" style=\"visibility:hidden\">&#9492;&#9472;&#9472;</span>\r\n        <span v-show=\"level == FunctionLevel\">&#9492;&#9472;&#9472;</span>\r\n    </span> {{currentFunction.Name}}\r\n</div>"
+module.exports = "<div style=\"margin-left: 20px\">\r\n    <span v-for=\"level in FunctionLevel\">\r\n        <span v-show=\"level != FunctionLevel\" style=\"visibility:hidden\">&#9492;&#9472;&#9472;</span>\r\n        <span v-show=\"level == FunctionLevel\">&#9492;&#9472;&#9472;</span>\r\n    </span> {{currentFunction.name}}\r\n</div>"
 
 /***/ }),
 /* 163 */
@@ -49779,8 +49779,8 @@ var SiteLevelComponent = /** @class */ (function (_super) {
     });
     SiteLevelComponent.prototype.GetSiteLevel = function () {
         var site = this.$props.site;
-        if (site.SiteLevel !== undefined) {
-            switch (Number(site.SiteLevel.Level)) {
+        if (site.siteLevel !== undefined) {
+            switch (Number(site.siteLevel.level)) {
                 case __WEBPACK_IMPORTED_MODULE_2__model_site__["a" /* SiteLevelValue */].User:
                     return 'User';
                 case __WEBPACK_IMPORTED_MODULE_2__model_site__["a" /* SiteLevelValue */].SiteAdmin:
@@ -49809,7 +49809,7 @@ var SiteLevelComponent = /** @class */ (function (_super) {
 /* 165 */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <div v-if=\"!enableEditSite\">\r\n        {{GetSiteLevel()}}\r\n    </div>\r\n    <select v-else v-model=\"site.SiteLevel.Level\">\r\n        <option value=\"0\">\r\n            User\r\n        </option>\r\n        <option value=\"50\" v-show=\"LoginUserIsPortalAdmin\">\r\n            Site Admin\r\n        </option>\r\n    </select>\r\n</div>"
+module.exports = "<div>\r\n    <div v-if=\"!enableEditSite\">\r\n        {{GetSiteLevel()}}\r\n    </div>\r\n    <select v-else v-model=\"site.siteLevel.level\">\r\n        <option value=\"0\">\r\n            User\r\n        </option>\r\n        <option value=\"50\" v-show=\"LoginUserIsPortalAdmin\">\r\n            Site Admin\r\n        </option>\r\n    </select>\r\n</div>"
 
 /***/ }),
 /* 166 */
@@ -49901,12 +49901,12 @@ var SiteStatusComponent = /** @class */ (function (_super) {
     });
     SiteStatusComponent.prototype.OnChangeSiteStatus = function (newStatus) {
         var _this = this;
-        if (!this.Site.EnableAssign && !this.Site.EnableEdit) {
+        if (!this.Site.enableAssign && !this.Site.enableEdit) {
             var activeMessage = newStatus ? ' activate ' : ' deactivate ';
             this.KeepOldSiteStatus(newStatus);
-            __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowWarning('Are you sure you want to' + activeMessage + '\'' + this.Site.Name + '\'', function (ok) {
+            __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowWarning('Are you sure you want to' + activeMessage + '\'' + this.Site.name + '\'', function (ok) {
                 _this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_4__store_types__["a" /* Action */].UpdateSiteStatus, {
-                    siteId: _this.Site.Id,
+                    siteId: _this.Site.id,
                     siteStatus: newStatus
                 });
                 _this.UpdateNewSiteStatusWhenAccept(newStatus);
@@ -49919,11 +49919,11 @@ var SiteStatusComponent = /** @class */ (function (_super) {
         }
     };
     SiteStatusComponent.prototype.KeepOldSiteStatus = function (newStatus) {
-        this.Site.SiteLevel.IsActive = !newStatus;
+        this.Site.siteLevel.isActive = !newStatus;
         this.$forceUpdate();
     };
     SiteStatusComponent.prototype.UpdateNewSiteStatusWhenAccept = function (newStatus) {
-        this.Site.SiteLevel.IsActive = newStatus;
+        this.Site.siteLevel.isActive = newStatus;
         this.$forceUpdate();
     };
     SiteStatusComponent = __decorate([
@@ -49953,7 +49953,7 @@ var SiteStatusComponent = /** @class */ (function (_super) {
 /* 169 */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <input v-if=\"LoginUserHasAssignSitePermission\"\r\n           type=\"checkbox\"\r\n           :disabled=\"IsEnable === false\"\r\n           v-model=\"Site.SiteLevel.IsActive\"\r\n           @change=\"OnChangeSiteStatus(Site.SiteLevel.IsActive)\" />\r\n    <img v-else-if=\"LoginUserHasAssignSiteReadPermission && Site.SiteLevel.IsActive\" class=\"ico-tick\" src=\"\" />\r\n</div>"
+module.exports = "<div>\n    <input v-if=\"LoginUserHasAssignSitePermission\"\n           type=\"checkbox\"\n           :disabled=\"IsEnable === false\"\n           v-model=\"Site.siteLevel.isActive\"\n           @change=\"OnChangeSiteStatus(Site.siteLevel.isActive)\" />\n    <img v-else-if=\"LoginUserHasAssignSiteReadPermission && Site.siteLevel.isActive\" class=\"ico-tick\" src=\"\" />\n</div>\n"
 
 /***/ }),
 /* 170 */
@@ -50004,7 +50004,7 @@ var ExpiredDateComponent = /** @class */ (function (_super) {
     __extends(ExpiredDateComponent, _super);
     function ExpiredDateComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.currentSite = { SiteLevel: {} };
+        _this.currentSite = { siteLevel: {} };
         return _this;
     }
     ExpiredDateComponent.prototype.mounted = function () {
@@ -50329,7 +50329,7 @@ webpackContext.id = 172;
 /* 173 */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <div v-if=\"!enableEditSite\">\r\n        <span v-if=\"currentSite.SiteLevel.IsNeverExpired\">\r\n            Never Expired\r\n        </span>\r\n        <span v-else>\r\n            {{FormatDate(currentSite.SiteLevel.ExpiredDate)}}\r\n        </span>\r\n    </div>\r\n    <div v-else>\r\n        <vue-date-picker v-model=\"currentSite.SiteLevel.ExpiredDate\"\r\n                         style=\"white-space:normal!important\"\r\n                         :bootstrap-styling=\"true\"\r\n                         :calendar-button=\"true\"\r\n                         calendar-button-icon=\"glyphicon glyphicon-calendar\"\r\n                         :disabled-picker=\"currentSite.SiteLevel.IsNeverExpired\">\r\n        </vue-date-picker>\r\n        <div>\r\n            <input type=\"checkbox\" v-model=\"currentSite.SiteLevel.IsNeverExpired\" @change=\"OnCheckNeverExpired()\" /> Never Expired\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div>\r\n    <div v-if=\"!enableEditSite\">\r\n        <span v-if=\"currentSite.siteLevel.isNeverExpired\">\r\n            Never Expired\r\n        </span>\r\n        <span v-else>\r\n            {{FormatDate(currentSite.siteLevel.expiredDate)}}\r\n        </span>\r\n    </div>\r\n    <div v-else>\r\n        <vue-date-picker v-model=\"currentSite.siteLevel.expiredDate\"\r\n                         style=\"white-space:normal!important\"\r\n                         :bootstrap-styling=\"true\"\r\n                         :calendar-button=\"true\"\r\n                         calendar-button-icon=\"glyphicon glyphicon-calendar\"\r\n                         :disabled-picker=\"currentSite.siteLevel.isNeverExpired\">\r\n        </vue-date-picker>\r\n        <div>\r\n            <input type=\"checkbox\" v-model=\"currentSite.siteLevel.isNeverExpired\" @change=\"OnCheckNeverExpired()\" /> Never Expired\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 /* 174 */
@@ -50405,7 +50405,7 @@ var EditFieldComponent = /** @class */ (function (_super) {
         var loginUserHasAssignSiteHostPermissionSites = this.$store.getters[__WEBPACK_IMPORTED_MODULE_3__store_types__["b" /* Getter */].LoginUserHasAssignSiteHostPermissionSites];
         var currentSiteId = this.$store.getters[__WEBPACK_IMPORTED_MODULE_3__store_types__["b" /* Getter */].CurrentSiteId];
         var isSelfEdit = this.$store.getters[__WEBPACK_IMPORTED_MODULE_3__store_types__["b" /* Getter */].IsSelfEdit];
-        var loginUserCurrentSiteLevel = loginUserSiteLevels.find(function (sl) { return sl.Site.Id === _this.Site.Id; });
+        var loginUserCurrentSiteLevel = loginUserSiteLevels.find(function (sl) { return sl.siteId === _this.Site.id; });
         var enableEditSiteStatus = __WEBPACK_IMPORTED_MODULE_2__util_site__["a" /* default */].CheckForEnablingStatus(this.Site, loginUserSiteLevels, loginUserHasAssignSitePermission, loginUserIsPortalAdmin, loginUserHasAssignSiteHostPermissionSites, isSelfEdit, currentSiteId);
         return enableEditSiteStatus ? enableEditSiteStatus :
             !this.SiteIsActive() &&
@@ -50414,7 +50414,7 @@ var EditFieldComponent = /** @class */ (function (_super) {
                 __WEBPACK_IMPORTED_MODULE_2__util_site__["a" /* default */].LoginUserHasAssignSiteHostPermissionInSite(this.Site, loginUserHasAssignSiteHostPermissionSites);
     };
     EditFieldComponent.prototype.OnClickEditButton = function () {
-        this.$store.commit(__WEBPACK_IMPORTED_MODULE_3__store_types__["c" /* Mutation */].EnableEditSite, this.Site.Id);
+        this.$store.commit(__WEBPACK_IMPORTED_MODULE_3__store_types__["c" /* Mutation */].EnableEditSite, this.Site.id);
     };
     EditFieldComponent.prototype.OnClickSaveSite = function () {
         this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_3__store_types__["a" /* Action */].UpdateSite, { site: this.Site, isEdit: true });
@@ -50423,15 +50423,15 @@ var EditFieldComponent = /** @class */ (function (_super) {
         this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_3__store_types__["a" /* Action */].AssignSite, this.Site);
     };
     EditFieldComponent.prototype.OnClickCancelEditSite = function () {
-        if (this.Site.EnableEdit && !this.Site.EnableAssign) {
-            this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_3__store_types__["a" /* Action */].ResetSiteLevel, this.Site.Id);
+        if (this.Site.enableEdit && !this.Site.enableAssign) {
+            this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_3__store_types__["a" /* Action */].ResetSiteLevel, this.Site.id);
         }
         else {
-            this.$store.commit(__WEBPACK_IMPORTED_MODULE_3__store_types__["c" /* Mutation */].CancelAssignSite, this.Site.Id);
+            this.$store.commit(__WEBPACK_IMPORTED_MODULE_3__store_types__["c" /* Mutation */].CancelAssignSite, this.Site.id);
         }
     };
     EditFieldComponent.prototype.SiteIsActive = function () {
-        return this.Site.SiteLevel !== undefined && this.Site.SiteLevel.IsActive;
+        return this.Site.siteLevel !== undefined && this.Site.siteLevel.isActive;
     };
     EditFieldComponent = __decorate([
         __WEBPACK_IMPORTED_MODULE_1_vue_class_component___default()({
@@ -50525,10 +50525,10 @@ var SaveAllRowComponent = /** @class */ (function (_super) {
         var sites = this.$store.getters[__WEBPACK_IMPORTED_MODULE_2__store_types__["b" /* Getter */].AllUserSites];
         for (var _i = 0, sites_2 = sites; _i < sites_2.length; _i++) {
             var site = sites_2[_i];
-            if (site.EnableEdit && !site.EnableAssign) {
+            if (site.enableEdit && !site.enableAssign) {
                 this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_2__store_types__["a" /* Action */].UpdateSite, { site: site, isEdit: true });
             }
-            else if (site.EnableAssign) {
+            else if (site.enableAssign) {
                 this.$store.dispatch(__WEBPACK_IMPORTED_MODULE_2__store_types__["a" /* Action */].AssignSite, site);
             }
         }
@@ -50636,7 +50636,7 @@ var HeaderRowComponent = /** @class */ (function (_super) {
     Object.defineProperty(HeaderRowComponent.prototype, "DisableSelectAllReadFunctionsForAllSites", {
         get: function () {
             var allSites = this.$store.getters[__WEBPACK_IMPORTED_MODULE_3__store_types__["b" /* Getter */].AllUserSites];
-            return allSites.every(function (s) { return s.DisableCheckBoxAllFunctionReadPolicy; });
+            return allSites.every(function (s) { return s.disableCheckBoxAllFunctionReadPolicy; });
         },
         enumerable: false,
         configurable: true
@@ -50644,7 +50644,7 @@ var HeaderRowComponent = /** @class */ (function (_super) {
     Object.defineProperty(HeaderRowComponent.prototype, "DisableSelectAllHostFunctionsForAllSites", {
         get: function () {
             var allSites = this.$store.getters[__WEBPACK_IMPORTED_MODULE_3__store_types__["b" /* Getter */].AllUserSites];
-            return allSites.every(function (s) { return s.DisableCheckBoxAllFunctionHostPolicy; });
+            return allSites.every(function (s) { return s.disableCheckBoxAllFunctionHostPolicy; });
         },
         enumerable: false,
         configurable: true
@@ -50661,7 +50661,7 @@ var HeaderRowComponent = /** @class */ (function (_super) {
         this.showAllSiteFunctions = !this.showAllSiteFunctions;
         for (var _i = 0, allSites_1 = allSites; _i < allSites_1.length; _i++) {
             var site = allSites_1[_i];
-            this.$store.commit(__WEBPACK_IMPORTED_MODULE_3__store_types__["c" /* Mutation */].ShowHideSiteFunctions, { siteId: site.Id, isShow: this.showAllSiteFunctions });
+            this.$store.commit(__WEBPACK_IMPORTED_MODULE_3__store_types__["c" /* Mutation */].ShowHideSiteFunctions, { siteId: site.id, isShow: this.showAllSiteFunctions });
         }
     };
     HeaderRowComponent = __decorate([
@@ -50699,7 +50699,7 @@ module.exports = "<thead class=\"site-table-header\">\r\n    <tr>\r\n        <th
 /* 186 */
 /***/ (function(module, exports) {
 
-module.exports = "<table class=\"grid no-scale\">\r\n    <header-row v-bind:viewed-user-name=\"viewedUserName\"></header-row>\r\n    <tbody v-for=\"site in siteList\" is=\"transition-group\" name=\"fade\">\r\n        <tr class=\"site-row\" :key=\"site.Id\">\r\n            <td class=\"site-name\">\r\n                <span @click=\"ToggleShowFunctionList(site)\" v-if=\"!site.HideCheckBoxAllFunctionPolicy\">\r\n                    <a href=\"#\"\r\n                       class=\"tree-grid-toggle\"\r\n                       v-bind:class=\"{'tree-grid-toggle': !site.HideCheckBoxAllFunctionPolicy,\r\n                        'collapse': !site.ShowFunctionList}\">\r\n                    </a>\r\n                    {{site.Name}}\r\n                </span>\r\n                <span v-else style=\"margin-left: 23px\">\r\n                    {{site.Name}}\r\n                </span>\r\n            </td>\r\n\r\n            <td class=\"text-center func-read\"\r\n                v-bind:class=\"{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy}\">\r\n                <input type=\"checkbox\"\r\n                       id=\"user-read-checkbox-all\"\r\n                       v-model=\"site.HasAllFunctionUserReadPolicy\"\r\n                       v-on:change=\"ToggleSelectAllUserPolicy(site.Id, site.HasAllFunctionUserReadPolicy, true)\"\r\n                       :disabled=\"site.DisableCheckBoxAllFunctionReadPolicy\"\r\n                       v-show=\"!site.HideCheckBoxAllFunctionPolicy\" />\r\n            </td>\r\n\r\n            <td class=\"text-center func-host\"\r\n                v-bind:class=\"{'disabled-cell': site.DisableCheckBoxAllFunctionHostPolicy}\">\r\n                <input type=\"checkbox\"\r\n                       id=\"user-host-checkbox-all\"\r\n                       v-model=\"site.HasAllFunctionUserHostPolicy\"\r\n                       v-on:change=\"ToggleSelectAllUserPolicy(site.Id, site.HasAllFunctionUserHostPolicy,  false)\"\r\n                       :disabled=\"site.DisableCheckBoxAllFunctionHostPolicy\"\r\n                       v-show=\"!site.HideCheckBoxAllFunctionPolicy\" />\r\n            </td>\r\n\r\n            <td class=\"text-center func-group-read\"\r\n                v-bind:class=\"{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy &&\r\n                site.DisableCheckBoxAllFunctionHostPolicy}\">\r\n                <input type=\"checkbox\"\r\n                       disabled=\"disabled\"\r\n                       id=\"group-read-checkbox-all\"\r\n                       v-show=\"!site.HideCheckBoxAllFunctionPolicy\" />\r\n            </td>\r\n\r\n            <td class=\"text-center func-group-host\"\r\n                v-bind:class=\"{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy &&\r\n                site.DisableCheckBoxAllFunctionHostPolicy}\">\r\n                <input type=\"checkbox\"\r\n                       disabled=\"disabled\"\r\n                       id=\"group-host-checkbox-all\"\r\n                       v-show=\"!site.HideCheckBoxAllFunctionPolicy\" />\r\n            </td>\r\n\r\n            <td class=\"text-center save-func\"\r\n                v-bind:class=\"{'disabled-cell': site.DisableCheckBoxAllFunctionReadPolicy &&\r\n                    site.DisableCheckBoxAllFunctionHostPolicy}\">\r\n                <a href=\"#\" class=\"table-icon\">\r\n                    <span v-show=\"!site.DisableCheckBoxAllFunctionReadPolicy\r\n                          && !site.DisableCheckBoxAllFunctionHostPolicy\"\r\n                          class=\"glyphicon glyphicon-floppy-saved\"\r\n                          @click=\"SaveFunctionsForSite(site)\">\r\n                    </span>\r\n                </a>\r\n            </td>\r\n\r\n            <td class=\"text-center site-level\" :colspan=\"ColspanForUnassignedSite(site)\">\r\n                <div>\r\n                    <div v-if=\"ShowSiteLevel(site)\">\r\n                        <site-level v-bind:enable-edit-site=\"site.EnableEdit\"\r\n                                    v-bind:site=\"site\">\r\n                        </site-level>\r\n                    </div>\r\n                    <div v-else>\r\n                        <button v-if=\"ShowAssignSiteButton(site)\" \r\n                                type=\"button\"\r\n                                 class=\"btn btn-success btn-sm\"\r\n                                 @click=\"ToggleAssignSite(site)\">\r\n                            <span class=\"glyphicon glyphicon-plus\"></span> Assign\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n\r\n            <td class=\"text-center site-status\" v-if=\"ShowSiteLevel(site)\">\r\n                <site-status v-bind:site=\"site\"\r\n                             v-bind:enable-edit=\"site.EnableEdit\">\r\n                </site-status>\r\n            </td>\r\n\r\n            <td class=\"text-center site-expired-date\" v-if=\"ShowSiteLevel(site) && ShowExpiredDateColumn()\">\r\n                <expired-date v-bind:enable-edit-site=\"site.EnableEdit\"\r\n                              v-bind:site=\"site\">\r\n                </expired-date>\r\n            </td>\r\n\r\n            <td class=\"text-center edit-field\" v-if=\"ShowSiteLevel(site)\">\r\n                <edit-field v-bind:enable-edit-site=\"site.EnableEdit\"\r\n                            v-bind:enable-assign-site=\"site.EnableAssign\"\r\n                            v-bind:site=\"site\">\r\n                </edit-field>\r\n            </td>\r\n        </tr>\r\n        <tr class=\"function-row\" v-show=\"site.ShowFunctionList && !site.HideCheckBoxAllFunctionPolicy\"\r\n            v-for=\"func in site.Functions\" :key=\"func.Id\">\r\n            <td><function-name v-bind:current-function=func v-bind:function-list=site.Functions></function-name></td>\r\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.DisableRead }\">\r\n                <input type=\"checkbox\"\r\n                       v-model=\"func.HasUserReadPolicy\"\r\n                       @change=\"OnCheckFunctionPolicy(site, func, func.HasUserReadPolicy, true)\"\r\n                       :disabled=\"func.DisableRead\" />\r\n            </td>\r\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.DisableHost }\">\r\n                <input type=\"checkbox\"\r\n                       v-show=\"ShowHostPolicyCheckBox(func)\"\r\n                       v-model=\"func.HasUserHostPolicy\"\r\n                       @change=\"OnCheckFunctionPolicy(site, func, func.HasUserHostPolicy, false)\"\r\n                       :disabled=\"func.DisableHost\" />\r\n            </td>\r\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.DisableHost }\">\r\n                <input type=\"checkbox\"\r\n                       disabled=\"disabled\"\r\n                       v-model=\"func.HasGroupReadPolicy\" />\r\n            </td>\r\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.DisableHost }\">\r\n                <input type=\"checkbox\"\r\n                       v-show=\"ShowHostPolicyCheckBox(func)\"\r\n                       disabled=\"disabled\"\r\n                       v-model=\"func.HasGroupHostPolicy\" />\r\n            </td>\r\n            <td></td>\r\n            <td :colspan=\"4\"></td>\r\n        </tr>\r\n    </tbody>\r\n    <tfoot>\r\n        <save-all-row></save-all-row>\r\n    </tfoot>\r\n</table>"
+module.exports = "<table class=\"grid no-scale\">\n    <header-row v-bind:viewed-user-name=\"viewedUserName\"></header-row>\n    <tbody v-for=\"site in siteList\" is=\"transition-group\" name=\"fade\">\n        <tr class=\"site-row\" :key=\"site.id\">\n            <td class=\"site-name\">\n                <span @click=\"ToggleShowFunctionList(site)\" v-if=\"!site.hideCheckBoxAllFunctionPolicy\">\n                    <a href=\"#\"\n                       class=\"tree-grid-toggle\"\n                       v-bind:class=\"{'tree-grid-toggle': !site.hideCheckBoxAllFunctionPolicy,\n                        'collapse': !site.showFunctionList}\">\n                    </a>\n                    {{site.name}}\n                </span>\n                <span v-else style=\"margin-left: 23px\">\n                    {{site.name}}\n                </span>\n            </td>\n\n            <td class=\"text-center func-read\"\n                v-bind:class=\"{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy}\">\n                <input type=\"checkbox\"\n                       id=\"user-read-checkbox-all\"\n                       v-model=\"site.hasAllFunctionUserReadPolicy\"\n                       v-on:change=\"ToggleSelectAllUserPolicy(site.id, site.hasAllFunctionUserReadPolicy, true)\"\n                       :disabled=\"site.disableCheckBoxAllFunctionReadPolicy\"\n                       v-show=\"!site.hideCheckBoxAllFunctionPolicy\" />\n            </td>\n\n            <td class=\"text-center func-host\"\n                v-bind:class=\"{'disabled-cell': site.disableCheckBoxAllFunctionHostPolicy}\">\n                <input type=\"checkbox\"\n                       id=\"user-host-checkbox-all\"\n                       v-model=\"site.hasAllFunctionUserHostPolicy\"\n                       v-on:change=\"ToggleSelectAllUserPolicy(site.id, site.hasAllFunctionUserHostPolicy,  false)\"\n                       :disabled=\"site.disableCheckBoxAllFunctionHostPolicy\"\n                       v-show=\"!site.hideCheckBoxAllFunctionPolicy\" />\n            </td>\n\n            <td class=\"text-center func-group-read\"\n                v-bind:class=\"{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy &&\n                site.disableCheckBoxAllFunctionHostPolicy}\">\n                <input type=\"checkbox\"\n                       disabled=\"disabled\"\n                       id=\"group-read-checkbox-all\"\n                       v-show=\"!site.hideCheckBoxAllFunctionPolicy\" />\n            </td>\n\n            <td class=\"text-center func-group-host\"\n                v-bind:class=\"{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy &&\n                site.disableCheckBoxAllFunctionHostPolicy}\">\n                <input type=\"checkbox\"\n                       disabled=\"disabled\"\n                       id=\"group-host-checkbox-all\"\n                       v-show=\"!site.hideCheckBoxAllFunctionPolicy\" />\n            </td>\n\n            <td class=\"text-center save-func\"\n                v-bind:class=\"{'disabled-cell': site.disableCheckBoxAllFunctionReadPolicy &&\n                    site.disableCheckBoxAllFunctionHostPolicy}\">\n                <a href=\"#\" class=\"table-icon\">\n                    <span v-show=\"!site.disableCheckBoxAllFunctionReadPolicy\n                          && !site.disableCheckBoxAllFunctionHostPolicy\"\n                          class=\"glyphicon glyphicon-floppy-saved\"\n                          @click=\"SaveFunctionsForSite(site)\">\n                    </span>\n                </a>\n            </td>\n\n            <td class=\"text-center site-level\" :colspan=\"ColspanForUnassignedSite(site)\">\n                <div>\n                    <div v-if=\"ShowSiteLevel(site)\">\n                        <site-level v-bind:enable-edit-site=\"site.enableEdit\"\n                                    v-bind:site=\"site\">\n                        </site-level>\n                    </div>\n                    <div v-else>\n                        <button v-if=\"ShowAssignSiteButton(site)\"\n                                type=\"button\"\n                                 class=\"btn btn-success btn-sm\"\n                                 @click=\"ToggleAssignSite(site)\">\n                            <span class=\"glyphicon glyphicon-plus\"></span> Assign\n                        </button>\n                    </div>\n                </div>\n            </td>\n\n            <td class=\"text-center site-status\" v-if=\"ShowSiteLevel(site)\">\n                <site-status v-bind:site=\"site\"\n                             v-bind:enable-edit=\"site.enableEdit\">\n                </site-status>\n            </td>\n\n            <td class=\"text-center site-expired-date\" v-if=\"ShowSiteLevel(site) && ShowExpiredDateColumn()\">\n                <expired-date v-bind:enable-edit-site=\"site.enableEdit\"\n                              v-bind:site=\"site\">\n                </expired-date>\n            </td>\n\n            <td class=\"text-center edit-field\" v-if=\"ShowSiteLevel(site)\">\n                <edit-field v-bind:enable-edit-site=\"site.enableEdit\"\n                            v-bind:enable-assign-site=\"site.enableAssign\"\n                            v-bind:site=\"site\">\n                </edit-field>\n            </td>\n        </tr>\n        <tr class=\"function-row\" v-show=\"site.showFunctionList && !site.hideCheckBoxAllFunctionPolicy\"\n            v-for=\"func in site.functions\" :key=\"func.id\">\n            <td><function-name v-bind:current-function=func v-bind:function-list=site.functions></function-name></td>\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.disableRead }\">\n                <input type=\"checkbox\"\n                       v-model=\"func.hasUserReadPolicy\"\n                       @change=\"OnCheckFunctionPolicy(site, func, func.hasUserReadPolicy, true)\"\n                       :disabled=\"func.disableRead\" />\n            </td>\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.disableHost }\">\n                <input type=\"checkbox\"\n                       v-show=\"ShowHostPolicyCheckBox(func)\"\n                       v-model=\"func.hasUserHostPolicy\"\n                       @change=\"OnCheckFunctionPolicy(site, func, func.hasUserHostPolicy, false)\"\n                       :disabled=\"func.disableHost\" />\n            </td>\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.disableHost }\">\n                <input type=\"checkbox\"\n                       disabled=\"disabled\"\n                       v-model=\"func.hasGroupReadPolicy\" />\n            </td>\n            <td class=\"text-center\" v-bind:class=\"{'disabled-cell': func.disableHost }\">\n                <input type=\"checkbox\"\n                       v-show=\"ShowHostPolicyCheckBox(func)\"\n                       disabled=\"disabled\"\n                       v-model=\"func.hasGroupHostPolicy\" />\n            </td>\n            <td></td>\n            <td :colspan=\"4\"></td>\n        </tr>\n    </tbody>\n    <tfoot>\n        <save-all-row></save-all-row>\n    </tfoot>\n</table>\n"
 
 /***/ }),
 /* 187 */
@@ -51762,8 +51762,8 @@ var actions = (_a = {},
             commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetAllUserSites, sites);
             __WEBPACK_IMPORTED_MODULE_1__service_site_service__["a" /* default */].GetUserSitesLevels(state.RootRoute, state.ViewedUserId, function (siteLevels) {
                 var _loop_1 = function (site) {
-                    var siteId = site.Id;
-                    var siteLevel = siteLevels.find(function (sl) { return sl.Site.Id === siteId; });
+                    var siteId = site.id;
+                    var siteLevel = siteLevels.find(function (sl) { return sl.siteId === siteId; });
                     commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetSiteLevelToSite, { siteId: siteId, siteLevel: siteLevel });
                     commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetViewedUserSiteLevels, siteLevels);
                     GetFunctionsForSite(commit, state, siteId);
@@ -51794,16 +51794,16 @@ var actions = (_a = {},
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["a" /* Action */].UpdateSiteStatus] = function (_a, _b) {
         var commit = _a.commit, state = _a.state;
         var siteId = _b.siteId, siteStatus = _b.siteStatus;
-        var site = state.All.find(function (s) { return s.Id === siteId; });
-        __WEBPACK_IMPORTED_MODULE_5_lodash__["assign"](site.SiteLevel, state.ViewedUserSiteLevels.find(function (sl) { return sl.Site.Id === siteId; }));
-        site.SiteLevel.IsActive = siteStatus;
-        if (!__WEBPACK_IMPORTED_MODULE_4__util_datetime__["a" /* default */].IsValid(site.SiteLevel.ExpiredDate)) {
-            site.SiteLevel.ExpiredDate = new Date().toDateString();
-            site.SiteLevel.IsNeverExpired = true;
+        var site = state.All.find(function (s) { return s.id === siteId; });
+        __WEBPACK_IMPORTED_MODULE_5_lodash__["assign"](site.siteLevel, state.ViewedUserSiteLevels.find(function (sl) { return sl.siteId === siteId; }));
+        site.siteLevel.isActive = siteStatus;
+        if (!__WEBPACK_IMPORTED_MODULE_4__util_datetime__["a" /* default */].IsValid(site.siteLevel.expiredDate)) {
+            site.siteLevel.expiredDate = new Date().toDateString();
+            site.siteLevel.isNeverExpired = true;
         }
         __WEBPACK_IMPORTED_MODULE_1__service_site_service__["a" /* default */].UpdateSiteToUser(state.RootRoute, state.ViewedUserId, site, function (result) {
             if (result === 'OK') {
-                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].ChangeSiteStatus, { siteId: siteId, rootStatus: site.SiteLevel.IsActive });
+                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].ChangeSiteStatus, { siteId: siteId, rootStatus: site.siteLevel.isActive });
                 __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowUpdateSuccessfully();
             }
             else {
@@ -51818,28 +51818,28 @@ var actions = (_a = {},
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["a" /* Action */].UpdateFunctionsForSite] = function (_a, site) {
         var commit = _a.commit, state = _a.state;
-        if (site.HasFunctionsChange) {
+        if (site.hasFunctionsChange) {
             var funcHost = [];
             var funcRead = [];
-            for (var _i = 0, _b = site.Functions; _i < _b.length; _i++) {
+            for (var _i = 0, _b = site.functions; _i < _b.length; _i++) {
                 var func = _b[_i];
-                if (func.HasUserReadPolicy && (!func.HasUserHostPolicy || (func.HasUserHostPolicy && func.Crud <= 0))) {
-                    funcRead.push(func.Id);
+                if (func.hasUserReadPolicy && (!func.hasUserHostPolicy || (func.hasUserHostPolicy && func.crud <= 0))) {
+                    funcRead.push(func.id);
                 }
-                if (func.HasUserHostPolicy && func.Crud > 0) {
-                    funcHost.push(func.Id);
+                if (func.hasUserHostPolicy && func.crud > 0) {
+                    funcHost.push(func.id);
                 }
             }
             var data = [{
-                    FuncHost: funcHost,
-                    FuncRead: funcRead,
-                    SiteId: site.Id,
-                    UserId: state.ViewedUserId
+                    funcHost: funcHost,
+                    funcRead: funcRead,
+                    siteId: site.id,
+                    userId: state.ViewedUserId
                 }];
             __WEBPACK_IMPORTED_MODULE_2__service_function_service__["a" /* default */].UpdateFunctions(state.RootRoute, data, function (result) {
                 if (result === 'OK') {
                     __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowUpdateSuccessfully();
-                    GetFunctionsForSite(commit, state, site.Id);
+                    GetFunctionsForSite(commit, state, site.id);
                 }
                 else {
                     __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowError();
@@ -51867,7 +51867,7 @@ var actions = (_a = {},
         var commit = _a.commit, state = _a.state;
         for (var _i = 0, _b = state.All; _i < _b.length; _i++) {
             var site = _b[_i];
-            commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetAllFunctionsUserPolicyForSite, { siteId: site.Id, rootPolicy: payLoad.rootPolicy, isRead: payLoad.isRead });
+            commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetAllFunctionsUserPolicyForSite, { siteId: site.id, rootPolicy: payLoad.rootPolicy, isRead: payLoad.isRead });
         }
     },
     _a);
@@ -51882,30 +51882,30 @@ var GetFunctionsForSite = function (commit, state, siteId) {
     });
 };
 var ResetSiteLevel = function (commit, state, siteId) {
-    var siteLevel = __WEBPACK_IMPORTED_MODULE_5_lodash__["cloneDeep"](state.ViewedUserSiteLevels.find(function (sl) { return sl.Site.Id === siteId; }));
+    var siteLevel = __WEBPACK_IMPORTED_MODULE_5_lodash__["cloneDeep"](state.ViewedUserSiteLevels.find(function (sl) { return sl.siteId === siteId; }));
     commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetSiteLevelToSite, { siteId: siteId, siteLevel: siteLevel });
     commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].EnableEditSite, siteId);
 };
 var UpdateSite = function (commit, state, site, isEdit) {
-    if (!__WEBPACK_IMPORTED_MODULE_4__util_datetime__["a" /* default */].IsValid(site.SiteLevel.ExpiredDate)) {
-        site.SiteLevel.ExpiredDate = new Date().toDateString();
-        site.SiteLevel.IsNeverExpired = true;
+    if (!__WEBPACK_IMPORTED_MODULE_4__util_datetime__["a" /* default */].IsValid(site.siteLevel.expiredDate)) {
+        site.siteLevel.expiredDate = new Date().toDateString();
+        site.siteLevel.isNeverExpired = true;
     }
     __WEBPACK_IMPORTED_MODULE_1__service_site_service__["a" /* default */].UpdateSiteToUser(state.RootRoute, state.ViewedUserId, site, function (result) {
         if (result === 'OK') {
             __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowUpdateSuccessfully();
-            GetFunctionsForSite(commit, state, site.Id);
+            GetFunctionsForSite(commit, state, site.id);
             if (isEdit) {
-                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].EnableEditSite, site.Id);
-                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].UpdateSiteLevel, { siteId: site.Id, siteLevel: site.SiteLevel });
+                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].EnableEditSite, site.id);
+                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].UpdateSiteLevel, { siteId: site.id, siteLevel: site.siteLevel });
             }
             else {
-                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].DoneAssignSite, site.Id);
+                commit(__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].DoneAssignSite, site.id);
             }
         }
         else {
             __WEBPACK_IMPORTED_MODULE_3__util_message_box__["a" /* default */].ShowError();
-            ResetSiteLevel(commit, state, site.Id);
+            ResetSiteLevel(commit, state, site.id);
         }
     });
 };
@@ -51948,11 +51948,11 @@ var UpdateSite = function (commit, state, site, isEdit) {
     };
     SiteService.prototype.UpdateSiteToUser = function (rootRoute, userId, site, callback) {
         this.axios.post(rootRoute + 'User/UpdateSiteToUser?userId=' + userId +
-            '&siteId=' + site.Id +
-            '&level=' + site.SiteLevel.Level +
-            '&isActive=' + site.SiteLevel.IsActive +
-            '&expiredDate=' + new Date(site.SiteLevel.ExpiredDate).toDateString() +
-            '&isNeverExpired=' + site.SiteLevel.IsNeverExpired).then(function (response) {
+            '&siteId=' + site.id +
+            '&level=' + site.siteLevel.level +
+            '&isActive=' + site.siteLevel.isActive +
+            '&expiredDate=' + new Date(site.siteLevel.expiredDate).toDateString() +
+            '&isNeverExpired=' + site.siteLevel.isNeverExpired).then(function (response) {
             callback(response.data);
         }, function (error) {
             __WEBPACK_IMPORTED_MODULE_1__util_message_box__["a" /* default */].ShowError(error);
@@ -51960,9 +51960,9 @@ var UpdateSite = function (commit, state, site, isEdit) {
     };
     SiteService.prototype.AssignSiteToUser = function (rootRoute, userId, site, callback) {
         this.axios.post(rootRoute + 'User/AssignSiteToUser?userId=' + userId +
-            '&siteId=' + site.Id +
-            '&level=' + site.SiteLevel.Level +
-            '&isActive=' + site.SiteLevel.IsActive).then(function (response) {
+            '&siteId=' + site.id +
+            '&level=' + site.siteLevel.level +
+            '&isActive=' + site.siteLevel.isActive).then(function (response) {
             callback(response.data);
         }, function (error) {
             __WEBPACK_IMPORTED_MODULE_1__util_message_box__["a" /* default */].ShowError(error);
@@ -53087,7 +53087,7 @@ var mutations = (_a = {},
         state.RootRoute = rootRoute;
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetAllUserSites] = function (state, sites) {
-        sites.forEach(function (s) { return (s.ShowFunctionList = false); });
+        sites.forEach(function (s) { return (s.showFunctionList = false); });
         state.All = sites;
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetCurrentSiteId] = function (state, currentSiteId) {
@@ -53113,18 +53113,18 @@ var mutations = (_a = {},
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetFunctionsToSite] = function (state, _a) {
         var siteId = _a.siteId, functions = _a.functions, loginUserAssignFunctionPermission = _a.loginUserAssignFunctionPermission;
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
         var isSelfEdit = state.LoginUserId === state.ViewedUserId;
-        site.Functions = functions;
-        site.LoginUserAssignFunctionPermission = loginUserAssignFunctionPermission;
+        site.functions = functions;
+        site.loginUserAssignFunctionPermission = loginUserAssignFunctionPermission;
         __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].InitFunctionPolicies(site);
         __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].DisableFunctionPolicies(site, state.LoginUserIsPortalAdmin, state.LoginUserAssignFunctionPermissionInAdminSite, isSelfEdit);
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetSelectAllUserFunctionsForAllSites] = function (state) {
-        state.SelectAllReadFunctionsForAllSites = state.All.every(function (site) { return site.HasAllFunctionUserReadPolicy || site.DisableCheckBoxAllFunctionReadPolicy; });
-        state.SelectAllHostFunctionsForAllSites = state.All.every(function (site) { return site.HasAllFunctionUserHostPolicy || site.DisableCheckBoxAllFunctionHostPolicy; });
+        state.SelectAllReadFunctionsForAllSites = state.All.every(function (site) { return site.hasAllFunctionUserReadPolicy || site.disableCheckBoxAllFunctionReadPolicy; });
+        state.SelectAllHostFunctionsForAllSites = state.All.every(function (site) { return site.hasAllFunctionUserHostPolicy || site.disableCheckBoxAllFunctionHostPolicy; });
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].UpdateSelectAllUserFunctionForAllSites] = function (state, _a) {
         var policy = _a.policy, isRead = _a.isRead;
@@ -53143,31 +53143,31 @@ var mutations = (_a = {},
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetViewedUserFunctionPolicies] = function (state, _a) {
         var siteId = _a.siteId, functionPolicies = _a.functionPolicies, groupFunctionPolicies = _a.groupFunctionPolicies;
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.ViewedUserFunctionPolicies = functionPolicies;
-        site.ViewedUserGroupFunctionPolicies = groupFunctionPolicies;
+        site.viewedUserFunctionPolicies = functionPolicies;
+        site.viewedUserGroupFunctionPolicies = groupFunctionPolicies;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetLoginUserFunctionPolicies] = function (state, _a) {
         var siteId = _a.siteId, functionPolicies = _a.functionPolicies;
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.LoginUserFunctionPolicies = functionPolicies;
+        site.loginUserFunctionPolicies = functionPolicies;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetSiteLevelToSite] = function (state, payLoad) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === payLoad.siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === payLoad.siteId; });
         var site = state.All[siteIndex];
         if (payLoad.siteLevel !== undefined) {
-            if (payLoad.siteLevel.IsNeverExpired) {
-                payLoad.siteLevel.ExpiredDate = null;
+            if (payLoad.siteLevel.isNeverExpired) {
+                payLoad.siteLevel.expiredDate = null;
             }
             else {
-                payLoad.siteLevel.ExpiredDate = __WEBPACK_IMPORTED_MODULE_2__util_datetime__["a" /* default */].ParseAndFormat(payLoad.siteLevel.ExpiredDate, 'DD MMM YYYY');
+                payLoad.siteLevel.expiredDate = __WEBPACK_IMPORTED_MODULE_2__util_datetime__["a" /* default */].ParseAndFormat(payLoad.siteLevel.expiredDate, 'DD MMM YYYY');
             }
         }
-        site.SiteLevel = payLoad.siteLevel;
+        site.siteLevel = payLoad.siteLevel;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetLoginUserSiteLevels] = function (state, siteLevels) {
@@ -53177,34 +53177,34 @@ var mutations = (_a = {},
         state.ViewedUserSiteLevels = __WEBPACK_IMPORTED_MODULE_4_lodash__["cloneDeep"](siteLevels);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetAllFunctionsUserPolicyForSite] = function (state, payLoad) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === payLoad.siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === payLoad.siteId; });
         var site = state.All[siteIndex];
-        if (payLoad.isRead && !site.DisableCheckBoxAllFunctionReadPolicy) {
+        if (payLoad.isRead && !site.disableCheckBoxAllFunctionReadPolicy) {
             __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetAllFunctionsReadPolicy(site, payLoad.rootPolicy);
             if (payLoad.rootPolicy === false) {
                 __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetAllFunctionsHostPolicy(site, payLoad.rootPolicy);
             }
         }
-        else if (!site.DisableCheckBoxAllFunctionHostPolicy) {
+        else if (!site.disableCheckBoxAllFunctionHostPolicy) {
             __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetAllFunctionsHostPolicy(site, payLoad.rootPolicy);
-            if (!site.HasAllFunctionUserReadPolicy) {
+            if (!site.hasAllFunctionUserReadPolicy) {
                 __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetAllFunctionsReadPolicy(site, payLoad.rootPolicy);
             }
         }
-        site.HasFunctionsChange = true;
+        site.hasFunctionsChange = true;
         state.All.splice(siteIndex, 1, site);
-        state.SelectAllReadFunctionsForAllSites = state.All.filter(function (s) { return !s.DisableCheckBoxAllFunctionReadPolicy; }).every(function (s) { return s.HasAllFunctionUserReadPolicy; });
-        state.SelectAllHostFunctionsForAllSites = state.All.filter(function (s) { return !s.DisableCheckBoxAllFunctionHostPolicy; }).every(function (s) { return s.HasAllFunctionUserHostPolicy; });
+        state.SelectAllReadFunctionsForAllSites = state.All.filter(function (s) { return !s.disableCheckBoxAllFunctionReadPolicy; }).every(function (s) { return s.hasAllFunctionUserReadPolicy; });
+        state.SelectAllHostFunctionsForAllSites = state.All.filter(function (s) { return !s.disableCheckBoxAllFunctionHostPolicy; }).every(function (s) { return s.hasAllFunctionUserHostPolicy; });
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetFunctionUserPolicy] = function (state, payLoad) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === payLoad.siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === payLoad.siteId; });
         var site = state.All[siteIndex];
         if (payLoad.rootFuncUserPolicy &&
             __WEBPACK_IMPORTED_MODULE_5__configs_configs__["a" /* default */].WinLossByProductsFunctionNames.some(function (name) {
                 return __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].CheckExistFunctionPermissionInWinLossByProducts(site, payLoad.functionId, name);
             })) {
-            var func = site.Functions.find(function (f) { return f.Id === payLoad.functionId; });
-            func.HasUserReadPolicy = !func.HasUserReadPolicy;
+            var func = site.functions.find(function (f) { return f.id === payLoad.functionId; });
+            func.hasUserReadPolicy = !func.hasUserReadPolicy;
             state.All.splice(siteIndex, 1, site);
             return;
         }
@@ -53212,20 +53212,20 @@ var mutations = (_a = {},
         __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetChildrenFunctionPolicy(site, payLoad.functionId, payLoad.rootFuncUserPolicy, payLoad.isRead);
         __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetParentFunctionPolicy(site, payLoad.functionId, payLoad.rootFuncUserPolicy, payLoad.isRead);
         __WEBPACK_IMPORTED_MODULE_3__util_function__["a" /* default */].SetSiteFunctionPolicy(site);
-        site.HasFunctionsChange = true;
+        site.hasFunctionsChange = true;
         state.All.splice(siteIndex, 1, site);
-        state.SelectAllReadFunctionsForAllSites = state.All.filter(function (s) { return !s.DisableCheckBoxAllFunctionReadPolicy; }).every(function (s) { return s.HasAllFunctionUserReadPolicy; });
-        state.SelectAllHostFunctionsForAllSites = state.All.filter(function (s) { return !s.DisableCheckBoxAllFunctionHostPolicy; }).every(function (s) { return s.HasAllFunctionUserHostPolicy; });
+        state.SelectAllReadFunctionsForAllSites = state.All.filter(function (s) { return !s.disableCheckBoxAllFunctionReadPolicy; }).every(function (s) { return s.hasAllFunctionUserReadPolicy; });
+        state.SelectAllHostFunctionsForAllSites = state.All.filter(function (s) { return !s.disableCheckBoxAllFunctionHostPolicy; }).every(function (s) { return s.hasAllFunctionUserHostPolicy; });
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].ChangeFunctionPolicy] = function (state, payLoad) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === payLoad.siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === payLoad.siteId; });
         var site = state.All[siteIndex];
-        var currentFunc = site.Functions.find(function (f) { return f.Id === payLoad.func.Id; });
+        var currentFunc = site.functions.find(function (f) { return f.id === payLoad.func.id; });
         if (payLoad.isRead) {
-            currentFunc.HasUserReadPolicy = !currentFunc.HasUserReadPolicy;
+            currentFunc.hasUserReadPolicy = !currentFunc.hasUserReadPolicy;
         }
         else {
-            currentFunc.HasUserHostPolicy = !currentFunc.HasUserHostPolicy;
+            currentFunc.hasUserHostPolicy = !currentFunc.hasUserHostPolicy;
         }
         state.All.splice(siteIndex, 1, site);
     },
@@ -53233,61 +53233,62 @@ var mutations = (_a = {},
         state.LoginUserAssignFunctionPermissionInAdminSite = permission;
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].SetLoginUserAssignSitePermissionForSite] = function (state, payload) {
-        var site = state.All.find(function (s) { return s.Id === payload.siteId; });
-        site.LoginUserAssignSitePermission = payload.permission;
+        var site = state.All.find(function (s) { return s.id === payload.siteId; });
+        site.loginUserAssignSitePermission = payload.permission;
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].ShowHideSiteFunctions] = function (state, _a) {
         var siteId = _a.siteId, isShow = _a.isShow;
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.ShowFunctionList = isShow;
+        site.showFunctionList = isShow;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].EnableEditSite] = function (state, siteId) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.EnableEdit = !site.EnableEdit;
+        site.enableEdit = !site.enableEdit;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].EnableAssignSite] = function (state, siteId) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.EnableAssign = true;
-        site.EnableEdit = true;
-        site.SiteLevel = {
-            Level: __WEBPACK_IMPORTED_MODULE_1__model_site__["a" /* SiteLevelValue */].User,
-            IsActive: true,
-            IsNeverExpired: true,
-            Site: site
+        site.enableAssign = true;
+        site.enableEdit = true;
+        site.siteLevel = {
+            level: __WEBPACK_IMPORTED_MODULE_1__model_site__["a" /* SiteLevelValue */].User,
+            isActive: true,
+            isNeverExpired: true,
+            siteId: site.id,
+            siteName: site.name
         };
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].DoneAssignSite] = function (state, siteId) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.EnableAssign = false;
-        site.EnableEdit = false;
-        var siteLevel = __WEBPACK_IMPORTED_MODULE_4_lodash__["cloneDeep"](site.SiteLevel);
+        site.enableAssign = false;
+        site.enableEdit = false;
+        var siteLevel = __WEBPACK_IMPORTED_MODULE_4_lodash__["cloneDeep"](site.siteLevel);
         state.ViewedUserSiteLevels.push(siteLevel);
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].CancelAssignSite] = function (state, siteId) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === siteId; });
         var site = state.All[siteIndex];
-        site.EnableAssign = false;
-        site.EnableEdit = false;
-        site.SiteLevel = undefined;
+        site.enableAssign = false;
+        site.enableEdit = false;
+        site.siteLevel = undefined;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].ChangeSiteStatus] = function (state, payload) {
-        var siteIndex = state.All.findIndex(function (s) { return s.Id === payload.siteId; });
+        var siteIndex = state.All.findIndex(function (s) { return s.id === payload.siteId; });
         var site = state.All[siteIndex];
-        site.SiteLevel.IsActive = payload.rootStatus;
-        state.ViewedUserSiteLevels.find(function (sl) { return sl.Site.Id === payload.siteId; }).IsActive = payload.rootStatus;
+        site.siteLevel.isActive = payload.rootStatus;
+        state.ViewedUserSiteLevels.find(function (sl) { return sl.siteId === payload.siteId; }).isActive = payload.rootStatus;
         state.All.splice(siteIndex, 1, site);
     },
     _a[__WEBPACK_IMPORTED_MODULE_0__types__["c" /* Mutation */].UpdateSiteLevel] = function (state, payload) {
-        var currentSiteLevel = state.ViewedUserSiteLevels.find(function (sl) { return sl.Site.Id === payload.siteId; });
+        var currentSiteLevel = state.ViewedUserSiteLevels.find(function (sl) { return sl.siteId === payload.siteId; });
         __WEBPACK_IMPORTED_MODULE_4_lodash__["assign"](currentSiteLevel, payload.siteLevel);
     },
     _a);
@@ -53310,34 +53311,34 @@ var FunctionUtil = /** @class */ (function () {
     function FunctionUtil() {
     }
     FunctionUtil.SetCurrentFunctionPolicy = function (site, functionId, rootFuncUserPolicy, isRead) {
-        var currentFunc = site.Functions.find(function (f) { return f.Id === functionId; });
+        var currentFunc = site.functions.find(function (f) { return f.id === functionId; });
         if (isRead) {
-            if (currentFunc.HasUserHostPolicy && !currentFunc.DisableHost) {
-                currentFunc.HasUserHostPolicy = rootFuncUserPolicy;
+            if (currentFunc.hasUserHostPolicy && !currentFunc.disableHost) {
+                currentFunc.hasUserHostPolicy = rootFuncUserPolicy;
             }
         }
         else {
-            if (!currentFunc.HasUserReadPolicy && !currentFunc.DisableRead) {
-                currentFunc.HasUserReadPolicy = rootFuncUserPolicy;
+            if (!currentFunc.hasUserReadPolicy && !currentFunc.disableRead) {
+                currentFunc.hasUserReadPolicy = rootFuncUserPolicy;
             }
         }
     };
     FunctionUtil.SetChildrenFunctionPolicy = function (site, functionId, rootFuncUserPolicy, isRead) {
         var _this = this;
-        var childrenFunc = site.Functions.filter(function (f) { return f.Parent !== null && f.Parent.Id === functionId; });
+        var childrenFunc = site.functions.filter(function (f) { return f.parentId === functionId; });
         var _loop_1 = function (func) {
             if (rootFuncUserPolicy &&
                 __WEBPACK_IMPORTED_MODULE_3__configs_configs__["a" /* default */].WinLossByProductsFunctionNames.some(function (name) { return _this.CheckFunctionIsWinLossByProducts(func, name); })) {
                 return "continue";
             }
-            if (isRead && !func.DisableRead) {
-                func.HasUserReadPolicy = rootFuncUserPolicy;
+            if (isRead && !func.disableRead) {
+                func.hasUserReadPolicy = rootFuncUserPolicy;
             }
-            else if (!func.DisableHost) {
-                func.HasUserHostPolicy = rootFuncUserPolicy;
+            else if (!func.disableHost) {
+                func.hasUserHostPolicy = rootFuncUserPolicy;
             }
-            this_1.SetCurrentFunctionPolicy(site, func.Id, rootFuncUserPolicy, isRead);
-            this_1.SetChildrenFunctionPolicy(site, func.Id, rootFuncUserPolicy, isRead);
+            this_1.SetCurrentFunctionPolicy(site, func.id, rootFuncUserPolicy, isRead);
+            this_1.SetChildrenFunctionPolicy(site, func.id, rootFuncUserPolicy, isRead);
         };
         var this_1 = this;
         for (var _i = 0, childrenFunc_1 = childrenFunc; _i < childrenFunc_1.length; _i++) {
@@ -53346,44 +53347,44 @@ var FunctionUtil = /** @class */ (function () {
         }
     };
     FunctionUtil.SetParentFunctionPolicy = function (site, functionId, rootFuncUserPolicy, isRead) {
-        var parentFunc = site.Functions.find(function (f) { return f.Id === functionId; }).Parent;
-        if (parentFunc !== null) {
+        var parentFuncId = site.functions.find(function (f) { return f.id === functionId; }).parentId;
+        if (parentFuncId) {
             var existChildrenFuncHasUserRead = false;
-            var childrenFunc = site.Functions.filter(function (f) { return f.Parent !== null && f.Parent.Id === parentFunc.Id; });
+            var childrenFunc = site.functions.filter(function (f) { return f.parentId === parentFuncId; });
             for (var _i = 0, childrenFunc_2 = childrenFunc; _i < childrenFunc_2.length; _i++) {
                 var func = childrenFunc_2[_i];
-                if ((isRead && func.HasUserReadPolicy) || (!isRead && func.HasUserHostPolicy)) {
+                if ((isRead && func.hasUserReadPolicy) || (!isRead && func.hasUserHostPolicy)) {
                     existChildrenFuncHasUserRead = true;
                 }
             }
-            parentFunc = site.Functions.find(function (f) { return f.Id === parentFunc.Id; });
+            var parentFunc = site.functions.find(function (f) { return f.id === parentFuncId; });
             if (isRead) {
-                parentFunc.HasUserReadPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
+                parentFunc.hasUserReadPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
             }
             else {
-                parentFunc.HasUserHostPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
+                parentFunc.hasUserHostPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
             }
-            this.SetCurrentFunctionPolicy(site, parentFunc.Id, rootFuncUserPolicy, isRead);
-            this.SetParentFunctionPolicy(site, parentFunc.Id, rootFuncUserPolicy, isRead);
+            this.SetCurrentFunctionPolicy(site, parentFunc.id, rootFuncUserPolicy, isRead);
+            this.SetParentFunctionPolicy(site, parentFunc.id, rootFuncUserPolicy, isRead);
         }
     };
     FunctionUtil.SetAllFunctionsReadPolicy = function (site, rootPolicy) {
         var _this = this;
-        site.Functions.forEach(function (f) {
+        site.functions.forEach(function (f) {
             return (rootPolicy && __WEBPACK_IMPORTED_MODULE_3__configs_configs__["a" /* default */].WinLossByProductsFunctionNames.some(function (name) { return _this.CheckFunctionIsWinLossByProducts(f, name); })) ||
-                f.DisableRead
-                ? (f.HasUserReadPolicy = f.HasUserReadPolicy)
-                : (f.HasUserReadPolicy = rootPolicy);
+                f.disableRead
+                ? (f.hasUserReadPolicy = f.hasUserReadPolicy)
+                : (f.hasUserReadPolicy = rootPolicy);
         });
-        site.HasAllFunctionUserReadPolicy = rootPolicy;
+        site.hasAllFunctionUserReadPolicy = rootPolicy;
     };
     FunctionUtil.SetAllFunctionsHostPolicy = function (site, rootPolicy) {
-        site.Functions.forEach(function (f) { return (f.DisableHost ? (f.HasUserHostPolicy = f.HasUserHostPolicy) : (f.HasUserHostPolicy = rootPolicy)); });
-        site.HasAllFunctionUserHostPolicy = rootPolicy;
+        site.functions.forEach(function (f) { return (f.disableHost ? (f.hasUserHostPolicy = f.hasUserHostPolicy) : (f.hasUserHostPolicy = rootPolicy)); });
+        site.hasAllFunctionUserHostPolicy = rootPolicy;
     };
     FunctionUtil.SetSiteFunctionPolicy = function (site) {
-        site.HasAllFunctionUserReadPolicy = site.Functions.every(function (f) { return f.HasUserReadPolicy; });
-        site.HasAllFunctionUserHostPolicy = site.Functions.filter(function (f) { return f.Crud > 0; }).every(function (f) { return f.HasUserHostPolicy; });
+        site.hasAllFunctionUserReadPolicy = site.functions.every(function (f) { return f.hasUserReadPolicy; });
+        site.hasAllFunctionUserHostPolicy = site.functions.filter(function (f) { return f.crud > 0; }).every(function (f) { return f.hasUserHostPolicy; });
     };
     FunctionUtil.InitFunctionPolicies = function (site) {
         var allFuncHasHostPolicy = true;
@@ -53391,57 +53392,57 @@ var FunctionUtil = /** @class */ (function () {
         var allFuncHasGroupHostPolicy = true;
         var allFuncHasGroupReadPolicy = true;
         var _loop_2 = function (func) {
-            var policy = site.ViewedUserFunctionPolicies.find(function (fp) { return fp.Function.Id === func.Id; });
-            var groupPolicy = site.ViewedUserGroupFunctionPolicies.find(function (fp) { return fp.Function.Id === func.Id; });
+            var policy = site.viewedUserFunctionPolicies.find(function (fp) { return fp.id === func.id; });
+            var groupPolicy = site.viewedUserGroupFunctionPolicies.find(function (fp) { return fp.id === func.id; });
             if (policy !== undefined) {
-                func.HasUserReadPolicy = policy.Policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read;
-                func.HasUserHostPolicy = policy.Policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Host;
+                func.hasUserReadPolicy = policy.policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read;
+                func.hasUserHostPolicy = policy.policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Host;
             }
             if (groupPolicy !== undefined) {
-                func.HasGroupReadPolicy = groupPolicy.Policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read;
-                func.HasGroupHostPolicy = groupPolicy.Policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Host;
+                func.hasGroupReadPolicy = groupPolicy.policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read;
+                func.hasGroupHostPolicy = groupPolicy.policy >= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Host;
             }
-            if (func.HasUserHostPolicy === undefined || (!func.HasUserHostPolicy && func.Crud > 0)) {
+            if (func.hasUserHostPolicy === undefined || (!func.hasUserHostPolicy && func.crud > 0)) {
                 allFuncHasHostPolicy = false;
             }
-            if (func.HasUserReadPolicy === undefined || !func.HasUserReadPolicy) {
+            if (func.hasUserReadPolicy === undefined || !func.hasUserReadPolicy) {
                 allFuncHasReadPolicy = false;
             }
-            if (func.HasGroupHostPolicy === undefined || (!func.HasGroupHostPolicy && func.Crud > 0)) {
+            if (func.hasGroupHostPolicy === undefined || (!func.hasGroupHostPolicy && func.crud > 0)) {
                 allFuncHasGroupHostPolicy = false;
             }
-            if (allFuncHasGroupReadPolicy === undefined || !func.HasGroupReadPolicy) {
+            if (allFuncHasGroupReadPolicy === undefined || !func.hasGroupReadPolicy) {
                 allFuncHasGroupReadPolicy = false;
             }
         };
-        for (var _i = 0, _a = site.Functions; _i < _a.length; _i++) {
+        for (var _i = 0, _a = site.functions; _i < _a.length; _i++) {
             var func = _a[_i];
             _loop_2(func);
         }
-        site.HasAllFunctionUserHostPolicy = allFuncHasHostPolicy;
-        site.HasAllFunctionUserReadPolicy = allFuncHasReadPolicy || allFuncHasHostPolicy;
-        site.HasAllFunctionGroupHostPolicy = allFuncHasGroupHostPolicy;
-        site.HasAllFunctionGroupReadPolicy = allFuncHasGroupReadPolicy || allFuncHasGroupHostPolicy;
+        site.hasAllFunctionUserHostPolicy = allFuncHasHostPolicy;
+        site.hasAllFunctionUserReadPolicy = allFuncHasReadPolicy || allFuncHasHostPolicy;
+        site.hasAllFunctionGroupHostPolicy = allFuncHasGroupHostPolicy;
+        site.hasAllFunctionGroupReadPolicy = allFuncHasGroupReadPolicy || allFuncHasGroupHostPolicy;
     };
     FunctionUtil.DisableFunctionPolicies = function (site, loginUserIsPortalAdmin, loginUserAssignFunctionPermissionInAdminSite, isSelfEdit) {
-        for (var _i = 0, _a = site.Functions; _i < _a.length; _i++) {
+        for (var _i = 0, _a = site.functions; _i < _a.length; _i++) {
             var func = _a[_i];
             var isDisabledRead = FunctionUtil.CheckDisableFunctionPolicy(site, func, true, loginUserIsPortalAdmin, loginUserAssignFunctionPermissionInAdminSite, isSelfEdit);
             var isDisabledHost = FunctionUtil.CheckDisableFunctionPolicy(site, func, false, loginUserIsPortalAdmin, loginUserAssignFunctionPermissionInAdminSite, isSelfEdit);
-            func.DisableRead = isDisabledRead;
-            func.DisableHost = isDisabledHost;
-            func.IsHidden =
+            func.disableRead = isDisabledRead;
+            func.disableHost = isDisabledHost;
+            func.isHidden =
                 !loginUserIsPortalAdmin &&
-                    (site.LoginUserAssignFunctionPermission < __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read ||
+                    (site.loginUserAssignFunctionPermission < __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read ||
                         loginUserAssignFunctionPermissionInAdminSite < __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read);
         }
-        site.DisableCheckBoxAllFunctionReadPolicy = site.Functions.every(function (f) { return f.DisableRead; });
-        site.DisableCheckBoxAllFunctionHostPolicy = site.Functions.every(function (f) { return f.DisableHost; });
-        site.HideCheckBoxAllFunctionPolicy = site.Functions.every(function (f) { return f.IsHidden; });
+        site.disableCheckBoxAllFunctionReadPolicy = site.functions.every(function (f) { return f.disableRead; });
+        site.disableCheckBoxAllFunctionHostPolicy = site.functions.every(function (f) { return f.disableHost; });
+        site.hideCheckBoxAllFunctionPolicy = site.functions.every(function (f) { return f.isHidden; });
     };
     FunctionUtil.CheckDisableFunctionPolicy = function (site, func, isRead, loginUserIsPortalAdmin, loginUserAssignFunctionPermissionInAdminSite, isSelfEdit) {
-        var viewedUserPolicy = site.ViewedUserFunctionPolicies.find(function (fp) { return fp.Function.Id === func.Id; });
-        var loginUserPolicy = site.LoginUserFunctionPolicies.find(function (fp) { return fp.Function.Id === func.Id; });
+        var viewedUserPolicy = site.viewedUserFunctionPolicies.find(function (fp) { return fp.id === func.id; });
+        var loginUserPolicy = site.loginUserFunctionPolicies.find(function (fp) { return fp.id === func.id; });
         var isDisabled = this.ViewedUserSiteLevelIsAdmin(site) ||
             this.LoginUserHasAssignFunctionReadPermissionInCurrentSiteAndAdminSite(site, loginUserAssignFunctionPermissionInAdminSite) ||
             isSelfEdit ||
@@ -53452,11 +53453,11 @@ var FunctionUtil = /** @class */ (function () {
     };
     FunctionUtil.CheckExistFunctionPermissionInWinLossByProducts = function (site, currentFunctionId, winLossFunctionName) {
         var _this = this;
-        var func = site.Functions.find(function (f) { return f.Id === currentFunctionId; });
+        var func = site.functions.find(function (f) { return f.id === currentFunctionId; });
         var existPermission = false;
         if (this.HasNameOrParentNameIsWinLossByProducts(func, winLossFunctionName)) {
-            existPermission = site.Functions.some(function (f) {
-                return ((f.Id !== currentFunctionId && _this.HasNameOrParentNameIsWinLossByProducts(f, winLossFunctionName)) ||
+            existPermission = site.functions.some(function (f) {
+                return ((f.id !== currentFunctionId && _this.HasNameOrParentNameIsWinLossByProducts(f, winLossFunctionName)) ||
                     _this.HasNameIsWinLossByProducts(f, winLossFunctionName)) &&
                     _this.HasReadPolicyIncludeGroup(f);
             });
@@ -53474,25 +53475,25 @@ var FunctionUtil = /** @class */ (function () {
         return (this.HasNameIsWinLossByProducts(func, winLossFunctionName) || this.HasParentNameIsWinLossByProducts(func, winLossFunctionName));
     };
     FunctionUtil.HasNameIsWinLossByProducts = function (func, winLossFunctionName) {
-        return func.Name === winLossFunctionName;
+        return func.name === winLossFunctionName;
     };
     FunctionUtil.HasParentNameIsWinLossByProducts = function (func, winLossFunctionName) {
-        return func.Parent !== null && func.Parent !== undefined && func.Parent.Name === winLossFunctionName;
+        return func.parentName === winLossFunctionName;
     };
     FunctionUtil.HasReadPolicyIncludeGroup = function (func) {
-        return func.HasUserReadPolicy || func.HasGroupReadPolicy;
+        return func.hasUserReadPolicy || func.hasGroupReadPolicy;
     };
     FunctionUtil.ViewedUserSiteLevelIsAdmin = function (site) {
-        return site.SiteLevel !== undefined && site.SiteLevel.Level >= __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].SiteAdmin;
+        return site.siteLevel !== undefined && site.siteLevel.level >= __WEBPACK_IMPORTED_MODULE_0__model_site__["a" /* SiteLevelValue */].SiteAdmin;
     };
     FunctionUtil.LoginUserPolicyIsSmallerThanViewedUserPolicy = function (viewdUserPolicy, loginUserPolicy) {
-        return viewdUserPolicy !== undefined && loginUserPolicy.Policy < viewdUserPolicy.Policy;
+        return viewdUserPolicy !== undefined && loginUserPolicy.policy < viewdUserPolicy.policy;
     };
     FunctionUtil.LoginUserHasNoPolicy = function (loginUserPolicy, isRead) {
-        return loginUserPolicy === undefined || loginUserPolicy.Policy < (isRead ? __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read : __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Host);
+        return loginUserPolicy === undefined || loginUserPolicy.policy < (isRead ? __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read : __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Host);
     };
     FunctionUtil.LoginUserHasAssignFunctionReadPermissionInCurrentSiteAndAdminSite = function (site, loginUserAssignFunctionPermissionInAdminSite) {
-        return (site.LoginUserAssignFunctionPermission <= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read ||
+        return (site.loginUserAssignFunctionPermission <= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read ||
             loginUserAssignFunctionPermissionInAdminSite <= __WEBPACK_IMPORTED_MODULE_1__model_function__["a" /* FunctionPolicyValue */].Read);
     };
     FunctionUtil.WinLossByProductsWarningMessage = 'You must select ONLY ONE function ';

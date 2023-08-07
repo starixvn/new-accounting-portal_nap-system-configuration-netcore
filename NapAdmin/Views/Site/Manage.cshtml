@@ -96,7 +96,7 @@
                 </td>
                 <td>
                     @{
-                        var siteUrls = siteUrlList.Where(x => x.Site.Id == site.Id);
+                        var siteUrls = siteUrlList.Where(x => x.SiteId == site.Id);
                         var defaultUrl = siteUrls.Where(x => x.IsDefault).FirstOrDefault() ?? siteUrls.FirstOrDefault();
 
                         if (siteUrls.Count() > 1)

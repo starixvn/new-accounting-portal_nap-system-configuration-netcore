@@ -44,8 +44,7 @@
         await Html.PartialAsync("~/Views/Trace/_NAPMenuItemUpdateStatus", Model);
     }
 
-    if (Model.ActionId == (int)LogAction.NAP_Function_Update
-        || Model.ActionId == (int)LogAction.NAP_Function_Duplicate)
+    if (Model.ActionId is (int)LogAction.NAP_Function_Update or (int)LogAction.NAP_Function_Duplicate)
     {
         await Html.PartialAsync("~/Views/Trace/_NAPFunctionUpdate", Model);
     }
@@ -80,15 +79,11 @@
         await Html.PartialAsync("~/Views/Trace/_NAPCustUpdate", Model);
     }
 
-    if (Model.ActionId == (int)LogAction.NAP_Site_UpdateSiteURL
-        || Model.ActionId == (int)LogAction.NAP_Site_InsertSiteURL
-        || Model.ActionId == (int)LogAction.NAP_Site_UpdateDefaultSiteURL)
+    if (Model.ActionId is (int)LogAction.NAP_Site_UpdateSiteURL or (int)LogAction.NAP_Site_InsertSiteURL or (int)LogAction.NAP_Site_UpdateDefaultSiteURL)
     {
         await Html.PartialAsync("~/Views/Trace/_NAPSiteUrl", Model);
     }
-    if (Model.ActionId == (int)LogAction.NAP_Group_AssignFunction
-        || Model.ActionId == (int)LogAction.NAP_User_AssignFunction
-        || Model.ActionId == (int)LogAction.NAP_Function_CopyPermission)
+    if (Model.ActionId is (int)LogAction.NAP_Group_AssignFunction or (int)LogAction.NAP_User_AssignFunction or (int)LogAction.NAP_Function_CopyPermission)
     {
         await Html.PartialAsync("~/Views/Trace/_NAPAssignPermission", Model);
     }

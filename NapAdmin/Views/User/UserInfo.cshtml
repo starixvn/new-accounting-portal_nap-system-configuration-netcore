@@ -39,10 +39,10 @@
         </div>
         <div class="form-group line">
             <div class="col-sm-4 text-right">
-                @Html.LabelFor(m => m.Group, new { @for = "" })
+                @Html.LabelFor(m => m.GroupName, new { @for = "" })
             </div>
             <div class="col-sm-8">
-                <label>@(Model.Group != null ? Model.Group.Name : string.Empty)</label>
+                <label>@Model.GroupName</label>
             </div>
         </div>
         <div class="form-group line">
@@ -77,10 +77,10 @@
         </div>
         <div class="form-group line">
             <div class="col-sm-4 text-right">
-                @Html.LabelFor(m => m.Creator, new { @for = "" })
+                @Html.LabelFor(m => m.CreatorUsername, new { @for = "" })
             </div>
             <div class="col-sm-8">
-                <label>@(Model.Creator != null ? Model.Creator.Username : string.Empty)</label>
+                <label>@Model.CreatorUsername</label>
             </div>
         </div>
         <div class="form-group line">
@@ -100,10 +100,10 @@
         </div>
         <div class="form-group line">
             <div class="col-sm-4 text-right">
-                @Html.LabelFor(m => m.Modifier, new { @for = "" })
+                @Html.LabelFor(m => m.ModifierUsername, new { @for = "" })
             </div>
             <div class="col-sm-8">
-                <label>@(Model.Modifier != null ? Model.Modifier.Username : string.Empty)</label>
+                <label>@Model.ModifierUsername</label>
             </div>
         </div>
     </form>

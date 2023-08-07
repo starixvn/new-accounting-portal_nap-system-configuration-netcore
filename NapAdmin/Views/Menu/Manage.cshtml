@@ -106,16 +106,18 @@
                         @(i + 1)
                     </td>
                     <td>
-                        @{ IndentChildMenuItem(item, menuItemList, 0); }
+                        @{
+                            IndentChildMenuItem(item, menuItemList, 0);
+                        }
                     </td>
                     <td class="grid-mode-only" style="display: none">
-                        @(item.Parent != null ? item.Parent.Name : string.Empty)
+                        @item.ParentName
                     </td>
                     <td>
                         @item.Url
                     </td>
                     <td>
-                        @item.Function.Name
+                        @item.FunctionName
                     </td>
                     <td class="text-center">
                         @if (item.Policy == (int)AdminConstant.Policy.Host)
@@ -134,7 +136,7 @@
                         @item.ModifiedDate.ToFullDateString()
                     </td>
                     <td>
-                        @(item.Modifier != null ? item.Modifier.Name : string.Empty)
+                        @item.ModifierUserName
                     </td>
                     @if (!viewFlags.IsLive)
                     {
@@ -192,11 +194,11 @@
 @{
     void IndentChildMenuItem(MenuItem menuItem, List<MenuItem> listMenuItem, int level = 0)
     {
-        if (!ReferenceEquals(menuItem.Parent, null))
+        if (menuItem.ParentId > 0)
         {
-            if (menuItem.Parent.Id > 0)
+            if (menuItem.ParentId > 0)
             {
-                var parent = listMenuItem.Where(m => m.Id == menuItem.Parent.Id).FirstOrDefault();
+                var parent = listMenuItem.Where(m => m.Id == menuItem.ParentId).FirstOrDefault();
 
                 IndentChildMenuItem(parent, listMenuItem, level + 1);
             }

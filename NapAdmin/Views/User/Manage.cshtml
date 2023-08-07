@@ -29,21 +29,21 @@
         @if (viewFlags.HasEditRight)
         {
             @Html.ActionLink("+ " + ViewResources.Create_New_User, "AddNew", "User",
-                     new
-                     {
-                         ReturnUserName = ViewBag.Username,
-                         ReturnSiteId = siteId,
-                         ReturnGroupId = returnGroupId,
-                         ReturnPageIndex = Model.CurrentPageIndex
-                     }, new { @class = "add-button" })
+    new
+    {
+    ReturnUserName = ViewBag.Username,
+    ReturnSiteId = siteId,
+    ReturnGroupId = returnGroupId,
+    ReturnPageIndex = Model.CurrentPageIndex
+    }, new { @class = "add-button" })
             @Html.ActionLink("+ " + ViewResources.Add_Existing_User, "AddExisting", "User",
-                       new
-                       {
-                           ReturnUserName = ViewBag.Username,
-                           ReturnSiteId = siteId,
-                           ReturnGroupId = returnGroupId,
-                           ReturnPageIndex = Model.CurrentPageIndex
-                       }, new { @class = "add-button" })
+    new
+    {
+    ReturnUserName = ViewBag.Username,
+    ReturnSiteId = siteId,
+    ReturnGroupId = returnGroupId,
+    ReturnPageIndex = Model.CurrentPageIndex
+    }, new { @class = "add-button" })
         }
     </div>
 }
@@ -54,25 +54,25 @@
         <input type="hidden" value="@(ViewBag.Username)" id="hdnUsename" />
         <input type="text" value="@(ViewBag.Username)" name="userName" id="Username" />
     </div>
-        <div class="form-group">
-            @Html.Label("GroupId", ViewResources.Group)
-            @Html.DropDownList("GroupId", (List<SelectListItem>)ViewBag.GroupSelectList, ViewResources.All_Groups)
-        </div>
+    <div class="form-group">
+        @Html.Label("GroupId", ViewResources.Group)
+        @Html.DropDownList("GroupId", (List<SelectListItem>)ViewBag.GroupSelectList, ViewResources.All_Groups)
+    </div>
     if (viewFlags.IsNapAdminSite)
     {
         <div class="form-group">
             @Html.Label("SiteId", ViewResources.Site)
             @Html.DropDownList("SiteId", (List<SelectListItem>)ViewBag.SiteSelectList)
         </div>
-            <div class="form-group">
-                @Html.Label("StatusId", "Status")
-                @Html.DropDownList("StatusId", new List<SelectListItem> {
-                new() { Text = "All", Value = "0"  },
-                new() { Text = "Active", Value = "1" , Selected = true },
-                new() { Text = "Inactive", Value = "2"  },
-                new() { Text = "Closed", Value = "3"  }
-            })
-            </div>
+        <div class="form-group">
+            @Html.Label("StatusId", "Status")
+            @Html.DropDownList("StatusId", new List<SelectListItem> {
+    new() { Text = "All", Value = "0"  },
+    new() { Text = "Active", Value = "1" , Selected = true },
+    new() { Text = "Inactive", Value = "2"  },
+    new() { Text = "Closed", Value = "3"  }
+    })
+        </div>
     }
 
     <div class="form-group">
@@ -128,51 +128,51 @@
     </thead>
     <tbody id="grid-user">
         @if (!ReferenceEquals(Model, null) && Model.Count() > 0)
+        {
+            var i = 0;
+            foreach (var item in Model)
             {
-                var i = 0;
-                foreach (var item in Model)
-                {
-                    var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
+                var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
 
                 <tr @Html.Raw(rowCss)>
                     <td class="text-center">
-                        @((i + 1) + ((Model.CurrentPageIndex - 1) * Model.PageSize))
+                        @(i + 1 + (Model.CurrentPageIndex - 1) * Model.PageSize)
                     </td>
                     <td>
-                        <a href="javascript:;" uid="@item.User.Id" class="lnk-user-info"
-                           title="@ViewResources.View_details_of '@item.User.Username'">@item.User.Username</a>
+                        <a href="javascript:;" uid="@item.UserId" class="lnk-user-info"
+                   title="@ViewResources.View_details_of '@item.Username'">@item.Username</a>
                     </td>
                     <td>
-                        @(item.User.FirstName != null ? item.User.FirstName : string.Empty)
+                        @item.FirstName
                     </td>
                     @if (isShowSite)
                     {
                         <td>
-                            @(item.Site != null ? item.Site.Name : string.Empty)
+                            @item.SiteName
                         </td>
                     }
                     <td>
-                        @(item.User.Group != null ? item.User.Group.Name : string.Empty)
+                        @item.GroupName
                     </td>
                     @if (viewFlags.IsShowLevelColumn)
                     {
                         <td class="text-center">
-                            @if (!ReferenceEquals(item.Site, null))
+                            @if (item.SiteId > 0)
                             {
                                 @item.Level.ToUserLevel()
                             }
                         </td>
                     }
                     <td>
-                        @(item.User.Creator != null ? item.User.Creator.Username : string.Empty)
+                        @item.CreatorUsername
                     </td>
                     <td class="text-center">
-                        @item.User.CreatedDate.ToFullDateString()
+                        @item.CreatedDate.ToFullDateString()
                     </td>
                     <td class="text-center">
-                        @if (item.User.LastLoginDate != DateTime.MinValue)
-                    {
-                            @item.User.LastLoginDate.ToFullDateString()
+                        @if (item.LastLoginDate != DateTime.MinValue)
+                        {
+                            @item.LastLoginDate.ToFullDateString()
                         }
                         else
                         {
@@ -181,7 +181,7 @@
                     </td>
                     <td class="text-center">
                         @{
-                            var status = ((AdminConstant.UserStatus)item.Status);
+                            var status = (AdminConstant.UserStatus)item.Status;
 
                             if (status != AdminConstant.UserStatus.All)
                             {
@@ -195,88 +195,88 @@
                     {
                         if (viewFlags.HasEditRight || viewFlags.HasAssignSiteRight || viewFlags.HasAssignFunctionRight)
                         {
-                            var visible = item.User.Id == userId || level > item.Level
-                                || (item.Level == (int)AdminConstant.Level.User && level == item.Level);
+                            var visible = item.UserId == userId || level > item.Level
+                            || (item.Level == (int)AdminConstant.Level.User && level == item.Level);
 
                             var isSiteAdmin = level >= (int)AdminConstant.Level.SiteAdmin;
 
                             <td class="text-center">
                                 <div class="action-wrp">
                                     @if (visible)
-                            {
+                                    {
                                         <span class="btn-action">@ViewResources.Action</span>
-                                            <div class="relative">
-                                                <ul class="actions">
-                                                    @if (viewFlags.HasEditRight && visible && item.User.Id != userId)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Edit, item.User.Username, ViewResources.Details),
-                                                    "Edit", new
-                                                    {
-                                                        id = item.User.Id,
-                                                        returnUserName = ViewBag.Username,
-                                                        returnSiteId = siteId,
-                                                        returnGroupId = returnGroupId,
-                                                        returnPageIndex = Model.CurrentPageIndex
-                                                    }, new { @class = "dd-edit" })
-                                                        </li>
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Reset, item.User.Username, ViewResources.Password),
-                                                        "ResetPassword", new
-                                                        {
-                                                            id = item.User.Id,
-                                                            returnUserName = ViewBag.Username,
-                                                            returnSiteId = siteId,
-                                                            returnGroupId = returnGroupId,
-                                                            returnPageIndex = Model.CurrentPageIndex
-                                                        }, new { @class = "dd-chgpwd" })
-                                                        </li>
-                                                    }
-                                                    @if ((viewFlags.HasAssignSiteRight || isSiteAdmin) && visible)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("View Sites of '{0}'", item.User.Username), "AssignSite",
-                                                    new
-                                                    {
-                                                        id = item.User.Id,
-                                                        returnUserName = ViewBag.Username,
-                                                        returnSiteId = siteId,
-                                                        returnGroupId = returnGroupId,
-                                                        returnPageIndex = Model.CurrentPageIndex
-                                                    }, new { @class = "dd-site" })
-                                                        </li>
-                                                    }
-                                                    @if ((viewFlags.HasAssignFunctionRight || isSiteAdmin) && visible && viewFlags.IsShowLevelColumn)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("View Permission of '{0}'", item.User.Username), "AssignPermission",
-                                                    new
-                                                    {
-                                                        id = item.User.Id,
-                                                        siteId = siteId,
-                                                        returnUserName = ViewBag.Username,
-                                                        returnSiteId = siteId,
-                                                        returnGroupId = returnGroupId,
-                                                        returnPageIndex = Model.CurrentPageIndex
-                                                    }, new { @class = "dd-permission" })
-                                                        </li>
-                                                    }
-                                                    @if (((viewFlags.HasAssignSiteRight && viewFlags.HasAssignFunctionRight) || isSiteAdmin) && visible)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("View Site/Function of '{0}'", item.User.Username), "AssignSiteFunction",
-                                                new
+                                        <div class="relative">
+                                            <ul class="actions">
+                                                @if (viewFlags.HasEditRight && visible && item.UserId != userId)
                                                 {
-                                                    id = item.User.Id,
-                                                    returnUserName = ViewBag.Username,
-                                                    returnSiteId = siteId,
-                                                    returnGroupId = returnGroupId,
-                                                    returnPageIndex = Model.CurrentPageIndex
-                                                }, new { @class = "dd-site" })
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </div>
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Edit, item.Username, ViewResources.Details),
+                                "Edit", new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-edit" })
+                                                    </li>
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Reset, item.Username, ViewResources.Password),
+                                "ResetPassword", new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-chgpwd" })
+                                                    </li>
+                                                }
+                                                @if ((viewFlags.HasAssignSiteRight || isSiteAdmin) && visible)
+                                                {
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("View Sites of '{0}'", item.Username), "AssignSite",
+                                new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-site" })
+                                                    </li>
+                                                }
+                                                @if ((viewFlags.HasAssignFunctionRight || isSiteAdmin) && visible && viewFlags.IsShowLevelColumn)
+                                                {
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("View Permission of '{0}'", item.Username), "AssignPermission",
+                                new
+                                {
+                                id = item.UserId,
+                                siteId = siteId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-permission" })
+                                                    </li>
+                                                }
+                                                @if (((viewFlags.HasAssignSiteRight && viewFlags.HasAssignFunctionRight) || isSiteAdmin) && visible)
+                                                {
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("View Site/Function of '{0}'", item.Username), "AssignSiteFunction",
+                                new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-site" })
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
                                     }
                                 </div>
                             </td>
@@ -284,14 +284,14 @@
                     }
                     else
                     {
-                        if (!ReferenceEquals(item.Site, null))
+                        @if (item.SiteId > 0)
                         {
-                            viewFlags.HasEditRight = (hashManageUser.Contains(item.Site.Id) ? ((int)hashManageUser[item.Site.Id] >= (int)AdminConstant.Policy.Host) : false)
-                                                        && viewFlagsCurrentSite.HasManageUserRight;
-                            viewFlags.HasAssignSiteRight = (hashAssignSite.Contains(item.Site.Id) ? ((int)hashAssignSite[item.Site.Id] >= (int)AdminConstant.Policy.Read) : false)
-                                                        && viewFlagsCurrentSite.HasAssignSiteRight;
-                            viewFlags.HasAssignFunctionRight = (hashAssignFunction.Contains(item.Site.Id) ? ((int)hashAssignFunction[item.Site.Id] >= (int)AdminConstant.Policy.Read) : false)
-                                                        && viewFlagsCurrentSite.HasAssignFunctionRight;
+                            viewFlags.HasEditRight = (hashManageUser.Contains(item.SiteId) ? (int)hashManageUser[item.SiteId] >= (int)AdminConstant.Policy.Host : false)
+                            && viewFlagsCurrentSite.HasManageUserRight;
+                            viewFlags.HasAssignSiteRight = (hashAssignSite.Contains(item.SiteId) ? (int)hashAssignSite[item.SiteId] >= (int)AdminConstant.Policy.Read : false)
+                            && viewFlagsCurrentSite.HasAssignSiteRight;
+                            viewFlags.HasAssignFunctionRight = (hashAssignFunction.Contains(item.SiteId) ? (int)hashAssignFunction[item.SiteId] >= (int)AdminConstant.Policy.Read : false)
+                            && viewFlagsCurrentSite.HasAssignFunctionRight;
                         }
                         else
                         {
@@ -303,93 +303,93 @@
                         if (viewFlags.HasEditRight || viewFlags.HasAssignSiteRight || viewFlags.HasAssignFunctionRight)
                         {
                             var visible =
-                                (isPortalAdmin)
-                                ||
-                                (item.User.Id == userId || (level > item.Level || !item.IsActive)
-                                || (item.User.Id == userId || item.Level == (int)AdminConstant.Level.User) && level == item.Level);
+                            isPortalAdmin 
+                            ||
+                            item.UserId == userId || level > item.Level || !item.IsActive 
+                            || (item.UserId == userId || item.Level == (int)AdminConstant.Level.User) && level == item.Level;
 
                             var returnSiteId = (int)AdminConstant.SearchAllSite;
-                            var currentSite = item.Site != null ? (listSiteLevel.Where(s => s.Site.Id == item.Site.Id).FirstOrDefault()) : null;
+                            var currentSite = item.SiteId > 0 ? listSiteLevel.Where(s => s.SiteId == item.SiteId).FirstOrDefault() : null;
                             var isSiteAdmin = currentSite != null ? currentSite.Level >= (int)AdminConstant.Level.SiteAdmin : false;
 
                             <td class="text-center">
                                 <div class="action-wrp">
                                     @if (visible)
-                            {
+                                    {
                                         <span class="btn-action">@ViewResources.Action</span>
-                                            <div class="relative">
-                                                <ul class="actions">
-                                                    @if (viewFlags.HasEditRight && visible && item.Level != (int)AdminConstant.Level.SiteAdmin || item.User.Id == userId)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Edit, item.User.Username, ViewResources.Details),
-                                                    "Edit", new
-                                                    {
-                                                        id = item.User.Id,
-                                                        returnUserName = ViewBag.Username,
-                                                        returnSiteId = siteId,
-                                                        returnGroupId = returnGroupId,
-                                                        returnPageIndex = Model.CurrentPageIndex
-                                                    }, new { @class = "dd-edit" })
-                                                        </li>
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Reset, item.User.Username, ViewResources.Password),
-                                                    "ResetPassword", new
-                                                    {
-                                                        id = item.User.Id,
-                                                        returnUserName = ViewBag.Username,
-                                                        returnSiteId = siteId,
-                                                        returnGroupId = returnGroupId,
-                                                        returnPageIndex = Model.CurrentPageIndex
-                                                    }, new { @class = "dd-chgpwd" })
-                                                        </li>
-                                                    }
-                                                    @if ((viewFlags.HasAssignSiteRight || isSiteAdmin) && visible)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("View Sites of '{0}'", item.User.Username), "AssignSite",
-                                                new
+                                        <div class="relative">
+                                            <ul class="actions">
+                                                @if (viewFlags.HasEditRight && visible && item.Level != (int)AdminConstant.Level.SiteAdmin || item.UserId == userId)
                                                 {
-                                                    id = item.User.Id,
-                                                    returnUserName = ViewBag.Username,
-                                                    returnSiteId = siteId,
-                                                    returnGroupId = returnGroupId,
-                                                    returnPageIndex = Model.CurrentPageIndex
-                                                }, new { @class = "dd-site" })
-                                                        </li>
-                                                    }
-                                                    @if ((viewFlags.HasAssignFunctionRight || isSiteAdmin) && visible)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("View Permission of '{0}'", item.User.Username), "AssignPermission",
-                                                new
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Edit, item.Username, ViewResources.Details),
+                                "Edit", new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-edit" })
+                                                    </li>
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("{0} '{1}' {2}", ViewResources.Reset, item.Username, ViewResources.Password),
+                                "ResetPassword", new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-chgpwd" })
+                                                    </li>
+                                                }
+                                                @if ((viewFlags.HasAssignSiteRight || isSiteAdmin) && visible)
                                                 {
-                                                    id = item.User.Id,
-                                                    siteId = item.Site != null ? item.Site.Id : returnSiteId,
-                                                    returnUserName = ViewBag.Username,
-                                                    returnSiteId = siteId,
-                                                    returnGroupId = returnGroupId,
-                                                    returnPageIndex = Model.CurrentPageIndex
-                                                }, new { @class = "dd-permission" })
-                                                        </li>
-                                                    }
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("View Sites of '{0}'", item.Username), "AssignSite",
+                                new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-site" })
+                                                    </li>
+                                                }
+                                                @if ((viewFlags.HasAssignFunctionRight || isSiteAdmin) && visible)
+                                                {
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("View Permission of '{0}'", item.Username), "AssignPermission",
+                                new
+                                {
+                                id = item.UserId,
+                                siteId = item.SiteId>0 ? item.SiteId : returnSiteId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-permission" })
+                                                    </li>
+                                                }
 
-                                                    @if (((viewFlags.HasAssignSiteRight && viewFlags.HasAssignFunctionRight) || isSiteAdmin) && visible)
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink(string.Format("View Site/Function of '{0}'", item.User.Username), "AssignSiteFunction",
-                                                    new
-                                                    {
-                                                        id = item.User.Id,
-                                                        returnUserName = ViewBag.Username,
-                                                        returnSiteId = siteId,
-                                                        returnGroupId = returnGroupId,
-                                                        returnPageIndex = Model.CurrentPageIndex
-                                                    }, new { @class = "dd-site" })
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </div>
+                                                @if (((viewFlags.HasAssignSiteRight && viewFlags.HasAssignFunctionRight) || isSiteAdmin) && visible)
+                                                {
+                                                    <li>
+                                                        @Html.ActionLink(string.Format("View Site/Function of '{0}'", item.Username), "AssignSiteFunction",
+                                new
+                                {
+                                id = item.UserId,
+                                returnUserName = ViewBag.Username,
+                                returnSiteId = siteId,
+                                returnGroupId = returnGroupId,
+                                returnPageIndex = Model.CurrentPageIndex
+                                }, new { @class = "dd-site" })
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
                                     }
                                 </div>
                             </td>
@@ -401,17 +401,17 @@
                     }
                 </tr>
 
-                                    i++;
-                                }
-                            }
-                            else
-                            {
-                                <tr class="no-info">
-                                    <td colspan="12" class="text-center">
-                                        @ViewResources.NoInformationAvailable
-                                    </td>
-                                </tr>
-                            }
+                i++;
+            }
+        }
+        else
+        {
+            <tr class="no-info">
+                <td colspan="12" class="text-center">
+                    @ViewResources.NoInformationAvailable
+                </td>
+            </tr>
+        }
     </tbody>
     <tfoot>
         <tr>
@@ -421,11 +421,11 @@
                     <span class="items-per-page-wrp">
                         @ViewResources.PageSize
                         @Html.DropDownList("items-per-page", new List<SelectListItem> {
-                            new() { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
-                            new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
-                            new() { Value = "50", Text = "50", Selected = "50" == Model.PageSize.ToString() },
-                            new() { Value = "100", Text = "100", Selected = "100" == Model.PageSize.ToString() },
-                            new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() },
+                    new() { Value = "10", Text = "10", Selected = "10" == Model.PageSize.ToString() },
+                    new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
+                    new() { Value = "50", Text = "50", Selected = "50" == Model.PageSize.ToString() },
+                    new() { Value = "100", Text = "100", Selected = "100" == Model.PageSize.ToString() },
+                    new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() }
                         }, new { id = string.Empty, @class = "items-per-page" })
                     </span>
                     <div id="jpages"></div>

@@ -129,7 +129,7 @@ $(document).ready(function () {
                                     success: function (result) {
                                         if (result.toUpperCase() === 'OK') {
                                             NAP.headlineMsgBox.showInfo('Your changes were saved!', { closeBtn: false });
-                                            setTimeout(window.location.reload, 2000);
+                                            setTimeout(function () { window.location.reload(); } , 2000);
                                         }
                                     },
                                     error: function (xhr, status, err) {
@@ -229,7 +229,7 @@ $(document).ready(function () {
                                     success: function (result) {
                                         if (result.toUpperCase() === 'OK') {
                                             NAP.headlineMsgBox.showInfo('Your changes were saved!', { closeBtn: false });
-                                            setTimeout(window.location.reload, 2000);
+                                            setTimeout(function () { window.location.reload(); }, 2000);
                                         }
                                     },
                                     error: function (xhr, status, err) {
@@ -357,12 +357,12 @@ $(document).ready(function () {
                             NAP.loadingBox.close();
                         },
                         success: function (result) {
-                            if (result.IsSuccessful) {
+                            if (result.isSuccessful) {
                                 groupIds.shift();
                                 unAssignGroup();
                             }
                             else {
-                                var errorMessage = result.Message + " when unassign group " + $('.group-name-' + groupId).text();
+                                var errorMessage = result.message + " when unassign group " + $('.group-name-' + groupId).text();
                                 NAP.headlineMsgBox.showErr(errorMessage, { closeBtn: false });
                             }
                         },
@@ -427,12 +427,12 @@ $(document).ready(function () {
                             NAP.loadingBox.close();
                         },
                         success: function (result) {
-                            if (result.IsSuccessful) {
+                            if (result.isSuccessful) {
                                 userIds.shift();
                                 unAssignUser();
                             }
                             else {
-                                var errorMessage = result.Message + " when unassign user " + $('.user-name-' + userId).text();
+                                var errorMessage = result.message + " when unassign user " + $('.user-name-' + userId).text();
                                 NAP.headlineMsgBox.showErr(errorMessage, { closeBtn: false });
                             }
                         },

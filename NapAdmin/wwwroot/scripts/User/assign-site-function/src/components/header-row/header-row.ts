@@ -28,13 +28,13 @@ export class HeaderRowComponent extends Vue {
 
     public get DisableSelectAllReadFunctionsForAllSites() {
         const allSites: Array<Site> = this.$store.getters[Type.Getter.AllUserSites];
-        return allSites.every(s => s.DisableCheckBoxAllFunctionReadPolicy);
+        return allSites.every(s => s.disableCheckBoxAllFunctionReadPolicy);
     }
 
     public get DisableSelectAllHostFunctionsForAllSites() {
         const allSites: Array<Site> = this.$store.getters[Type.Getter.AllUserSites];
 
-        return allSites.every(s => s.DisableCheckBoxAllFunctionHostPolicy);
+        return allSites.every(s => s.disableCheckBoxAllFunctionHostPolicy);
     }
 
     public OnCheckAllFunctionsForAllSites(currentPolicy: boolean, isRead: boolean) {
@@ -51,7 +51,7 @@ export class HeaderRowComponent extends Vue {
         this.showAllSiteFunctions = !this.showAllSiteFunctions;
 
         for (const site of allSites) {
-            this.$store.commit(Type.Mutation.ShowHideSiteFunctions, { siteId: site.Id, isShow: this.showAllSiteFunctions });
+            this.$store.commit(Type.Mutation.ShowHideSiteFunctions, { siteId: site.id, isShow: this.showAllSiteFunctions });
         }
     }
 }

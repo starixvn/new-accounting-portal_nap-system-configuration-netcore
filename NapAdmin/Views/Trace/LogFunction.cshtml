@@ -17,11 +17,11 @@
     </div>
     <div class="form-group datetime">
         @Html.LabelFor(m => m.From)
-        @Html.EditorFor(m => m.From)
+        <input class="text-box single-line" data-val="true" data-val-date="The field From must be a date." data-val-required="The From field is required." id="From" name="From" type="datetime" value="@Model.From.ToString("MMM dd, yyyy")" />
     </div>
     <div class="form-group datetime">
         @Html.LabelFor(m => m.To)
-        @Html.EditorFor(m => m.To)
+        <input class="text-box single-line" data-val="true" data-val-date="The field To must be a date." data-val-required="The To field is required." id="To" name="To" type="datetime" value="@Model.To.ToString("MMM dd, yyyy")" />
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.SiteId)
@@ -72,7 +72,7 @@
 
             <tr @Html.Raw(rowCss)>
                 <td class="text-center">
-                    @((i + 1) + ((Model.PageIndex - 1) * Model.PageSize))
+                    @(i + 1 + (Model.PageIndex - 1) * Model.PageSize)
                 </td>
                 <td>
                     @item.Id
@@ -120,7 +120,7 @@
                             new() { Value = "20", Text = "20", Selected = "20" == Model.PageSize.ToString() },
                             new() { Value = "50", Text = "50", Selected = "50" == Model.PageSize.ToString() },
                             new() { Value = "100", Text = "100", Selected = "100" == Model.PageSize.ToString() },
-                            new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() },
+                            new() { Value = "200", Text = "200", Selected = "200" == Model.PageSize.ToString() }
                         }, new { id = string.Empty, @class = "items-per-page" })
                     </span>
                     <div id="jpages"></div>

@@ -80,8 +80,8 @@
                         <td class="text-center">
                             @(i + 1)
                         </td>
-                        <td class="group-name-@item.Group.Id">
-                            @item.Group.Name
+                        <td class="group-name-@item.Id">
+                            @item.Name
                         </td>
                         <td class="text-center">
                             @if (item.Policy == (int)AdminConstant.Policy.Host)
@@ -97,12 +97,12 @@
                             @Html.Raw(item.ModifiedDate.ToFullDateString())
                         </td>
                         <td>
-                            @(item.Creator != null ? item.Creator.Username : string.Empty)
+                            @item.CreatorUsername
                         </td>
                         @if (enableRemovePermission && viewFlags.HasAssignFunctionToGroupRight)
                         {
                             <td class="text-center">
-                                <input type="checkbox" class="group-id" data-group-id="@item.Group.Id" />
+                                <input type="checkbox" class="group-id" data-group-id="@item.Id" />
                             </td>
                         }
                     </tr>
@@ -188,27 +188,27 @@
                 foreach (var item in userList)
                 {
                     var rowCss = i % 2 == 0 ? string.Empty : "class='alt'";
-                    var groupPolicy = groupList == null || item.User.Group == null ? null
-                        : groupList.Where(g => g.Group.Id == item.User.Group.Id).FirstOrDefault();
+                    var groupPolicy = groupList == null || item.GroupId ==0 ? null
+                        : groupList.Where(g => g.Id == item.GroupId).FirstOrDefault();
 
                     <tr @Html.Raw(rowCss)>
                         <td class="text-center">
                             @(i + 1)
                         </td>
-                        <td class="user-name-@item.User.Id">
-                            @item.User.Username
+                        <td class="user-name-@item.UserId">
+                            @item.Username
                         </td>
                         <td>
-                            @item.User.FirstName
+                            @item.FirstName
                         </td>
                         <td>
-                            @item.User.LastName
+                            @item.LastName
                         </td>
                         <td>
-                            @item.User.Email
+                            @item.Email
                         </td>
                         <td>
-                            @(item.User.Group != null ? item.User.Group.Name : string.Empty)
+                            @item.GroupName
                         </td>
                         <td class="text-center">
                             @if (item.Policy == (int)AdminConstant.Policy.Host)
@@ -237,14 +237,14 @@
                             @Html.Raw(item.ModifiedDate.ToFullDateString())
                         </td>
                         <td class="text-center">
-                            @(item.Modifier != null ? item.Modifier.Username : string.Empty)
+                            @item.ModifierUsername
                         </td>
                         @if (enableRemovePermission && viewFlags.HasAssignFunctionToUserRight)
                         {
                             <td class="text-center">
-                                @if (userSiteLevels[item.User.Id] == 0)
+                                @if (userSiteLevels[item.UserId] == 0)
                                 {
-                                    <input type="checkbox" class="user-id" data-user-id="@item.User.Id" />
+                                    <input type="checkbox" class="user-id" data-user-id="@item.UserId" />
                                 }                                
                             </td>
                         }                        

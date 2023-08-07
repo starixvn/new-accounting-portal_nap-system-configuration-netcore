@@ -1,24 +1,32 @@
 ﻿import { Site } from './site';
 
 export interface Function {
-    Id?: number;
-    Name?: string;
-    Parent?: Function;
-    SiteId?: number;
-    HasUserReadPolicy?: boolean;
-    HasUserHostPolicy?: boolean;
-    HasGroupReadPolicy?: boolean;
-    HasGroupHostPolicy?: boolean;
-    Crud?: number;
-    DisableRead?: boolean;
-    DisableHost?: boolean;
-    IsHidden?: boolean;
+    id?: number;
+    name?: string;
+    key?: string;
+    parentId?: number;
+    parentName?: string;
+    siteId?: number;
+    siteName?: string;
+    hasUserReadPolicy?: boolean;
+    hasUserHostPolicy?: boolean;
+    hasGroupReadPolicy?: boolean;
+    hasGroupHostPolicy?: boolean;
+    crud?: number;
+    disableRead?: boolean;
+    disableHost?: boolean;
+    isHidden?: boolean;
 }
 
 export interface FunctionPolicy {
-    Function?: Function;
-    Site?: Site;
-    Policy?: number;
+    id?: number;
+    name?: string;
+    key?: string;
+    parentId?: number;
+    parentName?: string;
+    siteId?: number;
+    siteName?: string;
+    policy?: number;
 }
 
 export enum FunctionPolicyValue {

@@ -7,21 +7,21 @@ export default class FunctionUtil {
     public static readonly WinLossByProductsWarningMessage = 'You must select ONLY ONE function ';
 
     public static SetCurrentFunctionPolicy(site: Site, functionId: number, rootFuncUserPolicy: boolean, isRead: boolean) {
-        const currentFunc = site.Functions.find(f => f.Id === functionId);
+        const currentFunc = site.functions.find(f => f.id === functionId);
 
         if (isRead) {
-            if (currentFunc.HasUserHostPolicy && !currentFunc.DisableHost) {
-                currentFunc.HasUserHostPolicy = rootFuncUserPolicy;
+            if (currentFunc.hasUserHostPolicy && !currentFunc.disableHost) {
+                currentFunc.hasUserHostPolicy = rootFuncUserPolicy;
             }
         } else {
-            if (!currentFunc.HasUserReadPolicy && !currentFunc.DisableRead) {
-                currentFunc.HasUserReadPolicy = rootFuncUserPolicy;
+            if (!currentFunc.hasUserReadPolicy && !currentFunc.disableRead) {
+                currentFunc.hasUserReadPolicy = rootFuncUserPolicy;
             }
         }
     }
 
     public static SetChildrenFunctionPolicy(site: Site, functionId: number, rootFuncUserPolicy: boolean, isRead: boolean) {
-        const childrenFunc = site.Functions.filter(f => f.Parent !== null && f.Parent.Id === functionId);
+        const childrenFunc = site.functions.filter(f => f.parentId === functionId);
 
         for (const func of childrenFunc) {
             if (
@@ -31,62 +31,62 @@ export default class FunctionUtil {
                 continue;
             }
 
-            if (isRead && !func.DisableRead) {
-                func.HasUserReadPolicy = rootFuncUserPolicy;
-            } else if (!func.DisableHost) {
-                func.HasUserHostPolicy = rootFuncUserPolicy;
+            if (isRead && !func.disableRead) {
+                func.hasUserReadPolicy = rootFuncUserPolicy;
+            } else if (!func.disableHost) {
+                func.hasUserHostPolicy = rootFuncUserPolicy;
             }
 
-            this.SetCurrentFunctionPolicy(site, func.Id, rootFuncUserPolicy, isRead);
-            this.SetChildrenFunctionPolicy(site, func.Id, rootFuncUserPolicy, isRead);
+            this.SetCurrentFunctionPolicy(site, func.id, rootFuncUserPolicy, isRead);
+            this.SetChildrenFunctionPolicy(site, func.id, rootFuncUserPolicy, isRead);
         }
     }
 
     public static SetParentFunctionPolicy(site: Site, functionId: number, rootFuncUserPolicy: boolean, isRead: boolean) {
-        let parentFunc = site.Functions.find(f => f.Id === functionId).Parent;
+        const parentFuncId = site.functions.find(f => f.id === functionId).parentId;
 
-        if (parentFunc !== null) {
+        if (parentFuncId) {
             let existChildrenFuncHasUserRead = false;
-            const childrenFunc = site.Functions.filter(f => f.Parent !== null && f.Parent.Id === parentFunc.Id);
+            const childrenFunc = site.functions.filter(f => f.parentId === parentFuncId);
 
             for (const func of childrenFunc) {
-                if ((isRead && func.HasUserReadPolicy) || (!isRead && func.HasUserHostPolicy)) {
+                if ((isRead && func.hasUserReadPolicy) || (!isRead && func.hasUserHostPolicy)) {
                     existChildrenFuncHasUserRead = true;
                 }
             }
 
-            parentFunc = site.Functions.find(f => f.Id === parentFunc.Id);
+            const parentFunc = site.functions.find(f => f.id === parentFuncId);
 
             if (isRead) {
-                parentFunc.HasUserReadPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
+                parentFunc.hasUserReadPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
             } else {
-                parentFunc.HasUserHostPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
+                parentFunc.hasUserHostPolicy = existChildrenFuncHasUserRead ? true : rootFuncUserPolicy;
             }
 
-            this.SetCurrentFunctionPolicy(site, parentFunc.Id, rootFuncUserPolicy, isRead);
-            this.SetParentFunctionPolicy(site, parentFunc.Id, rootFuncUserPolicy, isRead);
+            this.SetCurrentFunctionPolicy(site, parentFunc.id, rootFuncUserPolicy, isRead);
+            this.SetParentFunctionPolicy(site, parentFunc.id, rootFuncUserPolicy, isRead);
         }
     }
 
     public static SetAllFunctionsReadPolicy(site: Site, rootPolicy: boolean) {
-        site.Functions.forEach(f =>
+        site.functions.forEach(f =>
             (rootPolicy && configs.WinLossByProductsFunctionNames.some(name => this.CheckFunctionIsWinLossByProducts(f, name))) ||
-            f.DisableRead
-                ? (f.HasUserReadPolicy = f.HasUserReadPolicy)
-                : (f.HasUserReadPolicy = rootPolicy)
+            f.disableRead
+                ? (f.hasUserReadPolicy = f.hasUserReadPolicy)
+                : (f.hasUserReadPolicy = rootPolicy)
         );
 
-        site.HasAllFunctionUserReadPolicy = rootPolicy;
+        site.hasAllFunctionUserReadPolicy = rootPolicy;
     }
 
     public static SetAllFunctionsHostPolicy(site: Site, rootPolicy: boolean) {
-        site.Functions.forEach(f => (f.DisableHost ? (f.HasUserHostPolicy = f.HasUserHostPolicy) : (f.HasUserHostPolicy = rootPolicy)));
-        site.HasAllFunctionUserHostPolicy = rootPolicy;
+        site.functions.forEach(f => (f.disableHost ? (f.hasUserHostPolicy = f.hasUserHostPolicy) : (f.hasUserHostPolicy = rootPolicy)));
+        site.hasAllFunctionUserHostPolicy = rootPolicy;
     }
 
     public static SetSiteFunctionPolicy(site: Site) {
-        site.HasAllFunctionUserReadPolicy = site.Functions.every(f => f.HasUserReadPolicy);
-        site.HasAllFunctionUserHostPolicy = site.Functions.filter(f => f.Crud > 0).every(f => f.HasUserHostPolicy);
+        site.hasAllFunctionUserReadPolicy = site.functions.every(f => f.hasUserReadPolicy);
+        site.hasAllFunctionUserHostPolicy = site.functions.filter(f => f.crud > 0).every(f => f.hasUserHostPolicy);
     }
 
     public static InitFunctionPolicies(site: Site) {
@@ -95,41 +95,41 @@ export default class FunctionUtil {
         let allFuncHasGroupHostPolicy = true;
         let allFuncHasGroupReadPolicy = true;
 
-        for (const func of site.Functions) {
-            const policy = site.ViewedUserFunctionPolicies.find(fp => fp.Function.Id === func.Id);
-            const groupPolicy = site.ViewedUserGroupFunctionPolicies.find(fp => fp.Function.Id === func.Id);
+        for (const func of site.functions) {
+            const policy = site.viewedUserFunctionPolicies.find(fp => fp.id === func.id);
+            const groupPolicy = site.viewedUserGroupFunctionPolicies.find(fp => fp.id === func.id);
 
             if (policy !== undefined) {
-                func.HasUserReadPolicy = policy.Policy >= FunctionPolicyValue.Read;
-                func.HasUserHostPolicy = policy.Policy >= FunctionPolicyValue.Host;
+                func.hasUserReadPolicy = policy.policy >= FunctionPolicyValue.Read;
+                func.hasUserHostPolicy = policy.policy >= FunctionPolicyValue.Host;
             }
 
             if (groupPolicy !== undefined) {
-                func.HasGroupReadPolicy = groupPolicy.Policy >= FunctionPolicyValue.Read;
-                func.HasGroupHostPolicy = groupPolicy.Policy >= FunctionPolicyValue.Host;
+                func.hasGroupReadPolicy = groupPolicy.policy >= FunctionPolicyValue.Read;
+                func.hasGroupHostPolicy = groupPolicy.policy >= FunctionPolicyValue.Host;
             }
 
-            if (func.HasUserHostPolicy === undefined || (!func.HasUserHostPolicy && func.Crud > 0)) {
+            if (func.hasUserHostPolicy === undefined || (!func.hasUserHostPolicy && func.crud > 0)) {
                 allFuncHasHostPolicy = false;
             }
 
-            if (func.HasUserReadPolicy === undefined || !func.HasUserReadPolicy) {
+            if (func.hasUserReadPolicy === undefined || !func.hasUserReadPolicy) {
                 allFuncHasReadPolicy = false;
             }
 
-            if (func.HasGroupHostPolicy === undefined || (!func.HasGroupHostPolicy && func.Crud > 0)) {
+            if (func.hasGroupHostPolicy === undefined || (!func.hasGroupHostPolicy && func.crud > 0)) {
                 allFuncHasGroupHostPolicy = false;
             }
 
-            if (allFuncHasGroupReadPolicy === undefined || !func.HasGroupReadPolicy) {
+            if (allFuncHasGroupReadPolicy === undefined || !func.hasGroupReadPolicy) {
                 allFuncHasGroupReadPolicy = false;
             }
         }
 
-        site.HasAllFunctionUserHostPolicy = allFuncHasHostPolicy;
-        site.HasAllFunctionUserReadPolicy = allFuncHasReadPolicy || allFuncHasHostPolicy;
-        site.HasAllFunctionGroupHostPolicy = allFuncHasGroupHostPolicy;
-        site.HasAllFunctionGroupReadPolicy = allFuncHasGroupReadPolicy || allFuncHasGroupHostPolicy;
+        site.hasAllFunctionUserHostPolicy = allFuncHasHostPolicy;
+        site.hasAllFunctionUserReadPolicy = allFuncHasReadPolicy || allFuncHasHostPolicy;
+        site.hasAllFunctionGroupHostPolicy = allFuncHasGroupHostPolicy;
+        site.hasAllFunctionGroupReadPolicy = allFuncHasGroupReadPolicy || allFuncHasGroupHostPolicy;
     }
 
     public static DisableFunctionPolicies(
@@ -138,7 +138,7 @@ export default class FunctionUtil {
         loginUserAssignFunctionPermissionInAdminSite: number,
         isSelfEdit: boolean
     ) {
-        for (const func of site.Functions) {
+        for (const func of site.functions) {
             const isDisabledRead = FunctionUtil.CheckDisableFunctionPolicy(
                 site,
                 func,
@@ -155,17 +155,17 @@ export default class FunctionUtil {
                 loginUserAssignFunctionPermissionInAdminSite,
                 isSelfEdit
             );
-            func.DisableRead = isDisabledRead;
-            func.DisableHost = isDisabledHost;
-            func.IsHidden =
+            func.disableRead = isDisabledRead;
+            func.disableHost = isDisabledHost;
+            func.isHidden =
                 !loginUserIsPortalAdmin &&
-                (site.LoginUserAssignFunctionPermission < FunctionPolicyValue.Read ||
+                (site.loginUserAssignFunctionPermission < FunctionPolicyValue.Read ||
                     loginUserAssignFunctionPermissionInAdminSite < FunctionPolicyValue.Read);
         }
 
-        site.DisableCheckBoxAllFunctionReadPolicy = site.Functions.every(f => f.DisableRead);
-        site.DisableCheckBoxAllFunctionHostPolicy = site.Functions.every(f => f.DisableHost);
-        site.HideCheckBoxAllFunctionPolicy = site.Functions.every(f => f.IsHidden);
+        site.disableCheckBoxAllFunctionReadPolicy = site.functions.every(f => f.disableRead);
+        site.disableCheckBoxAllFunctionHostPolicy = site.functions.every(f => f.disableHost);
+        site.hideCheckBoxAllFunctionPolicy = site.functions.every(f => f.isHidden);
     }
 
     public static CheckDisableFunctionPolicy(
@@ -176,8 +176,8 @@ export default class FunctionUtil {
         loginUserAssignFunctionPermissionInAdminSite: number,
         isSelfEdit: boolean
     ) {
-        const viewedUserPolicy = site.ViewedUserFunctionPolicies.find(fp => fp.Function.Id === func.Id);
-        const loginUserPolicy = site.LoginUserFunctionPolicies.find(fp => fp.Function.Id === func.Id);
+        const viewedUserPolicy = site.viewedUserFunctionPolicies.find(fp => fp.id === func.id);
+        const loginUserPolicy = site.loginUserFunctionPolicies.find(fp => fp.id === func.id);
 
         const isDisabled =
             this.ViewedUserSiteLevelIsAdmin(site) ||
@@ -195,13 +195,13 @@ export default class FunctionUtil {
         currentFunctionId: number,
         winLossFunctionName: string
     ): boolean {
-        const func = site.Functions.find(f => f.Id === currentFunctionId);
+        const func = site.functions.find(f => f.id === currentFunctionId);
         let existPermission = false;
 
         if (this.HasNameOrParentNameIsWinLossByProducts(func, winLossFunctionName)) {
-            existPermission = site.Functions.some(
+            existPermission = site.functions.some(
                 f =>
-                    ((f.Id !== currentFunctionId && this.HasNameOrParentNameIsWinLossByProducts(f, winLossFunctionName)) ||
+                    ((f.id !== currentFunctionId && this.HasNameOrParentNameIsWinLossByProducts(f, winLossFunctionName)) ||
                         this.HasNameIsWinLossByProducts(f, winLossFunctionName)) &&
                     this.HasReadPolicyIncludeGroup(f)
             );
@@ -226,27 +226,27 @@ export default class FunctionUtil {
     }
 
     private static HasNameIsWinLossByProducts(func: Function, winLossFunctionName: string) {
-        return func.Name === winLossFunctionName;
+        return func.name === winLossFunctionName;
     }
 
     private static HasParentNameIsWinLossByProducts(func: Function, winLossFunctionName: string) {
-        return func.Parent !== null && func.Parent !== undefined && func.Parent.Name === winLossFunctionName;
+        return func.parentName === winLossFunctionName;
     }
 
     private static HasReadPolicyIncludeGroup(func: Function) {
-        return func.HasUserReadPolicy || func.HasGroupReadPolicy;
+        return func.hasUserReadPolicy || func.hasGroupReadPolicy;
     }
 
     private static ViewedUserSiteLevelIsAdmin(site: Site) {
-        return site.SiteLevel !== undefined && site.SiteLevel.Level >= SiteLevelValue.SiteAdmin;
+        return site.siteLevel !== undefined && site.siteLevel.level >= SiteLevelValue.SiteAdmin;
     }
 
     private static LoginUserPolicyIsSmallerThanViewedUserPolicy(viewdUserPolicy: FunctionPolicy, loginUserPolicy: FunctionPolicy) {
-        return viewdUserPolicy !== undefined && loginUserPolicy.Policy < viewdUserPolicy.Policy;
+        return viewdUserPolicy !== undefined && loginUserPolicy.policy < viewdUserPolicy.policy;
     }
 
     private static LoginUserHasNoPolicy(loginUserPolicy: FunctionPolicy, isRead: boolean) {
-        return loginUserPolicy === undefined || loginUserPolicy.Policy < (isRead ? FunctionPolicyValue.Read : FunctionPolicyValue.Host);
+        return loginUserPolicy === undefined || loginUserPolicy.policy < (isRead ? FunctionPolicyValue.Read : FunctionPolicyValue.Host);
     }
 
     private static LoginUserHasAssignFunctionReadPermissionInCurrentSiteAndAdminSite(
@@ -254,7 +254,7 @@ export default class FunctionUtil {
         loginUserAssignFunctionPermissionInAdminSite: number
     ): boolean {
         return (
-            site.LoginUserAssignFunctionPermission <= FunctionPolicyValue.Read ||
+            site.loginUserAssignFunctionPermission <= FunctionPolicyValue.Read ||
             loginUserAssignFunctionPermissionInAdminSite <= FunctionPolicyValue.Read
         );
     }

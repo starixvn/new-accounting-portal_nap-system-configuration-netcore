@@ -29,7 +29,7 @@ export class EditFieldComponent extends Vue {
             = this.$store.getters[Type.Getter.LoginUserHasAssignSiteHostPermissionSites];
         const currentSiteId: number = this.$store.getters[Type.Getter.CurrentSiteId];
         const isSelfEdit: boolean = this.$store.getters[Type.Getter.IsSelfEdit];
-        const loginUserCurrentSiteLevel = loginUserSiteLevels.find(sl => sl.Site.Id === this.Site.Id);
+        const loginUserCurrentSiteLevel = loginUserSiteLevels.find(sl => sl.siteId === this.Site.id);
 
         const enableEditSiteStatus = SiteUtil.CheckForEnablingStatus(
             this.Site,
@@ -48,7 +48,7 @@ export class EditFieldComponent extends Vue {
     }
 
     public OnClickEditButton() {
-        this.$store.commit(Type.Mutation.EnableEditSite, this.Site.Id);
+        this.$store.commit(Type.Mutation.EnableEditSite, this.Site.id);
     }
 
     public OnClickSaveSite() {
@@ -60,14 +60,14 @@ export class EditFieldComponent extends Vue {
     }
 
     public OnClickCancelEditSite() {
-        if (this.Site.EnableEdit && !this.Site.EnableAssign) {
-            this.$store.dispatch(Type.Action.ResetSiteLevel, this.Site.Id);
+        if (this.Site.enableEdit && !this.Site.enableAssign) {
+            this.$store.dispatch(Type.Action.ResetSiteLevel, this.Site.id);
         } else {
-            this.$store.commit(Type.Mutation.CancelAssignSite, this.Site.Id);
+            this.$store.commit(Type.Mutation.CancelAssignSite, this.Site.id);
         }
     }
 
     private SiteIsActive() {
-        return this.Site.SiteLevel !== undefined && this.Site.SiteLevel.IsActive;
+        return this.Site.siteLevel !== undefined && this.Site.siteLevel.isActive;
     }
 }

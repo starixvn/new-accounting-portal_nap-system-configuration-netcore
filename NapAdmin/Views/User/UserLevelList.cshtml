@@ -50,16 +50,16 @@
                     @(i + 1)
                 </td>
                 <td>
-                    @item.User.Username
+                    @item.Username
                 </td>
                 <td>
-                    @item.User.FirstName
+                    @item.FirstName
                 </td>
                 <td>
-                    @item.User.LastName
+                    @item.LastName
                 </td>
                 <td>
-                    @(item.User.Group != null ? item.User.Group.Name : string.Empty)
+                    @item.GroupName
                 </td>
                 <td class="text-center">
                     @if (item.IsActive)
@@ -71,15 +71,15 @@
                     @item.Level.ToUserLevel()
                 </td>
                 <td>
-                    @(item.User.Creator != null ? item.User.Creator.Username : string.Empty)
+                        @item.CreatorUsername
                 </td>
                 <td>
-                    @item.User.CreatedDate.ToFullDateString()
+                    @item.CreatedDate.ToFullDateString()
                 </td>
                 <td class="text-center">
-                    @if (item.User.LastLoginDate != DateTime.MinValue)
+                    @if (item.LastLoginDate != DateTime.MinValue)
                     {
-                        @item.User.LastLoginDate.ToFullDateString()
+                        @item.LastLoginDate.ToFullDateString()
                     }
                     else
                     {

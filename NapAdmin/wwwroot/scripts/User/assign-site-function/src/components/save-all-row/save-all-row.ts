@@ -25,9 +25,9 @@ export class SaveAllRowComponent extends Vue {
         const sites: Array<Site> = this.$store.getters[Type.Getter.AllUserSites];
 
         for (const site of sites) {
-            if (site.EnableEdit && !site.EnableAssign) {
+            if (site.enableEdit && !site.enableAssign) {
                 this.$store.dispatch(Type.Action.UpdateSite, { site: site, isEdit: true });
-            } else if (site.EnableAssign) {
+            } else if (site.enableAssign) {
                 this.$store.dispatch(Type.Action.AssignSite, site);
             }
         }

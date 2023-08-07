@@ -101,7 +101,7 @@
                     @group.ModifiedDate.ToFullDateString()
                 </td>
                 <td>
-                    @(group.Modifier == null ? string.Empty : group.Modifier.Username)
+                        @group.ModifierUsername
                 </td>
                 <td class="text-center">
                     @if (viewFlags.HasEditRight)

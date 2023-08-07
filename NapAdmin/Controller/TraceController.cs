@@ -175,18 +175,19 @@ public class TraceController : BaseController
         {
             var elementNew = XElement.Parse(log.Data);
 
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Username,
-                NewValue = elementNew.Attribute("Username").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Group_Name,
-                NewValue = elementNew.Attribute("GroupName").Value
-            });
+                new()
+                {
+                    FieldName = ViewResources.Username,
+                    NewValue = elementNew.Attribute("Username").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Group_Name,
+                    NewValue = elementNew.Attribute("GroupName").Value
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -200,36 +201,34 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Cust_Insert)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Username,
-                NewValue = element.Attribute("Username").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Group_Name,
-                NewValue = element.Attribute("GroupName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.First_Name,
-                NewValue = element.Attribute("FirstName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Last_Name,
-                NewValue = element.Attribute("LastName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Email,
-                NewValue = element.Attribute("Email").Value
-            });
+                new()
+                {
+                    FieldName = ViewResources.Username,
+                    NewValue = element.Attribute("Username").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Group_Name,
+                    NewValue = element.Attribute("GroupName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.First_Name,
+                    NewValue = element.Attribute("FirstName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Last_Name,
+                    NewValue = element.Attribute("LastName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Email,
+                    NewValue = element.Attribute("Email").Value
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -243,60 +242,54 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Function_Insert)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Function_Name,
-                NewValue = element.Attribute("FunctionName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Site_Name,
-                NewValue = element.Attribute("SiteName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Function_Key,
-                NewValue = element.Attribute("FunctionKey").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                NewValue = element.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Parent,
-                NewValue = element.Attribute("ParentName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.CRUD,
-                NewValue = element.Attribute("CRUD").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Display_Order,
-                NewValue = element.Attribute("DisplayOrder").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                NewValue = element.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Environment,
-                NewValue = element.Attribute("Environment").Value
-            });
+                new()
+                {
+                    FieldName = ViewResources.Function_Name,
+                    NewValue = element.Attribute("FunctionName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Site_Name,
+                    NewValue = element.Attribute("SiteName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Function_Key,
+                    NewValue = element.Attribute("FunctionKey").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    NewValue = element.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Parent,
+                    NewValue = element.Attribute("ParentName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.CRUD,
+                    NewValue = element.Attribute("CRUD").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Display_Order,
+                    NewValue = element.Attribute("DisplayOrder").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    NewValue = element.Attribute("IsActive").Value == "1" ? "true" : "false"
+                },
+                new()
+                {
+                    FieldName = ViewResources.Environment,
+                    NewValue = element.Attribute("Environment").Value
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -310,24 +303,24 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Group_Insert)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Group_Name,
-                NewValue = element.Attribute("GroupName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                NewValue = element.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                NewValue = element.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Group_Name,
+                    NewValue = element.Attribute("GroupName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    NewValue = element.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    NewValue = element.Attribute("IsActive").Value == "1" ? "true" : "false"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -341,60 +334,54 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_MenuItem_Insert)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Menu_Item_Name,
-                NewValue = element.Attribute("MenuItemName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Function_Name,
-                NewValue = element.Attribute("FunctionName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Site_Name,
-                NewValue = element.Attribute("SiteName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                NewValue = element.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Parent,
-                NewValue = element.Attribute("ParentName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Policy,
-                NewValue = element.Attribute("Policy").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.URL,
-                NewValue = element.Attribute("URL").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Display_Order,
-                NewValue = element.Attribute("DisplayOrder").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                NewValue = element.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Menu_Item_Name,
+                    NewValue = element.Attribute("MenuItemName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Function_Name,
+                    NewValue = element.Attribute("FunctionName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Site_Name,
+                    NewValue = element.Attribute("SiteName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    NewValue = element.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Parent,
+                    NewValue = element.Attribute("ParentName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Policy,
+                    NewValue = element.Attribute("Policy").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.URL,
+                    NewValue = element.Attribute("URL").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Display_Order,
+                    NewValue = element.Attribute("DisplayOrder").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    NewValue = element.Attribute("IsActive").Value == "1" ? "true" : "false"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -408,60 +395,53 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Site_InsertWithSiteURL)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Site_Name,
-                NewValue = elementNew.Attribute("SiteName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Site_Key,
-                NewValue = elementNew.Attribute("SiteKey").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Secret_Access_Key,
-                NewValue = elementNew.Attribute("SecretAccessKey").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                NewValue = elementNew.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Environment,
-                NewValue = elementNew.Attribute("Environment").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Site_Name,
+                    NewValue = elementNew.Attribute("SiteName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Site_Key,
+                    NewValue = elementNew.Attribute("SiteKey").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Secret_Access_Key,
+                    NewValue = elementNew.Attribute("SecretAccessKey").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    NewValue = elementNew.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Environment,
+                    NewValue = elementNew.Attribute("Environment").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
+                }
+            };
 
             var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
-            var listSiteUrl = new List<SiteUrl>();
             var documentSiteUrl = XDocument.Parse(strUrl);
             var siteUrl = documentSiteUrl.Descendants("ITEM");
 
-            foreach (var item in siteUrl)
-            {
-                var objSiteUrl = new SiteUrl
+            var listSiteUrl = siteUrl.Select(item => new SiteUrl
                 {
-                    Url = item.Attribute("URL").Value,
-                    Environment = item.Attribute("Environment").Value,
+                    Url = item.Attribute("URL").Value, 
+                    Environment = item.Attribute("Environment").Value, 
                     IsDefault = item.Attribute("IsDefault").Value == "1",
-                    IsActive = item.Attribute("IsActive").Value == "1",
-                };
-                listSiteUrl.Add(objSiteUrl);
-            }
+                    IsActive = item.Attribute("IsActive").Value == "1"
+                })
+                .ToList();
 
             ViewBag.LogData = listLogData;
             ViewBag.SiteUrl = listSiteUrl;
@@ -477,69 +457,63 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_MenuItem_Update)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Menu_Item_Name,
-                OldValue = elementOld.Attribute("MenuItemName").Value,
-                NewValue = elementNew.Attribute("MenuItemName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Function_Name,
-                OldValue = elementOld.Attribute("FunctionName").Value,
-                NewValue = elementNew.Attribute("FunctionName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Site_Name,
-                OldValue = elementOld.Attribute("SiteName").Value,
-                NewValue = elementNew.Attribute("SiteName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                OldValue = elementOld.Attribute("Description").Value,
-                NewValue = elementNew.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Parent,
-                OldValue = elementOld.Attribute("ParentName").Value,
-                NewValue = elementNew.Attribute("ParentName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Policy,
-                OldValue = elementOld.Attribute("Policy").Value,
-                NewValue = elementNew.Attribute("Policy").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.URL,
-                OldValue = elementOld.Attribute("URL").Value,
-                NewValue = elementNew.Attribute("URL").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Display_Order,
-                OldValue = elementOld.Attribute("DisplayOrder").Value,
-                NewValue = elementNew.Attribute("DisplayOrder").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Menu_Item_Name,
+                    OldValue = elementOld.Attribute("MenuItemName").Value,
+                    NewValue = elementNew.Attribute("MenuItemName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Function_Name,
+                    OldValue = elementOld.Attribute("FunctionName").Value,
+                    NewValue = elementNew.Attribute("FunctionName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Site_Name,
+                    OldValue = elementOld.Attribute("SiteName").Value,
+                    NewValue = elementNew.Attribute("SiteName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    OldValue = elementOld.Attribute("Description").Value,
+                    NewValue = elementNew.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Parent,
+                    OldValue = elementOld.Attribute("ParentName").Value,
+                    NewValue = elementNew.Attribute("ParentName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Policy,
+                    OldValue = elementOld.Attribute("Policy").Value,
+                    NewValue = elementNew.Attribute("Policy").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.URL,
+                    OldValue = elementOld.Attribute("URL").Value,
+                    NewValue = elementNew.Attribute("URL").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Display_Order,
+                    OldValue = elementOld.Attribute("DisplayOrder").Value,
+                    NewValue = elementNew.Attribute("DisplayOrder").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -554,14 +528,15 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_MenuItem_UpdateStatus)
         {
-            var listLogData = new List<LogData>();
-
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Status,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Status,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -574,72 +549,65 @@ public class TraceController : BaseController
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
-        if (log.ActionId == (int)LogAction.NAP_Function_Update
-            || log.ActionId == (int)LogAction.NAP_Function_Duplicate)
+        if (log.ActionId is (int)LogAction.NAP_Function_Update or (int)LogAction.NAP_Function_Duplicate)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Function_Name,
-                OldValue = elementOld.Attribute("FunctionName").Value,
-                NewValue = elementNew.Attribute("FunctionName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Site_Name,
-                OldValue = elementOld.Attribute("SiteName").Value,
-                NewValue = elementNew.Attribute("SiteName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Function_Key,
-                OldValue = elementOld.Attribute("FunctionKey").Value,
-                NewValue = elementNew.Attribute("FunctionKey").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                OldValue = elementOld.Attribute("Description").Value,
-                NewValue = elementNew.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Parent,
-                OldValue = elementOld.Attribute("ParentName").Value,
-                NewValue = elementNew.Attribute("ParentName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.CRUD,
-                OldValue = elementOld.Attribute("CRUD").Value,
-                NewValue = elementNew.Attribute("CRUD").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Display_Order,
-                OldValue = elementOld.Attribute("DisplayOrder").Value,
-                NewValue = elementNew.Attribute("DisplayOrder").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Environment,
-                OldValue = elementOld.Attribute("Environment").Value,
-                NewValue = elementNew.Attribute("Environment").Value
-            });
+                new()
+                {
+                    FieldName = ViewResources.Function_Name,
+                    OldValue = elementOld.Attribute("FunctionName").Value,
+                    NewValue = elementNew.Attribute("FunctionName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Site_Name,
+                    OldValue = elementOld.Attribute("SiteName").Value,
+                    NewValue = elementNew.Attribute("SiteName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Function_Key,
+                    OldValue = elementOld.Attribute("FunctionKey").Value,
+                    NewValue = elementNew.Attribute("FunctionKey").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    OldValue = elementOld.Attribute("Description").Value,
+                    NewValue = elementNew.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Parent,
+                    OldValue = elementOld.Attribute("ParentName").Value,
+                    NewValue = elementNew.Attribute("ParentName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.CRUD,
+                    OldValue = elementOld.Attribute("CRUD").Value,
+                    NewValue = elementNew.Attribute("CRUD").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Display_Order,
+                    OldValue = elementOld.Attribute("DisplayOrder").Value,
+                    NewValue = elementNew.Attribute("DisplayOrder").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
+                },
+                new()
+                {
+                    FieldName = ViewResources.Environment,
+                    OldValue = elementOld.Attribute("Environment").Value,
+                    NewValue = elementNew.Attribute("Environment").Value
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -654,14 +622,15 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Function_UpdateStatus)
         {
-            var listLogData = new List<LogData>();
-
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Status,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Status,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -676,48 +645,45 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Site_Update)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Site_Name,
-                OldValue = elementOld.Attribute("SiteName").Value,
-                NewValue = elementNew.Attribute("SiteName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Site_Key,
-                OldValue = elementOld.Attribute("SiteKey").Value,
-                NewValue = elementNew.Attribute("SiteKey").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Secret_Access_Key,
-                OldValue = elementOld.Attribute("SecretAccessKey").Value,
-                NewValue = elementNew.Attribute("SecretAccessKey").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                OldValue = elementOld.Attribute("Description").Value,
-                NewValue = elementNew.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Environment,
-                OldValue = elementOld.Attribute("Environment").Value,
-                NewValue = elementNew.Attribute("Environment").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Site_Name,
+                    OldValue = elementOld.Attribute("SiteName").Value,
+                    NewValue = elementNew.Attribute("SiteName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Site_Key,
+                    OldValue = elementOld.Attribute("SiteKey").Value,
+                    NewValue = elementNew.Attribute("SiteKey").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Secret_Access_Key,
+                    OldValue = elementOld.Attribute("SecretAccessKey").Value,
+                    NewValue = elementNew.Attribute("SecretAccessKey").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    OldValue = elementOld.Attribute("Description").Value,
+                    NewValue = elementNew.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Environment,
+                    OldValue = elementOld.Attribute("Environment").Value,
+                    NewValue = elementNew.Attribute("Environment").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -732,14 +698,15 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Site_UpdateStatus)
         {
-            var listLogData = new List<LogData>();
-
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Status,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Status,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -754,27 +721,27 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Group_Update)
         {
-            var listLogData = new List<LogData>();
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Group_Name,
-                OldValue = elementOld.Attribute("GroupName").Value,
-                NewValue = elementNew.Attribute("GroupName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Description,
-                OldValue = elementOld.Attribute("Description").Value,
-                NewValue = elementNew.Attribute("Description").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Active,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Group_Name,
+                    OldValue = elementOld.Attribute("GroupName").Value,
+                    NewValue = elementNew.Attribute("GroupName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Description,
+                    OldValue = elementOld.Attribute("Description").Value,
+                    NewValue = elementNew.Attribute("Description").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Active,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "true" : "false",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "true" : "false"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -789,14 +756,15 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Group_UpdateStatus)
         {
-            var listLogData = new List<LogData>();
-
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Status,
-                OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
-                NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
-            });
+                new()
+                {
+                    FieldName = ViewResources.Status,
+                    OldValue = elementOld.Attribute("IsActive").Value == "1" ? "Active" : "Unactive",
+                    NewValue = elementNew.Attribute("IsActive").Value == "1" ? "Active" : "Unactive"
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -811,35 +779,33 @@ public class TraceController : BaseController
 
         if (log.ActionId == (int)LogAction.NAP_Cust_Update)
         {
-            var listLogData = new List<LogData>();
-
-            listLogData.Add(new LogData
+            var listLogData = new List<LogData>
             {
-                FieldName = ViewResources.Group_Name,
-                OldValue = elementOld.Attribute("GroupName").Value,
-                NewValue = elementNew.Attribute("GroupName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.First_Name,
-                OldValue = elementOld.Attribute("FirstName").Value,
-                NewValue = elementNew.Attribute("FirstName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Last_Name,
-                OldValue = elementOld.Attribute("LastName").Value,
-                NewValue = elementNew.Attribute("LastName").Value
-            });
-
-            listLogData.Add(new LogData
-            {
-                FieldName = ViewResources.Email,
-                OldValue = elementOld.Attribute("Email").Value,
-                NewValue = elementNew.Attribute("Email").Value
-            });
+                new()
+                {
+                    FieldName = ViewResources.Group_Name,
+                    OldValue = elementOld.Attribute("GroupName").Value,
+                    NewValue = elementNew.Attribute("GroupName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.First_Name,
+                    OldValue = elementOld.Attribute("FirstName").Value,
+                    NewValue = elementNew.Attribute("FirstName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Last_Name,
+                    OldValue = elementOld.Attribute("LastName").Value,
+                    NewValue = elementNew.Attribute("LastName").Value
+                },
+                new()
+                {
+                    FieldName = ViewResources.Email,
+                    OldValue = elementOld.Attribute("Email").Value,
+                    NewValue = elementNew.Attribute("Email").Value
+                }
+            };
 
             ViewBag.LogData = listLogData;
         }
@@ -852,47 +818,37 @@ public class TraceController : BaseController
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
-        if (log.ActionId == (int)LogAction.NAP_Site_UpdateSiteURL
-            || log.ActionId == (int)LogAction.NAP_Site_InsertSiteURL
-            || log.ActionId == (int)LogAction.NAP_Site_UpdateDefaultSiteURL)
+        if (log.ActionId is (int)LogAction.NAP_Site_UpdateSiteURL or (int)LogAction.NAP_Site_InsertSiteURL or (int)LogAction.NAP_Site_UpdateDefaultSiteURL)
         {
             var strUrlOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
-            var listSiteUrlOld = new List<SiteUrl>();
             var documentSiteUrlOld = XDocument.Parse(strUrlOld);
             var siteUrlOld = documentSiteUrlOld.Descendants("ITEM");
 
-            foreach (var item in siteUrlOld)
-            {
-                var objSiteUrl = new SiteUrl
+            var listSiteUrlOld = siteUrlOld.Select(item => new SiteUrl
                 {
-                    Url = item.Attribute("URL").Value,
-                    Environment = item.Attribute("Environment").Value,
-                    IsDefault = item.Attribute("IsDefault").Value == "1",
-                    IsActive = item.Attribute("IsActive").Value == "1",
-                };
-                listSiteUrlOld.Add(objSiteUrl);
-            }
+                    Url = item.Attribute("URL").Value, 
+                    Environment = item.Attribute("Environment").Value, 
+                    IsDefault = item.Attribute("IsDefault").Value == "1", 
+                    IsActive = item.Attribute("IsActive").Value == "1"
+                })
+                .ToList();
 
             ViewBag.SiteUrlOld = listSiteUrlOld;
 
             var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
-            var listSiteUrl = new List<SiteUrl>();
             var documentSiteUrl = XDocument.Parse(strUrl);
             var siteUrl = documentSiteUrl.Descendants("ITEM");
 
-            foreach (var item in siteUrl)
-            {
-                var objSiteUrl = new SiteUrl
+            var listSiteUrl = siteUrl.Select(item => new SiteUrl
                 {
-                    Url = item.Attribute("URL").Value,
-                    Environment = item.Attribute("Environment").Value,
+                    Url = item.Attribute("URL").Value, 
+                    Environment = item.Attribute("Environment").Value, 
                     IsDefault = item.Attribute("IsDefault").Value == "1",
-                    IsActive = item.Attribute("IsActive").Value == "1",
-                };
-                listSiteUrl.Add(objSiteUrl);
-            }
+                    IsActive = item.Attribute("IsActive").Value == "1"
+                })
+                .ToList();
 
             ViewBag.SiteUrl = listSiteUrl;
         }
@@ -905,9 +861,7 @@ public class TraceController : BaseController
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
 
-        if (log.ActionId == (int)LogAction.NAP_Group_AssignFunction
-            || log.ActionId == (int)LogAction.NAP_User_AssignFunction
-            || log.ActionId == (int)LogAction.NAP_Function_CopyPermission)
+        if (log.ActionId is (int)LogAction.NAP_Group_AssignFunction or (int)LogAction.NAP_User_AssignFunction or (int)LogAction.NAP_Function_CopyPermission)
         {
             var siteId = Convert.ToInt32(elementNew.Attribute("SiteId").Value);
 
@@ -934,7 +888,7 @@ public class TraceController : BaseController
                 }
             }
 
-            Site site = _siteService.GetById(siteId);
+            var site = _siteService.GetById(siteId);
 
             ViewBag.SiteName = site.Name;
         }
@@ -967,25 +921,14 @@ public class TraceController : BaseController
 
     private List<FunctionPolicy> GetOldFunctionPolicyList(string strFunctionPolicy)
     {
-        var listFunctionPolicyOld = new List<FunctionPolicy>();
         var documentFunctionPolicy = XDocument.Parse(strFunctionPolicy);
         var functionPolicy = documentFunctionPolicy.Descendants("ITEM");
 
-        foreach (var item in functionPolicy)
+        return functionPolicy.Select(item => new FunctionPolicy
         {
-            var objFunctionPolicy = new FunctionPolicy
-            {
-                Function = new Function
-                {
-                    Id = Convert.ToInt16(item.Attribute("FunctionId").Value)
-                },
-                Policy = Convert.ToInt32(item.Attribute("Policy").Value)
-            };
-
-            listFunctionPolicyOld.Add(objFunctionPolicy);
-        }
-
-        return listFunctionPolicyOld;
+            Id = Convert.ToInt16(item.Attribute("FunctionId").Value), 
+            Policy = Convert.ToInt32(item.Attribute("Policy").Value)
+        }).ToList();
     }
 
     public PartialViewResult NAPAssignSite(LogExecSp log)
@@ -1000,24 +943,16 @@ public class TraceController : BaseController
             {
                 var strUrlOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
-                var listSiteUrlOld = new List<SiteLevel>();
                 var documentSiteUrlOld = XDocument.Parse(strUrlOld);
                 var siteUrlOld = documentSiteUrlOld.Descendants("ITEM");
 
-                foreach (var item in siteUrlOld)
+                var listSiteUrlOld = siteUrlOld.Select(item => new SiteLevel
                 {
-                    var objSiteUrl = new SiteLevel
-                    {
-                        Site = new Site
-                        {
-                            Id = Convert.ToByte(item.Attribute("SiteId").Value),
-                            Name = item.Attribute("SiteName").Value
-                        },
-                        Level = Convert.ToInt32(item.Attribute("Level").Value),
-                        IsActive = item.Attribute("IsActive").Value == "1"
-                    };
-                    listSiteUrlOld.Add(objSiteUrl);
-                }
+                    SiteId = Convert.ToByte(item.Attribute("SiteId").Value),
+                    SiteName = item.Attribute("SiteName").Value,
+                    Level = Convert.ToInt32(item.Attribute("Level").Value), 
+                    IsActive = item.Attribute("IsActive").Value == "1"
+                }).ToList();
 
                 ViewBag.SiteUrlOld = listSiteUrlOld;
             }
@@ -1026,23 +961,15 @@ public class TraceController : BaseController
             {
                 var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
-                var listSiteUrl = new List<SiteLevel>();
                 var documentSiteUrl = XDocument.Parse(strUrl);
                 var siteUrl = documentSiteUrl.Descendants("ITEM");
-                foreach (var item in siteUrl)
+                var listSiteUrl = siteUrl.Select(item => new SiteLevel
                 {
-                    var objSiteUrl = new SiteLevel
-                    {
-                        Site = new Site
-                        {
-                            Id = Convert.ToByte(item.Attribute("SiteId").Value),
-                            Name = item.Attribute("SiteName").Value
-                        },
-                        Level = Convert.ToInt32(item.Attribute("Level").Value),
-                        IsActive = item.Attribute("IsActive").Value == "1"
-                    };
-                    listSiteUrl.Add(objSiteUrl);
-                }
+                    SiteId = Convert.ToByte(item.Attribute("SiteId").Value),
+                    SiteName = item.Attribute("SiteName").Value,
+                    Level = Convert.ToInt32(item.Attribute("Level").Value), 
+                    IsActive = item.Attribute("IsActive").Value == "1"
+                }).ToList();
 
                 ViewBag.SiteUrl = listSiteUrl;
             }
@@ -1059,11 +986,8 @@ public class TraceController : BaseController
         {
             var newSite = new SiteLevel
             {
-                Site = new Site
-                {
-                    Id = Convert.ToByte(elementNew.Attribute("SiteId").Value),
-                    Name = Convert.ToString(elementNew.Attribute("SiteName").Value)
-                },
+                SiteId = Convert.ToByte(elementNew.Attribute("SiteId").Value),
+                SiteName = Convert.ToString(elementNew.Attribute("SiteName").Value),
                 Level = Convert.ToInt32(elementNew.Attribute("Level").Value),
                 IsActive = elementNew.Attribute("IsActive").Value == "1"
             };
@@ -1083,18 +1007,14 @@ public class TraceController : BaseController
         {
             var oldSite = new SiteLevel
             {
-                Site = new Site
-                {
-                    Id = Convert.ToByte(oldElement.Attribute("SiteId").Value),
-                    Name = Convert.ToString(oldElement.Attribute("SiteName").Value)
-                },
+                SiteId = Convert.ToByte(oldElement.Attribute("SiteId").Value),
+                SiteName = Convert.ToString(oldElement.Attribute("SiteName").Value),
                 Level = Convert.ToInt32(oldElement.Attribute("Level").Value),
                 IsActive = oldElement.Attribute("IsActive").Value == "1",
                 IsNeverExpired = oldElement.Attribute("IsNeverExpired").Value == "1"
             };
 
-            DateTime expiredDate;
-            DateTime.TryParse(oldElement.Attribute("ExpiredDate").Value, out expiredDate);
+            DateTime.TryParse(oldElement.Attribute("ExpiredDate").Value, out var expiredDate);
             oldSite.ExpiredDate = expiredDate;
 
             ViewBag.oldSite = oldSite;
@@ -1104,18 +1024,14 @@ public class TraceController : BaseController
         {
             var newSite = new SiteLevel
             {
-                Site = new Site
-                {
-                    Id = Convert.ToByte(newElement.Attribute("SiteId").Value),
-                    Name = Convert.ToString(newElement.Attribute("SiteName").Value)
-                },
+                SiteId = Convert.ToByte(newElement.Attribute("SiteId").Value),
+                SiteName = Convert.ToString(newElement.Attribute("SiteName").Value),
                 Level = Convert.ToInt32(newElement.Attribute("Level").Value),
                 IsActive = newElement.Attribute("IsActive").Value == "1",
                 IsNeverExpired = newElement.Attribute("IsNeverExpired").Value == "1"
             };
 
-            DateTime expiredDate;
-            DateTime.TryParse(newElement.Attribute("ExpiredDate").Value, out expiredDate);
+            DateTime.TryParse(newElement.Attribute("ExpiredDate").Value, out var expiredDate);
             newSite.ExpiredDate = expiredDate;
 
             ViewBag.newSite = newSite;
@@ -1133,43 +1049,27 @@ public class TraceController : BaseController
         {
             var strUserPolicyOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
-            var listUserPolicyOld = new List<UserPolicy>();
             var documentUserPolicyOld = XDocument.Parse(strUserPolicyOld);
             var userPolicyOld = documentUserPolicyOld.Descendants("ITEM");
 
-            foreach (var item in userPolicyOld)
+            var listUserPolicyOld = userPolicyOld.Select(item => new UserPolicy
             {
-                var userPolicy = new UserPolicy
-                {
-                    User = new User
-                    {
-                        Username = item.Attribute("UserName").Value
-                    },
-                    Policy = Convert.ToInt32(item.Attribute("Policy").Value)
-                };
-                listUserPolicyOld.Add(userPolicy);
-            }
+                Username = item.Attribute("UserName").Value, 
+                Policy = Convert.ToInt32(item.Attribute("Policy").Value)
+            }).ToList();
 
             ViewBag.UserPolicyOld = listUserPolicyOld;
 
             var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
-            var listUserPolicy = new List<UserPolicy>();
             var documentUserPolicy = XDocument.Parse(strUrl);
             var userPolicyNew = documentUserPolicy.Descendants("ITEM");
 
-            foreach (var item in userPolicyNew)
+            var listUserPolicy = userPolicyNew.Select(item => new UserPolicy
             {
-                var userPolicy = new UserPolicy
-                {
-                    User = new User
-                    {
-                        Username = item.Attribute("UserName").Value
-                    },
-                    Policy = Convert.ToInt32(item.Attribute("Policy").Value)
-                };
-                listUserPolicy.Add(userPolicy);
-            }
+                Username = item.Attribute("UserName").Value,
+                Policy = Convert.ToInt32(item.Attribute("Policy").Value)
+            }).ToList();
 
             ViewBag.UserPolicyNew = listUserPolicy;
         }
@@ -1186,43 +1086,27 @@ public class TraceController : BaseController
         {
             var strGroupPolicyOld = elementOld.Attribute("Value").Value.DecodeXMLValue();
 
-            var listGroupPolicyOld = new List<GroupPolicy>();
             var documentGroupPolicyOld = XDocument.Parse(strGroupPolicyOld);
             var groupPolicyOld = documentGroupPolicyOld.Descendants("ITEM");
 
-            foreach (var item in groupPolicyOld)
+            var listGroupPolicyOld = groupPolicyOld.Select(item => new GroupPolicy
             {
-                var groupPolicy = new GroupPolicy
-                {
-                    Group = new Group
-                    {
-                        Name = item.Attribute("GroupName").Value
-                    },
-                    Policy = Convert.ToInt32(item.Attribute("Policy").Value)
-                };
-                listGroupPolicyOld.Add(groupPolicy);
-            }
+                Name = item.Attribute("GroupName").Value,
+                Policy = Convert.ToInt32(item.Attribute("Policy").Value)
+            }).ToList();
 
             ViewBag.GroupPolicyOld = listGroupPolicyOld;
 
             var strUrl = elementNew.Attribute("Value").Value.DecodeXMLValue();
 
-            var listGroupPolicy = new List<GroupPolicy>();
             var documentGroupPolicy = XDocument.Parse(strUrl);
             var groupPolicyNew = documentGroupPolicy.Descendants("ITEM");
 
-            foreach (var item in groupPolicyNew)
+            var listGroupPolicy = groupPolicyNew.Select(item => new GroupPolicy
             {
-                var groupPolicy = new GroupPolicy
-                {
-                    Group = new Group
-                    {
-                        Name = item.Attribute("GroupName").Value
-                    },
-                    Policy = Convert.ToInt32(item.Attribute("Policy").Value)
-                };
-                listGroupPolicy.Add(groupPolicy);
-            }
+                Name = item.Attribute("GroupName").Value, 
+                Policy = Convert.ToInt32(item.Attribute("Policy").Value)
+            }).ToList();
 
             ViewBag.GroupPolicyNew = listGroupPolicy;
         }

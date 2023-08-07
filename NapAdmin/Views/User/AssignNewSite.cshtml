@@ -10,7 +10,7 @@
 }
 
 @section Head {
-    <link href="~/themes/nap/user/assign-new-site.less" rel="stylesheet" type="text/css" />
+    <link href="~/themes/nap/user/assign-new-site.css" rel="stylesheet" type="text/css" />
 }
 
 @section Headline {
@@ -57,7 +57,7 @@
             <select id="siteSelect">
                 @foreach (var site in availableSite)
                 {
-                    var currentUserSiteLevel = currentUserSiteLevelList.Where(s => s.Site.Id == site.Id).FirstOrDefault();
+                    var currentUserSiteLevel = currentUserSiteLevelList.Where(s => s.SiteId == site.Id).FirstOrDefault();
 
                     if (currentUserSiteLevel != null && hostRightSite != null &&
                         currentUserSiteLevel.Level >= (int)AdminConstant.Level.User &&

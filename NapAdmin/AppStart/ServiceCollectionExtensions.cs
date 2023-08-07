@@ -43,14 +43,10 @@ public static class IServiceCollectionExtensions
 
     public static void AddFanex(this IServiceCollection services, IConfiguration configuration)
     {
-        var connections = new Dictionary<string?, ConnectionConfiguration>();
         var sections = configuration.GetSection("ConnectionStrings")
             .GetChildren()
             .ToList();
-        foreach (var section in sections)
-        {
-            connections.Add(section.GetValue<string>("Name"), new ConnectionConfiguration(section.GetValue<string>("Name"), section.GetValue<string>("ConnectionString"), section.GetValue<string>("ProviderName")));
-        }
+        var connections = sections.ToDictionary(section => section.GetValue<string>("Name"), section => new ConnectionConfiguration(section.GetValue<string>("Name"), section.GetValue<string>("ConnectionString"), section.GetValue<string>("ProviderName")));
 
         DbSettingProviderManager
             .StartNewSession()

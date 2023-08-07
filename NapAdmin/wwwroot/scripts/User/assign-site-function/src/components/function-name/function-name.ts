@@ -16,11 +16,11 @@ export class FunctionNameComponent extends Vue {
     }
 
     private generateFunctionLevel(functionList: Array<Function>, currentFunction: Function, level: number): number {
-        if (currentFunction.Parent === null) {
+        if (!currentFunction.parentId) {
             return level;
         }
 
-        const parent = functionList.find(f => f.Id === currentFunction.Parent.Id);
+        const parent = functionList.find(f => f.id === currentFunction.parentId);
 
         return this.generateFunctionLevel(functionList, parent, level + 1);
     }

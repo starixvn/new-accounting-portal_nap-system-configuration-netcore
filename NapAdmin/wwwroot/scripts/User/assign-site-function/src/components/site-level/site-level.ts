@@ -19,8 +19,8 @@ export class SiteLevelComponent extends Vue {
     public GetSiteLevel(): string {
         const site: Site = this.$props.site;
 
-        if (site.SiteLevel !== undefined) {
-            switch (Number(site.SiteLevel.Level)) {
+        if (site.siteLevel !== undefined) {
+            switch (Number(site.siteLevel.level)) {
                 case SiteLevelValue.User:
                     return 'User';
 

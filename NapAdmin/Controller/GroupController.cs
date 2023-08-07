@@ -292,7 +292,7 @@ public class GroupController : BaseController
                     return RedirectToAction("Error", "Common");
                 }
 
-                listGroupFuncRemove.Remove(f => f.Function.Id == itemFunc);
+                listGroupFuncRemove.Remove(f => f.Id == itemFunc);
             }
         }
 
@@ -300,17 +300,14 @@ public class GroupController : BaseController
         {
             foreach (var itemFunc in criteria.FuncRead)
             {
-                listGroupFuncRemove.Remove(f => f.Function.Id == itemFunc);
+                listGroupFuncRemove.Remove(f => f.Id == itemFunc);
             }
         }
 
         listGroupFuncRemove.Remove(f => f.Policy > 0);
-        foreach (var itemFunc in listGroupFuncRemove)
+        if (listGroupFuncRemove.Any(itemFunc => !listCurrentUserFuncPolicy.Any(f => f.Id == itemFunc.Id && f.Policy >= itemFunc.Policy)))
         {
-            if (!listCurrentUserFuncPolicy.Any(f => f.Function.Id == itemFunc.Function.Id && f.Policy >= itemFunc.Policy))
-            {
-                return RedirectToAction("Error", "Common");
-            }
+            return RedirectToAction("Error", "Common");
         }
 
         var result = groupService.AssignFunction(criteria);
@@ -348,18 +345,18 @@ public class GroupController : BaseController
     {
         var function = _functionService.GetById(functionId);
         var group = groupService.GetById(groupId);
-        var site = function.Site;
-        var listGroupFuncPolicy = _functionService.GetByGroupAndSite(groupId, site.Id, Environment).ToList();
+        
+        var listGroupFuncPolicy = _functionService.GetByGroupAndSite(groupId, function.SiteId, Environment).ToList();
 
         var criteria = new AssignFunctionGroupCriteria
         {
-            FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray(),
-            FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Function.Id != functionId).Select(p => (int)p.Function.Id).ToArray(),
+            FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
+            FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             ModifiedBy = NapSession.UserId,
             ModifiedDate = DateTime.Now,
             GroupId = groupId,
             GroupName = group.Name,
-            SiteId = site.Id
+            SiteId = function.SiteId
         };
 
 

@@ -113,16 +113,16 @@
                     {
                         var rowCss = index % 2 == 0 ? string.Empty : "class=\"alt\"";
                         isChecked = siteLevel is {IsActive: true };
-                        var hasHostRightInSiteOfLoginUser = editableSiteList != null && editableSiteList.Count(s => s.Id == siteLevel.Site.Id) > 0;
+                        var hasHostRightInSiteOfLoginUser = editableSiteList != null && editableSiteList.Count(s => s.Id == siteLevel.SiteId) > 0;
                         var isSelectedUserInSite = siteLevel.Level == (int)AdminConstant.Level.User;
 
                         if (!isSelftEdit)                   // if user is not edit himself
                         {
-                            var site = siteList.Where(s => s.Id == siteLevel.Site.Id).FirstOrDefault();
+                            var site = siteList.Where(s => s.Id == siteLevel.SiteId).FirstOrDefault();
 
                             if (site != null)               // if siteLevel is belong to list site has Assign Site to User
                             {
-                                var currentUserSiteLevel = currentUserSiteLevelList.Where(s => s.Site.Id == siteLevel.Site.Id).FirstOrDefault();
+                                var currentUserSiteLevel = currentUserSiteLevelList.Where(s => s.SiteId == siteLevel.SiteId).FirstOrDefault();
 
                                 isEnabled = (isPortalAdmin && (siteLevel == null || siteLevel.Level < (int)AdminConstant.Level.PortalAdmin))     // portal admin
                                         ||
@@ -143,7 +143,7 @@
                         }
                         else
                         {
-                            isEnabled = currentSiteId != siteLevel.Site.Id && isPortalAdmin;
+                            isEnabled = currentSiteId != siteLevel.SiteId && isPortalAdmin;
                             isEditEnabled = isEnabled;
                             hasRenderHtml = true;
                         }
@@ -160,13 +160,13 @@
                                     @index
                                 </td>
                                 <td>
-                                    <span id="lbSite_@siteLevel.Site.Id">@siteLevel.Site.Name</span>
+                                    <span id="lbSite_@siteLevel.SiteId">@siteLevel.SiteName</span>
                                 </td>
                                 <td class="text-center">
-                                    <span id="lbLevel_@siteLevel.Site.Id">
+                                    <span id="lbLevel_@siteLevel.SiteId">
                                         @siteLevel.Level.ToUserLevel()
                                     </span>
-                                    <select id="ddlSiteLevel_@siteLevel.Site.Id" style="display: none;">
+                                    <select id="ddlSiteLevel_@siteLevel.SiteId" style="display: none;">
                                         <option value="0" selected="@userSelected">@ViewResources.User</option>
                                         @if (level > (int)AdminConstant.Level.SiteAdmin)
                                         {
@@ -179,7 +179,7 @@
                                 @if (viewFlags.HasAssignSiteRight)
                                 {
                                     <td class="text-center">
-                                        <input type="checkbox" id="chbSite_@siteLevel.Site.Id" class="chbSite" name="@siteLevel.Site.Name"
+                                        <input type="checkbox" id="chbSite_@siteLevel.SiteId" class="chbSite" name="@siteLevel.SiteName"
                                                value="@siteLevel.Level" @Html.Raw(checkedAttribute) @Html.Raw(disabledAttribute) />
                                     </td>
                                 }
@@ -201,7 +201,7 @@
                                     <td class="text-center">
                                         @if (siteLevel.IsNeverExpired)
                                         {
-                                            <span id="lbExpiredDate_@siteLevel.Site.Id">
+                                            <span id="lbExpiredDate_@siteLevel.SiteId">
                                                 @ViewResources.Never_Expired
                                             </span>
                                         }
@@ -210,19 +210,19 @@
                                             var expiredDate = siteLevel.ExpiredDate;
                                             if (expiredDate.Year != 1)
                                             {
-                                                <span id="lbExpiredDate_@siteLevel.Site.Id">
-                                                    @expiredDate.ToShortMonthFormatedDate()
+                                                <span id="lbExpiredDate_@siteLevel.SiteId">
+                                                    @expiredDate.ToShortMonthFormatDate()
                                                 </span>
                                             }
                                             else
                                             {
-                                                <span id="lbExpiredDate_@siteLevel.Site.Id">
+                                                <span id="lbExpiredDate_@siteLevel.SiteId">
                                                     @ViewResources.NA
                                                 </span>
                                             }
                                         }
-                                        <div id="dtpExpiredDate_@siteLevel.Site.Id" style="display:none" class="expiredDatePickerArea datetime">
-                                            <input readonly type="text" id="datepicker_@siteLevel.Site.Id" placeholder="Expired Date" class="txtExpiredDatePicker" />
+                                        <div id="dtpExpiredDate_@siteLevel.SiteId" style="display:none" class="expiredDatePickerArea datetime">
+                                            <input readonly type="text" id="datepicker_@siteLevel.SiteId" placeholder="Expired Date" class="txtExpiredDatePicker" />
                                             <div>
                                                 <input type="checkbox" class="cbNeverExpired" />  @ViewResources.Never_Expired
                                             </div>

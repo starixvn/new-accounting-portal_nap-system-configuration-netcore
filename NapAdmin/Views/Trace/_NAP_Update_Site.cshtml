@@ -26,7 +26,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>@oldSite.Site.Name</td>
+                <td>@oldSite.SiteName</td>
                 <td class="text-center">@oldSite.Level.ToUserLevel()</td>
                 <td class="text-center">
                     @if (oldSite.IsActive)
@@ -45,7 +45,7 @@
                         if (expiredDate.Year != 1)
                         {
                             <span>
-                                @expiredDate.ToShortMonthFormatedDate()
+                                @expiredDate.ToShortMonthFormatDate()
                             </span>
                         }
                         else
@@ -85,7 +85,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>@newSite.Site.Name</td>
+                <td>@newSite.SiteName</td>
                 <td class="text-center">@newSite.Level.ToUserLevel()</td>
                 <td class="text-center">
                     @if (newSite.IsActive)
@@ -104,7 +104,7 @@
                         if (expiredDate.Year != 1)
                         {
                             <span>
-                                @expiredDate.ToShortMonthFormatedDate()
+                                @expiredDate.ToShortMonthFormatDate()
                             </span>
                         }
                         else

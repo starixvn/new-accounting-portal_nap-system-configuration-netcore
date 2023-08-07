@@ -35,11 +35,11 @@ export default new class SiteService {
 
     UpdateSiteToUser(rootRoute: string, userId: string, site: Site, callback: (result: string) => void) {
         this.axios.post(rootRoute + 'User/UpdateSiteToUser?userId=' + userId +
-            '&siteId=' + site.Id +
-            '&level=' + site.SiteLevel.Level +
-            '&isActive=' + site.SiteLevel.IsActive +
-            '&expiredDate=' + new Date(site.SiteLevel.ExpiredDate).toDateString() +
-            '&isNeverExpired=' + site.SiteLevel.IsNeverExpired).then((response: AxiosResponse) => {
+            '&siteId=' + site.id +
+            '&level=' + site.siteLevel.level +
+            '&isActive=' + site.siteLevel.isActive +
+            '&expiredDate=' + new Date(site.siteLevel.expiredDate).toDateString() +
+            '&isNeverExpired=' + site.siteLevel.isNeverExpired).then((response: AxiosResponse) => {
                 callback(response.data);
             }, (error) => {
                 MessageBox.ShowError(error);
@@ -48,9 +48,9 @@ export default new class SiteService {
 
     AssignSiteToUser(rootRoute: string, userId: string, site: Site, callback: (result: string) => void) {
         this.axios.post(rootRoute + 'User/AssignSiteToUser?userId=' + userId +
-            '&siteId=' + site.Id +
-            '&level=' + site.SiteLevel.Level +
-            '&isActive=' + site.SiteLevel.IsActive).then((response: AxiosResponse) => {
+            '&siteId=' + site.id +
+            '&level=' + site.siteLevel.level +
+            '&isActive=' + site.siteLevel.isActive).then((response: AxiosResponse) => {
                 callback(response.data);
             }, (error) => {
                 MessageBox.ShowError(error);

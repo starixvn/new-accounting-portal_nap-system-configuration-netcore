@@ -88,9 +88,9 @@ $(document).ready(function () {
                 NAP.loadingBox.close();
             },
             success: function (result) {
-                if (result.ErrMsg.length === 0) {
+                if (result.errMsg.length === 0) {
                     var msgResult = "Generate key successfully.";
-                    $this.data("secret-key", result.SecretKey)
+                    $this.data("secret-key", result.secretKey)
                     $("#copy-key-" + custId).removeClass('ico-copy-disabled').addClass('ico-copy-normal');
                     NAP.headlineMsgBox.showInfo(msgResult, { closeBtn: false });
                 }

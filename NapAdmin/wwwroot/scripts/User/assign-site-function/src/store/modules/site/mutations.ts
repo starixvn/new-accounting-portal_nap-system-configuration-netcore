@@ -14,7 +14,7 @@ export const mutations: Vuex.MutationTree<SiteState> = {
     },
 
     [Type.Mutation.SetAllUserSites](state, sites: Array<Site>) {
-        sites.forEach(s => (s.ShowFunctionList = false));
+        sites.forEach(s => (s.showFunctionList = false));
         state.All = sites;
     },
 
@@ -47,11 +47,11 @@ export const mutations: Vuex.MutationTree<SiteState> = {
     },
 
     [Type.Mutation.SetFunctionsToSite](state, { siteId, functions, loginUserAssignFunctionPermission }) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site: Site = state.All[siteIndex];
         const isSelfEdit = state.LoginUserId === state.ViewedUserId;
-        site.Functions = functions;
-        site.LoginUserAssignFunctionPermission = loginUserAssignFunctionPermission;
+        site.functions = functions;
+        site.loginUserAssignFunctionPermission = loginUserAssignFunctionPermission;
         FunctionUtil.InitFunctionPolicies(site);
         FunctionUtil.DisableFunctionPolicies(
             site,
@@ -65,10 +65,10 @@ export const mutations: Vuex.MutationTree<SiteState> = {
 
     [Type.Mutation.SetSelectAllUserFunctionsForAllSites](state) {
         state.SelectAllReadFunctionsForAllSites = state.All.every(
-            site => site.HasAllFunctionUserReadPolicy || site.DisableCheckBoxAllFunctionReadPolicy
+            site => site.hasAllFunctionUserReadPolicy || site.disableCheckBoxAllFunctionReadPolicy
         );
         state.SelectAllHostFunctionsForAllSites = state.All.every(
-            site => site.HasAllFunctionUserHostPolicy || site.DisableCheckBoxAllFunctionHostPolicy
+            site => site.hasAllFunctionUserHostPolicy || site.disableCheckBoxAllFunctionHostPolicy
         );
     },
 
@@ -89,37 +89,37 @@ export const mutations: Vuex.MutationTree<SiteState> = {
     },
 
     [Type.Mutation.SetViewedUserFunctionPolicies](state, { siteId, functionPolicies, groupFunctionPolicies }) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site: Site = state.All[siteIndex];
 
-        site.ViewedUserFunctionPolicies = functionPolicies;
-        site.ViewedUserGroupFunctionPolicies = groupFunctionPolicies;
+        site.viewedUserFunctionPolicies = functionPolicies;
+        site.viewedUserGroupFunctionPolicies = groupFunctionPolicies;
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.SetLoginUserFunctionPolicies](state, { siteId, functionPolicies }) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site: Site = state.All[siteIndex];
 
-        site.LoginUserFunctionPolicies = functionPolicies;
+        site.loginUserFunctionPolicies = functionPolicies;
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.SetSiteLevelToSite](state, payLoad: { siteId: number; siteLevel: SiteLevel }) {
-        const siteIndex = state.All.findIndex(s => s.Id === payLoad.siteId);
+        const siteIndex = state.All.findIndex(s => s.id === payLoad.siteId);
         const site = state.All[siteIndex];
 
         if (payLoad.siteLevel !== undefined) {
-            if (payLoad.siteLevel.IsNeverExpired) {
-                payLoad.siteLevel.ExpiredDate = null;
+            if (payLoad.siteLevel.isNeverExpired) {
+                payLoad.siteLevel.expiredDate = null;
             } else {
-                payLoad.siteLevel.ExpiredDate = DateTimeUtil.ParseAndFormat(payLoad.siteLevel.ExpiredDate, 'DD MMM YYYY');
+                payLoad.siteLevel.expiredDate = DateTimeUtil.ParseAndFormat(payLoad.siteLevel.expiredDate, 'DD MMM YYYY');
             }
         }
 
-        site.SiteLevel = payLoad.siteLevel;
+        site.siteLevel = payLoad.siteLevel;
         state.All.splice(siteIndex, 1, site);
     },
 
@@ -132,30 +132,30 @@ export const mutations: Vuex.MutationTree<SiteState> = {
     },
 
     [Type.Mutation.SetAllFunctionsUserPolicyForSite](state, payLoad: { siteId: number; rootPolicy: boolean; isRead: boolean }) {
-        const siteIndex = state.All.findIndex(s => s.Id === payLoad.siteId);
+        const siteIndex = state.All.findIndex(s => s.id === payLoad.siteId);
         const site = state.All[siteIndex];
 
-        if (payLoad.isRead && !site.DisableCheckBoxAllFunctionReadPolicy) {
+        if (payLoad.isRead && !site.disableCheckBoxAllFunctionReadPolicy) {
             FunctionUtil.SetAllFunctionsReadPolicy(site, payLoad.rootPolicy);
 
             if (payLoad.rootPolicy === false) {
                 FunctionUtil.SetAllFunctionsHostPolicy(site, payLoad.rootPolicy);
             }
-        } else if (!site.DisableCheckBoxAllFunctionHostPolicy) {
+        } else if (!site.disableCheckBoxAllFunctionHostPolicy) {
             FunctionUtil.SetAllFunctionsHostPolicy(site, payLoad.rootPolicy);
 
-            if (!site.HasAllFunctionUserReadPolicy) {
+            if (!site.hasAllFunctionUserReadPolicy) {
                 FunctionUtil.SetAllFunctionsReadPolicy(site, payLoad.rootPolicy);
             }
         }
 
-        site.HasFunctionsChange = true;
+        site.hasFunctionsChange = true;
         state.All.splice(siteIndex, 1, site);
-        state.SelectAllReadFunctionsForAllSites = state.All.filter(s => !s.DisableCheckBoxAllFunctionReadPolicy).every(
-            s => s.HasAllFunctionUserReadPolicy
+        state.SelectAllReadFunctionsForAllSites = state.All.filter(s => !s.disableCheckBoxAllFunctionReadPolicy).every(
+            s => s.hasAllFunctionUserReadPolicy
         );
-        state.SelectAllHostFunctionsForAllSites = state.All.filter(s => !s.DisableCheckBoxAllFunctionHostPolicy).every(
-            s => s.HasAllFunctionUserHostPolicy
+        state.SelectAllHostFunctionsForAllSites = state.All.filter(s => !s.disableCheckBoxAllFunctionHostPolicy).every(
+            s => s.hasAllFunctionUserHostPolicy
         );
     },
 
@@ -163,7 +163,7 @@ export const mutations: Vuex.MutationTree<SiteState> = {
         state,
         payLoad: { siteId: number; functionId: number; rootFuncUserPolicy: boolean; isRead: boolean }
     ) {
-        const siteIndex = state.All.findIndex(s => s.Id === payLoad.siteId);
+        const siteIndex = state.All.findIndex(s => s.id === payLoad.siteId);
         const site = state.All[siteIndex];
 
         if (
@@ -172,8 +172,8 @@ export const mutations: Vuex.MutationTree<SiteState> = {
                 FunctionUtil.CheckExistFunctionPermissionInWinLossByProducts(site, payLoad.functionId, name)
             )
         ) {
-            const func = site.Functions.find(f => f.Id === payLoad.functionId);
-            func.HasUserReadPolicy = !func.HasUserReadPolicy;
+            const func = site.functions.find(f => f.id === payLoad.functionId);
+            func.hasUserReadPolicy = !func.hasUserReadPolicy;
             state.All.splice(siteIndex, 1, site);
             return;
         }
@@ -183,27 +183,27 @@ export const mutations: Vuex.MutationTree<SiteState> = {
         FunctionUtil.SetParentFunctionPolicy(site, payLoad.functionId, payLoad.rootFuncUserPolicy, payLoad.isRead);
         FunctionUtil.SetSiteFunctionPolicy(site);
 
-        site.HasFunctionsChange = true;
+        site.hasFunctionsChange = true;
         state.All.splice(siteIndex, 1, site);
 
-        state.SelectAllReadFunctionsForAllSites = state.All.filter(s => !s.DisableCheckBoxAllFunctionReadPolicy).every(
-            s => s.HasAllFunctionUserReadPolicy
+        state.SelectAllReadFunctionsForAllSites = state.All.filter(s => !s.disableCheckBoxAllFunctionReadPolicy).every(
+            s => s.hasAllFunctionUserReadPolicy
         );
-        state.SelectAllHostFunctionsForAllSites = state.All.filter(s => !s.DisableCheckBoxAllFunctionHostPolicy).every(
-            s => s.HasAllFunctionUserHostPolicy
+        state.SelectAllHostFunctionsForAllSites = state.All.filter(s => !s.disableCheckBoxAllFunctionHostPolicy).every(
+            s => s.hasAllFunctionUserHostPolicy
         );
     },
 
     [Type.Mutation.ChangeFunctionPolicy](state, payLoad: { siteId: number; func: Function; isRead: boolean }) {
-        const siteIndex = state.All.findIndex(s => s.Id === payLoad.siteId);
+        const siteIndex = state.All.findIndex(s => s.id === payLoad.siteId);
         const site = state.All[siteIndex];
 
-        const currentFunc = site.Functions.find(f => f.Id === payLoad.func.Id);
+        const currentFunc = site.functions.find(f => f.id === payLoad.func.id);
 
         if (payLoad.isRead) {
-            currentFunc.HasUserReadPolicy = !currentFunc.HasUserReadPolicy;
+            currentFunc.hasUserReadPolicy = !currentFunc.hasUserReadPolicy;
         } else {
-            currentFunc.HasUserHostPolicy = !currentFunc.HasUserHostPolicy;
+            currentFunc.hasUserHostPolicy = !currentFunc.hasUserHostPolicy;
         }
 
         state.All.splice(siteIndex, 1, site);
@@ -214,75 +214,76 @@ export const mutations: Vuex.MutationTree<SiteState> = {
     },
 
     [Type.Mutation.SetLoginUserAssignSitePermissionForSite](state, payload: { siteId: number; permission: number }) {
-        const site = state.All.find(s => s.Id === payload.siteId);
-        site.LoginUserAssignSitePermission = payload.permission;
+        const site = state.All.find(s => s.id === payload.siteId);
+        site.loginUserAssignSitePermission = payload.permission;
     },
 
     [Type.Mutation.ShowHideSiteFunctions](state, { siteId, isShow }) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site = state.All[siteIndex];
-        site.ShowFunctionList = isShow;
+        site.showFunctionList = isShow;
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.EnableEditSite](state, siteId: number) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site = state.All[siteIndex];
-        site.EnableEdit = !site.EnableEdit;
+        site.enableEdit = !site.enableEdit;
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.EnableAssignSite](state, siteId: number) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site = state.All[siteIndex];
-        site.EnableAssign = true;
-        site.EnableEdit = true;
-        site.SiteLevel = {
-            Level: SiteLevelValue.User,
-            IsActive: true,
-            IsNeverExpired: true,
-            Site: site
+        site.enableAssign = true;
+        site.enableEdit = true;
+        site.siteLevel = {
+            level: SiteLevelValue.User,
+            isActive: true,
+            isNeverExpired: true,
+            siteId: site.id,
+            siteName: site.name
         };
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.DoneAssignSite](state, siteId: number) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site = state.All[siteIndex];
-        site.EnableAssign = false;
-        site.EnableEdit = false;
+        site.enableAssign = false;
+        site.enableEdit = false;
 
-        const siteLevel = _.cloneDeep(site.SiteLevel);
+        const siteLevel = _.cloneDeep(site.siteLevel);
         state.ViewedUserSiteLevels.push(siteLevel);
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.CancelAssignSite](state, siteId: number) {
-        const siteIndex = state.All.findIndex(s => s.Id === siteId);
+        const siteIndex = state.All.findIndex(s => s.id === siteId);
         const site = state.All[siteIndex];
 
-        site.EnableAssign = false;
-        site.EnableEdit = false;
-        site.SiteLevel = undefined;
+        site.enableAssign = false;
+        site.enableEdit = false;
+        site.siteLevel = undefined;
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.ChangeSiteStatus](state, payload: { siteId: number; rootStatus: boolean }) {
-        const siteIndex = state.All.findIndex(s => s.Id === payload.siteId);
+        const siteIndex = state.All.findIndex(s => s.id === payload.siteId);
         const site = state.All[siteIndex];
-        site.SiteLevel.IsActive = payload.rootStatus;
-        state.ViewedUserSiteLevels.find(sl => sl.Site.Id === payload.siteId).IsActive = payload.rootStatus;
+        site.siteLevel.isActive = payload.rootStatus;
+        state.ViewedUserSiteLevels.find(sl => sl.siteId === payload.siteId).isActive = payload.rootStatus;
 
         state.All.splice(siteIndex, 1, site);
     },
 
     [Type.Mutation.UpdateSiteLevel](state, payload: { siteId: number; siteLevel: SiteLevel }) {
-        const currentSiteLevel = state.ViewedUserSiteLevels.find(sl => sl.Site.Id === payload.siteId);
+        const currentSiteLevel = state.ViewedUserSiteLevels.find(sl => sl.siteId === payload.siteId);
         _.assign(currentSiteLevel, payload.siteLevel);
     }
 };

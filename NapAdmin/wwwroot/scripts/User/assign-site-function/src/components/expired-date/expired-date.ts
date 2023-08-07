@@ -15,7 +15,7 @@ import DateTimeUtil from '../../util/datetime';
 })
 
 export class ExpiredDateComponent extends Vue {
-    private currentSite: Site = { SiteLevel: {} };
+    private currentSite: Site = { siteLevel: {} };
 
     mounted() {
         this.currentSite = this.$props.site;

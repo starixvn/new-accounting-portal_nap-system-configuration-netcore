@@ -4,7 +4,7 @@ const helpers = require("./helpers"),
   env = require('../environment/dev.env');
 
 webpackConfig.devServer = {
-    port: 8080,
+    port: 5000,
     host: "localhost",
     historyApiFallback: true,
     watchOptions: { aggregateTimeout: 300, poll: 1000 },
