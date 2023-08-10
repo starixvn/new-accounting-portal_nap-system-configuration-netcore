@@ -1,6 +1,7 @@
 namespace NapAdminCore.Models.ValueObject;
 
 using System;
+using System.Security.Permissions;
 
 public class LogUserLogin
 {
@@ -22,13 +23,11 @@ public class LogUserLogin
 
     public int Duration { get; set; }
 
-    public User User => new() { Id = UserId };
-
-    public Site Site => new() { Id = SiteId, Name = SiteName };
-
     public byte SiteId { get; set; }
 
     public string SiteName { get; set; }
 
     public int UserId { get; set; }
+
+    public string Username { get; set; }
 }

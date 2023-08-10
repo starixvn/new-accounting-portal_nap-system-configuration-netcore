@@ -91,15 +91,15 @@
                     @item.LogDate.ToFullDateString()
                 </td>
                 <td style="width: 200px">
-                    @item.User.Username
+                    @item.Username
                 </td>
                 <td style="width: 200px">
                     @item.IP
                 </td>
                 <td style="width: 200px">
-                    @if (item.Site.Id != 0)
+                    @if (item.SiteId != 0)
                     { 
-                        @item.Site.Name
+                        @item.SiteName
                     }
                     else
                     {
