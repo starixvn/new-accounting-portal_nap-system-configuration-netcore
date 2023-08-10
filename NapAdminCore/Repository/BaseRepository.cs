@@ -11,8 +11,14 @@ public class BaseRepository : DynamicRepository
 {
     public CommandResult GetCommandResult(Hashtable hashtable)
     {
-        var errCode = hashtable["errcode"];
-        var errMsg = hashtable["errmsg"];
+        var ignoredCaseHashtable = new Hashtable(StringComparer.InvariantCultureIgnoreCase);
+        foreach (DictionaryEntry entry in hashtable)
+        {
+            ignoredCaseHashtable.Add(entry.Key, entry.Value);
+        }
+
+        var errCode = ignoredCaseHashtable["errcode"];
+        var errMsg = ignoredCaseHashtable["errmsg"];
 
         return new CommandResult
         {

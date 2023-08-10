@@ -496,6 +496,10 @@ public class UserController : BaseController
                 ViewBag.Success = true;
                 ViewBag.UserId = criteria.CustId;
             }
+            else
+            {
+                ModelState.AddModelError("Username", result.Message);
+            }
         }
 
         addNewUserVM.Criteria = criteria;
