@@ -43,7 +43,7 @@ public class UserLevel
 
     public string ModifierUsername { get; set; }
 
-    public int SiteId { get; set; }
+    public byte SiteId { get; set; }
 
     public string SiteName { get; set; }
 }

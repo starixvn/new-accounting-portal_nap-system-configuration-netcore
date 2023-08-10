@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\scripts\User\assign-site-function\**" />
-    <Content Remove="wwwroot\scripts\User\assign-site-function\**" />
-    <EmbeddedResource Remove="wwwroot\scripts\User\assign-site-function\**" />
+    
     <Content Remove="wwwroot\scripts\User\assign-site-function\**" />
   </ItemGroup>
 
@@ -21,7 +19,15 @@
     <Content Include="App_Data\Fanex.Data\NAPCommonSpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    
+  </ItemGroup>
+
+
+  <ItemGroup>
     <Content Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css" />
+    <AdditionalFiles Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css.map" />
+    <Content Include="wwwroot\scripts\User\assign-site-function\dist\main.js" />
+    <AdditionalFiles Include="wwwroot\scripts\User\assign-site-function\dist\main.js.map" />
   </ItemGroup>
 
 

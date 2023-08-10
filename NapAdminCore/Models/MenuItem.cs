@@ -19,7 +19,7 @@ public class MenuItem
 
     public string FunctionName { get; set; }
 
-    public int SiteId { get; set; }
+    public byte SiteId { get; set; }
     
     public string SiteName { get; set; }
 
