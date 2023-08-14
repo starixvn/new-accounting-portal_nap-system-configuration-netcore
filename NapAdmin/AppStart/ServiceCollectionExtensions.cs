@@ -1,6 +1,5 @@
 namespace NapAdmin.AppStart;
 
-using System.IO.Compression;
 using Fanex.Caching;
 using Fanex.Data;
 using Fanex.Data.Repository;
@@ -18,7 +17,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.ResponseCompression;
 using NapAdminCore.Repository;
 using NapAdminCore.Service;
 using SharpRaven;

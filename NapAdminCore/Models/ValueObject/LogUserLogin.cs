@@ -1,7 +1,6 @@
 namespace NapAdminCore.Models.ValueObject;
 
 using System;
-using System.Security.Permissions;
 
 public class LogUserLogin
 {
