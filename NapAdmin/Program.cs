@@ -5,6 +5,7 @@ using Fanex.NAP.Signin.AspNetCore.Attribute;
 using Microsoft.AspNetCore.Mvc;
 using NapAdmin.AppStart;
 using ONEbook.UM.AspNetCore.Filters;
+using NapAdminCore.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -17,7 +18,6 @@ services.AddNapSession(configuration);
 services.AddNapAuthorization();
 services.AddNapAuthentication(configuration);
 services.AddMaintenance(configuration);
-services.AddCompression();
 
 services.AddRazorPages();
 services.AddControllersWithViews(options =>
@@ -30,7 +30,6 @@ services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.UseResponseCompression();
 app.UseStaticFiles();
 app.UseCookiePolicy();
 app.UseSession();
@@ -44,7 +43,7 @@ app.UseAuthorization();
 NapClientManager
     .UseConfig(app.Services.GetRequiredService<INapSettings>())
     .UseSession(app.Services.GetRequiredService<INapSession>());
-
+NapAdminSettings.LoadSettings(configuration);
 
 app.MapControllerRoute(
     name: "default",

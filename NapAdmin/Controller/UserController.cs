@@ -923,7 +923,7 @@ public class UserController : BaseController
 
         if (result is { IsSuccessful: true })
         {
-            if (siteId == AppSettings.OWPSiteID)
+            if (siteId == NapAdminSettings.OWPSiteID)
             {
                 userService.SyncUserToOWP(userId);
             }

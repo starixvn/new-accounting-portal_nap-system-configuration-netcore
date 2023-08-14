@@ -15,8 +15,6 @@ public interface ITraceService
     IQueryable<LogExecSp> SearchExecSp(GetAllLogCriteria criteria);
 
     IQueryable<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria);
-
-    IQueryable<LogFunction> SearchLogFunction(GetAllLogFunctionCriteria criteria);
 }
 public class TraceService : ITraceService
 {
@@ -172,12 +170,7 @@ public class TraceService : ITraceService
     {
         return _traceRepository.SearchLogUserLogin(criteria);
     }
-
-    public IQueryable<LogFunction> SearchLogFunction(GetAllLogFunctionCriteria criteria)
-    {
-        return _traceRepository.SearchLogFunction(criteria);
-    }
-
+    
     private string EncodeXMLValue(string value)
     {
         if (!string.IsNullOrEmpty(value))

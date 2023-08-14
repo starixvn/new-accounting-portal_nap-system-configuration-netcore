@@ -1,5 +1,6 @@
 ﻿@using System.Collections
 @{
+    Layout = null;
     var functionList = ViewBag.FunctionList as List<Function>;
     var groupFuncPolicyOldList = ViewBag.ListOldData as List<FunctionPolicy> ?? new List<FunctionPolicy>();
     var groupFuncPolicyNewDic = ViewBag.ListNewData as Hashtable ?? new Hashtable();

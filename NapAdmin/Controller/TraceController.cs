@@ -155,21 +155,71 @@ public class TraceController : BaseController
     [HttpPost]
     public ActionResult GetLogInsertDetail(int id)
     {
-        if (Request.IsAjaxRequest())
+        var log = _traceService.GetById(id);
+        switch (log.ActionId)
         {
-            var log = _traceService.GetById(id);
-
-            return View(log);
+            case (int)LogAction.NAP_Cust_Insert:
+                return NAPCustInsert(log);
+            case (int)LogAction.NAP_User_Insert:
+                return NAPUserInsert(log);
+            case (int)LogAction.NAP_Function_Insert:
+                return NAPFunctionInsert(log);
+            case (int)LogAction.NAP_Group_Insert:
+                return NAPGroupInsert(log);
+            case (int)LogAction.NAP_MenuItem_Insert:
+                return NAPMenuItemInsert(log);
+            case (int)LogAction.NAP_Site_InsertWithSiteURL:
+                return NAPSiteInsertWithSiteUrl(log);
+            case (int)LogAction.NAP_MenuItem_Update:
+                return NAPMenuItemUpdate(log);
+            case (int)LogAction.NAP_MenuItem_UpdateStatus:
+                return NAPMenuItemUpdateStatus(log);
+            case (int)LogAction.NAP_Function_Update:
+            case (int)LogAction.NAP_Function_Duplicate:
+                return NAPFunctionUpdate(log);
+            case (int)LogAction.NAP_Function_UpdateStatus:
+                return NAPFunctionUpdateStatus(log);
+            case (int)LogAction.NAP_Site_Update:
+                return NAPSiteUpdate(log);
+            case (int)LogAction.NAP_Site_UpdateStatus:
+                return NAPSiteUpdateStatus(log);
+            case (int)LogAction.NAP_Group_Update:
+                return NAPGroupUpdate(log);
+            case (int)LogAction.NAP_Group_UpdateStatus:
+                return NAPGroupUpdateStatus(log);
+            case (int)LogAction.NAP_Cust_Update:
+                return NAPCustUpdate(log);
+            case (int)LogAction.NAP_Site_UpdateSiteURL:
+            case (int)LogAction.NAP_Site_InsertSiteURL:
+            case (int)LogAction.NAP_Site_UpdateDefaultSiteURL:
+                return NAPSiteUrl(log);
+            case (int)LogAction.NAP_Group_AssignFunction:
+            case (int)LogAction.NAP_User_AssignFunction:
+            case (int)LogAction.NAP_Function_CopyPermission:
+                return NAPAssignPermission(log);
+            case (int)LogAction.NAP_User_AssignNewSite:
+                return NAPAssignNewSite(log);
+            case (int)LogAction.NAP_User_UpdateSite:
+                return NAPUpdateSite(log);
+            case (int)LogAction.NAP_User_AssignSite:
+                return NAPAssignSite(log);
+            case (int)LogAction.NAP_Function_AssignFunctionToUsers:
+                return NAPFunctionAssignToUsers(log);
+            case (int)LogAction.NAP_Function_AssignFunctionToGroups:
+                return NAPFunctionAssignFunctionToGroups(log);
+            case (int)LogAction.Task_NAP_RevokeUserPermission:
+                return TaskNAPRevokeUserPermission(log);
+            default:
+                return View("~/Views/Trace/_NAP_Empty_LogDetail.cshtml");
         }
-
-        return View(new LogExecSp());
     }
+    
 
     #endregion Ajax
 
     #region View log
 
-    public PartialViewResult NAPUserInsert(LogExecSp log)
+    public ActionResult NAPUserInsert(LogExecSp log)
     {
         if (log.ActionId == (int)LogAction.NAP_User_Insert)
         {
@@ -192,10 +242,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
+        return View("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    public PartialViewResult NAPCustInsert(LogExecSp log)
+    public ActionResult NAPCustInsert(LogExecSp log)
     {
         var element = XElement.Parse(log.Data);
 
@@ -233,10 +283,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
+        return View("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    public PartialViewResult NAPFunctionInsert(LogExecSp log)
+    public ActionResult NAPFunctionInsert(LogExecSp log)
     {
         var element = XElement.Parse(log.Data);
 
@@ -294,10 +344,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
+        return View("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    public PartialViewResult NAPGroupInsert(LogExecSp log)
+    public ActionResult NAPGroupInsert(LogExecSp log)
     {
         var element = XElement.Parse(log.Data);
 
@@ -325,10 +375,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
+        return View("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    public PartialViewResult NAPMenuItemInsert(LogExecSp log)
+    public ActionResult NAPMenuItemInsert(LogExecSp log)
     {
         var element = XElement.Parse(log.Data);
 
@@ -386,10 +436,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogInsert.cshtml");
+        return View("~/Views/Trace/_NAPLogInsert.cshtml");
     }
 
-    public PartialViewResult NAPSiteInsertWithSiteUrl(LogExecSp log)
+    public ActionResult NAPSiteInsertWithSiteUrl(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
 
@@ -447,10 +497,10 @@ public class TraceController : BaseController
             ViewBag.SiteUrl = listSiteUrl;
         }
 
-        return PartialView("~/Views/Trace/_NAP_Site_InsertWithSiteURL.cshtml");
+        return View("~/Views/Trace/_NAP_Site_InsertWithSiteURL.cshtml");
     }
 
-    public PartialViewResult NAPMenuItemUpdate(LogExecSp log)
+    public ActionResult NAPMenuItemUpdate(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -518,10 +568,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPMenuItemUpdateStatus(LogExecSp log)
+    public ActionResult NAPMenuItemUpdateStatus(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -541,10 +591,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPFunctionUpdate(LogExecSp log)
+    public ActionResult NAPFunctionUpdate(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -612,10 +662,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPFunctionUpdateStatus(LogExecSp log)
+    public ActionResult NAPFunctionUpdateStatus(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -635,10 +685,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPSiteUpdate(LogExecSp log)
+    public ActionResult NAPSiteUpdate(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -688,10 +738,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPSiteUpdateStatus(LogExecSp log)
+    public ActionResult NAPSiteUpdateStatus(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -711,10 +761,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPGroupUpdate(LogExecSp log)
+    public ActionResult NAPGroupUpdate(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -746,10 +796,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPGroupUpdateStatus(LogExecSp log)
+    public ActionResult NAPGroupUpdateStatus(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -769,10 +819,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPCustUpdate(LogExecSp log)
+    public ActionResult NAPCustUpdate(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data ?? "<ROOT/>");
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -810,10 +860,10 @@ public class TraceController : BaseController
             ViewBag.LogData = listLogData;
         }
 
-        return PartialView("~/Views/Trace/_NAPLogUpdate.cshtml");
+        return View("~/Views/Trace/_NAPLogUpdate.cshtml");
     }
 
-    public PartialViewResult NAPSiteUrl(LogExecSp log)
+    public ActionResult NAPSiteUrl(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -853,10 +903,10 @@ public class TraceController : BaseController
             ViewBag.SiteUrl = listSiteUrl;
         }
 
-        return PartialView("~/Views/Trace/_NAP_Site_Url.cshtml");
+        return View("~/Views/Trace/_NAP_Site_Url.cshtml");
     }
 
-    public PartialViewResult NAPAssignPermission(LogExecSp log)
+    public ActionResult NAPAssignPermission(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -895,7 +945,7 @@ public class TraceController : BaseController
 
         #endregion View log
 
-        return PartialView("~/Views/Trace/_NAP_Assign_Permission.cshtml");
+        return View("~/Views/Trace/_NAP_Assign_Permission.cshtml");
     }
 
     private static Hashtable GetNewFunctionPolicyList(string strFunctionPolicy)
@@ -931,7 +981,7 @@ public class TraceController : BaseController
         }).ToList();
     }
 
-    public PartialViewResult NAPAssignSite(LogExecSp log)
+    public ActionResult NAPAssignSite(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -975,10 +1025,10 @@ public class TraceController : BaseController
             }
         }
 
-        return PartialView("~/Views/Trace/_NAP_Assign_Site.cshtml");
+        return View("~/Views/Trace/_NAP_Assign_Site.cshtml");
     }
 
-    public PartialViewResult NAPAssignNewSite(LogExecSp log)
+    public ActionResult NAPAssignNewSite(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
 
@@ -995,10 +1045,10 @@ public class TraceController : BaseController
             ViewBag.NewLog = newSite;
         }
 
-        return PartialView("~/Views/Trace/_NAP_Assign_New_Site.cshtml");
+        return View("~/Views/Trace/_NAP_Assign_New_Site.cshtml");
     }
 
-    public PartialViewResult NAPUpdateSite(LogExecSp log)
+    public ActionResult NAPUpdateSite(LogExecSp log)
     {
         var newElement = XElement.Parse(log.Data);
         var oldElement = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -1037,10 +1087,10 @@ public class TraceController : BaseController
             ViewBag.newSite = newSite;
         }
 
-        return PartialView("~/Views/Trace/_NAP_Update_Site.cshtml");
+        return View("~/Views/Trace/_NAP_Update_Site.cshtml");
     }
 
-    public PartialViewResult NAPFunctionAssignToUsers(LogExecSp log)
+    public ActionResult NAPFunctionAssignToUsers(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -1074,10 +1124,10 @@ public class TraceController : BaseController
             ViewBag.UserPolicyNew = listUserPolicy;
         }
 
-        return PartialView("~/Views/Trace/_NAP_Function_AssignToUsers.cshtml");
+        return View("~/Views/Trace/_NAP_Function_AssignToUsers.cshtml");
     }
 
-    public PartialViewResult NAPFunctionAssignFunctionToGroups(LogExecSp log)
+    public ActionResult NAPFunctionAssignFunctionToGroups(LogExecSp log)
     {
         var elementNew = XElement.Parse(log.Data);
         var elementOld = XElement.Parse(log.OldData ?? "<ROOT/>");
@@ -1111,16 +1161,16 @@ public class TraceController : BaseController
             ViewBag.GroupPolicyNew = listGroupPolicy;
         }
 
-        return PartialView("~/Views/Trace/_NAP_Function_AssignToGroups.cshtml");
+        return View("~/Views/Trace/_NAP_Function_AssignToGroups.cshtml");
     }
 
-    public PartialViewResult TaskNAPRevokeUserPermission(LogExecSp log)
+    public ActionResult TaskNAPRevokeUserPermission(LogExecSp log)
     {
         var taskNAPRevokeUserPermissionVM = new TaskNAPRevokeUserPermissionVM();
 
         var element = XElement.Parse(log.OldData ?? "<ROOT/>");
 
-        if (log.ActionId == (int)LogAction.Task_NAP_RevokeUserPermission && element != null)
+        if (log.ActionId == (int)LogAction.Task_NAP_RevokeUserPermission)
         {
             var elementValue = element.Attribute("Value").Value.DecodeXMLValue();
 
@@ -1141,6 +1191,6 @@ public class TraceController : BaseController
             }
         }
 
-        return PartialView("~/Views/Trace/_Task_NAP_RevokeUserPermission.cshtml", taskNAPRevokeUserPermissionVM);
+        return View("~/Views/Trace/_Task_NAP_RevokeUserPermission.cshtml", taskNAPRevokeUserPermissionVM);
     }
 }

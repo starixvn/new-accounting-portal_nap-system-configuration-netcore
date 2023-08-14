@@ -11,8 +11,6 @@ public interface ITraceRepository : IDynamicRepository
 
     IQueryable<LogUserLogin> SearchLogUserLogin(GetAllLogUserLoginCriteria criteria);
 
-    IQueryable<LogFunction> SearchLogFunction(GetAllLogFunctionCriteria criteria);
-
     LogExecSp GetById(ICriteria criteria);
 }
 public class TraceRepository : DynamicRepository, ITraceRepository
@@ -38,10 +36,5 @@ public class TraceRepository : DynamicRepository, ITraceRepository
     public IQueryable<LogUserLogin> SearchLogUserLogin(GetAllLogUserLoginCriteria criteria)
     {
         return dynamicRepository.Fetch<LogUserLogin>(criteria).AsQueryable();
-    }
-
-    public IQueryable<LogFunction> SearchLogFunction(GetAllLogFunctionCriteria criteria)
-    {
-        return dynamicRepository.Fetch<LogFunction>(criteria).AsQueryable();
     }
 }

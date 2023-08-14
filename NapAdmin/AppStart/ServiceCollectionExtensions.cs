@@ -161,19 +161,5 @@ public static class IServiceCollectionExtensions
                 };
             });
     }
-
-    public static void AddCompression(this IServiceCollection services)
-    {
-        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-        services.AddResponseCompression(options =>
-        {
-            options.MimeTypes = new[]{
-                "text/html",
-                "text/css",
-                "application/javascript",
-                "application/json",
-                "application/x-msgpack"
-            };
-        });
-    }
+    
 }

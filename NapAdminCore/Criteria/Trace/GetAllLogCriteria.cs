@@ -12,11 +12,9 @@ public class GetAllLogCriteria : CriteriaBase
 
     public string Name { get; set; }
     
-    [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:MMM dd,yyyy}", ApplyFormatInEditMode = true)]
     public DateTime From { get; set; }
 
-    [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:MMM dd,yyyy}", ApplyFormatInEditMode = true)]
     public DateTime To { get; set; }
 
