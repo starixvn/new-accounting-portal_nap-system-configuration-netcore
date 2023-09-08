@@ -227,11 +227,7 @@ public class UserService : IUserService
     {
 
         var command = new InsertUserToOWPCommand(userId);
-
-        using (var db = ObjectDbFactory.CreateInstance(command.GetSettingKey()))
-        {
-            db.ExecuteNonQuery(command);
-        }
+        dynamicRepository.Execute(command);
 
         if (command.ErrCode > 0)
         {

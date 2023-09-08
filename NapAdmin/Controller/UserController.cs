@@ -1446,8 +1446,8 @@ public class UserController : BaseController
             Modifier = NapSession.UserId
         };
 
-        using var db = ObjectDbFactory.CreateInstance(command.GetSettingKey());
-        db.ExecuteNonQuery(command);
+        var repository = new DynamicRepository();
+        repository.Execute(command);
 
         return string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
     }
@@ -1468,8 +1468,9 @@ public class UserController : BaseController
             LoginIP = _loggedUserContext.GetIp(),
             Modifier = NapSession.UserId
         };
-        using var db = ObjectDbFactory.CreateInstance(command.GetSettingKey());
-        db.ExecuteNonQuery(command);
+
+        var repository = new DynamicRepository();
+        repository.Execute(command);
 
         var errMsg = string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
 

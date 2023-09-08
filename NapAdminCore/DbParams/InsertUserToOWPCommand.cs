@@ -2,7 +2,7 @@ namespace NapAdminCore.DbParams;
 
 using Fanex.Data.Repository;
 
-public class InsertUserToOWPCommand : CriteriaBase
+public class InsertUserToOWPCommand : NonQueryCommand
 {
     public InsertUserToOWPCommand(int userId)
     {

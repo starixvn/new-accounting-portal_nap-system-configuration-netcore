@@ -34,13 +34,7 @@ public class SiteRepository : BaseRepository, ISiteRepository
     {
         this.dynamicRepository = dynamicRepository;
     }
-
-    public Site Get(ICriteria criteria)
-    {
-        using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-        return db.QueryEntity<Site>(criteria);
-    }
-
+    
     public SiteUrl GetSiteUrl(ICriteria criteria)
     {
         return dynamicRepository.Get<SiteUrl>(criteria);

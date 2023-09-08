@@ -2,7 +2,7 @@ namespace NapAdminCore.DbParams;
 
 using Fanex.Data.Repository;
 
-public class SetupOTPUpdateCommand : CriteriaBase
+public class SetupOTPUpdateCommand : NonQueryCommand
 {
     public int CustId { get; set; }
 
