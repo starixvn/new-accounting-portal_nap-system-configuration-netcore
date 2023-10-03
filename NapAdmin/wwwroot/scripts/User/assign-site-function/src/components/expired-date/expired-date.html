@@ -1,0 +1,22 @@
+﻿<div>
+    <div v-if="!enableEditSite">
+        <span v-if="currentSite.siteLevel.isNeverExpired">
+            Never Expired
+        </span>
+        <span v-else>
+            {{FormatDate(currentSite.siteLevel.expiredDate)}}
+        </span>
+    </div>
+    <div v-else>
+        <vue-date-picker v-model="currentSite.siteLevel.expiredDate"
+                         style="white-space:normal!important"
+                         :bootstrap-styling="true"
+                         :calendar-button="true"
+                         calendar-button-icon="glyphicon glyphicon-calendar"
+                         :disabled-picker="currentSite.siteLevel.isNeverExpired">
+        </vue-date-picker>
+        <div>
+            <input type="checkbox" v-model="currentSite.siteLevel.isNeverExpired" @change="OnCheckNeverExpired()" /> Never Expired
+        </div>
+    </div>
+</div>

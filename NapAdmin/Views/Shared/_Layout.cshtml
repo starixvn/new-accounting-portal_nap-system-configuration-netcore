@@ -1,0 +1,76 @@
+﻿@{
+    var menuList = (List<Fanex.NAP.Client.Models.MenuItem>)ViewBag?.NapSession?.MenuItemList;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/themes/nap/img/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link type="text/css" rel="stylesheet" href="~/themes/bootstrap/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="~/themes/reset.css" />
+    <link type="text/css" rel="stylesheet" href="~/themes/jquery-ui-1.8.23.css" />
+    <link type="text/css" rel="stylesheet" href="~/scripts/lib/tipsy/tipsy-1.0.0.css" />
+    <link type="text/css" rel="stylesheet" href="~/scripts/lib/msgbox/msgbox-0.0.1.css" />
+    <link href="~/themes/pagination.css" rel="stylesheet" />
+    @RenderSection("Head", false)
+</head>
+<body>
+    <div class="container page">
+        <header class="row header">
+            <a class="logo" href="~/">
+                System
+                <span> configuration</span>
+                @if (ViewBag.ViewFlags != null && !ViewBag.ViewFlags.IsLive)
+                {
+                    <div class="uat">
+                    </div>
+                }
+            </a>
+            @await Html.PartialAsync("_Menu", menuList)
+            <div class="user-info">
+                <div class="greeting">
+                    <h2>
+                        Howdy, <span class="info-acc">@ViewBag?.NapSession.UserName</span>
+                        <span class="info-more"></span>
+                    </h2>
+                    <ul>
+                        <li>@Html.ActionLink(ViewResources.Profile, "UserProfile", "User")</li>
+                        <li>@Html.ActionLink(ViewResources.Change_Password, "ChangePassword", "User")</li>
+                        <li>@Html.ActionLink(ViewResources.Sign_Out, "LogOut", "Auth")</li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <section id="headline" class="row headline">
+            @RenderSection("Headline", false)
+        </section>
+        <section id="body" class="row body">
+            @RenderBody()
+        </section>
+    </div>
+    @Html.Hidden("NapAdminRoot", Url.Content("~/"))
+    @Html.Hidden("NapRoot", Url.Content("~/"))
+    <script type="text/ecmascript" src="~/scripts/lib/html5shiv.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/jquery-1.8.2.min.js"></script>
+
+    <script type="text/ecmascript" src="~/scripts/lib/jquery.easing.1.3.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/jquery-ui-1.8.24.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/jquery.unobtrusive-ajax.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/jquery.validate-1.10.0.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/jquery.validate.unobtrusive.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/tipsy/tipsy-1.0.0.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/msgbox/msgbox-0.0.1.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/jquery.cookie.js"></script>
+    <script type="text/ecmascript" src="~/scripts/NAP.js"></script>
+    <script type="text/ecmascript" src="~/scripts/_Layout.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/respond.min.js"></script>
+    <script type="text/ecmascript" src="~/scripts/lib/pagination.js"></script>
+    @if (IServiceCollectionExtensions.NapSettings.EnableReCheckIn)
+    {
+        <script src="~/Areas/UserLogin/scripts/ReCheckIn.js" type="text/javascript"></script>
+    }
+    @RenderSection("Foot", false)
+</body>
+</html>

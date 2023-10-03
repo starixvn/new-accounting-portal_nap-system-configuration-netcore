@@ -1,0 +1,160 @@
+﻿@using System.Collections
+@{
+    Layout = null;
+    var functionList = ViewBag.FunctionList as List<Function>;
+    var groupFuncPolicyOldList = ViewBag.ListOldData as List<FunctionPolicy> ?? new List<FunctionPolicy>();
+    var groupFuncPolicyNewDic = ViewBag.ListNewData as Hashtable ?? new Hashtable();
+}
+<h1>@ViewResources.Site : <span class="title">@ViewBag.SiteName</span></h1>
+<br />
+<table class="grid no-scale">
+    <thead>
+        <tr>
+            <th rowspan="2">
+                @ViewResources.Function
+            </th>
+            <th colspan="2">
+                @ViewResources.Old_Value
+            </th>
+            <th colspan="2">
+                @ViewResources.New_Value
+            </th>
+        </tr>
+        <tr>
+            <th style="width: 50px">
+                @ViewResources.Read
+            </th>
+            <th style="width: 50px">
+                @ViewResources.Host
+            </th>
+            <th style="width: 50px">
+                @ViewResources.Read
+            </th>
+            <th style="width: 50px">
+                @ViewResources.Host
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (functionList.Count > 0)
+        {
+            var functionCount = functionList.Count;
+
+            for (var i = 0; i < functionCount; i++)
+            {
+                var function = functionList[i];
+                var groupFuncPolicyOld = groupFuncPolicyOldList.Where(x => x.Id == function.Id).SingleOrDefault();
+                var parentId = function.ParentId > 0 ? function.ParentId.ToString() : string.Empty;
+
+                var funcNameStyle = i == functionCount - 1 ? "nbt" : "nbt nbb";
+                if (function.ParentId  == 0)
+                {
+                    funcNameStyle = i == functionCount - 1 ? string.Empty : "nbb";
+                }
+
+                var isChangePolicy = groupFuncPolicyNewDic.ContainsKey(function.Id);
+
+                var isReadOld = groupFuncPolicyOld != null && groupFuncPolicyOld.Policy >= (int)AdminConstant.Policy.Read;
+                var isReadNew = groupFuncPolicyOld != null && groupFuncPolicyOld.Policy >= (int)AdminConstant.Policy.Read;
+                var isHostOld = false;
+                var isHostNew = false;
+
+                var chkReadId = "funcRead" + function.Id;
+                var checkedReadCssOld = isReadOld ? "checked=\"checked\"" : string.Empty;
+                var checkedReadCssNew = isReadNew ? "checked=\"checked\"" : string.Empty;
+
+                var classStatus = "class='text-center'";
+                if (isChangePolicy)
+                {
+                    isReadNew = (int)groupFuncPolicyNewDic[function.Id] >= (int)AdminConstant.Policy.Read;
+                    checkedReadCssNew = isReadNew ? "checked=\"checked\"" : string.Empty;
+
+                    if (isReadNew != isReadOld)
+                    {
+                        classStatus = "class='text-center log-status'";
+                    }
+                }
+
+                <tr>
+                    <td class="@Html.Raw(funcNameStyle)">
+                        @{ IndentChildFunctions(functionList, function); }
+                    </td>
+                    <td class="text-center">
+                        <input id="@chkReadId" name="funcRead" value="@function.Id" pid="@parentId"
+                       type="checkbox" @Html.Raw(checkedReadCssOld) disabled="disabled" />
+                    </td>
+                    <td class="text-center">
+                        @if (function.Crud > 0)
+                        {
+                            var chkHostId = "funcHost" + function.Id;
+                            isHostOld = groupFuncPolicyOld != null && groupFuncPolicyOld.Policy >= (int)AdminConstant.Policy.Host;
+                            var checkedHostCss = isHostOld ? "checked=\"checked\"" : string.Empty;
+
+                            <input id="@chkHostId" name="funcHost" value="@function.Id" pid="@parentId"
+                       type="checkbox" @Html.Raw(checkedHostCss) disabled="disabled" />
+                        }
+                    </td>
+                    <td @Html.Raw(classStatus)>
+                        <input id="@chkReadId" name="funcRead" value="@function.Id" pid="@parentId"
+                       type="checkbox" @Html.Raw(checkedReadCssNew) disabled="disabled" />
+                    </td>
+                    @if (function.Crud > 0)
+                    {
+                        var chkHostId = "funcHost" + function.Id;
+                        isHostNew = groupFuncPolicyOld != null && groupFuncPolicyOld.Policy >= (int)AdminConstant.Policy.Host;
+                        var checkedHostCss = isHostNew ? "checked=\"checked\"" : string.Empty;
+
+                        if (isChangePolicy)
+                        {
+                            isHostNew = (int)groupFuncPolicyNewDic[function.Id] >= (int)AdminConstant.Policy.Host;
+                            checkedHostCss = isHostNew ? "checked=\"checked\"" : string.Empty;
+                            classStatus = isHostNew != isHostOld ? "class='text-center log-status'" : "class='text-center'";
+                        }
+                        <td @Html.Raw(classStatus)>
+                            <input id="@chkHostId" name="funcHost" value="@function.Id" pid="@parentId"
+                       type="checkbox" @Html.Raw(checkedHostCss) disabled="disabled" />
+                        </td>
+                    }
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">
+                    @ViewResources.NoInformationAvailable
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    void IndentChildFunctions(List<Function> functionList, Function function, int level = 0)
+    {
+        if (function.ParentId > 0)
+        {
+            var parent = functionList.Where(x => x.Id == function.ParentId).SingleOrDefault();
+
+            IndentChildFunctions(functionList, parent, level + 1);
+        }
+        else
+        {
+            for (var i = 0; i < level; i++)
+            {
+                if (i == level - 1)
+                {
+                    <span>&#9492;&#9472;&#9472;</span>
+                }
+                else
+                {
+                    <span class="invisible">&#9492;&#9472;&#9472;</span>
+                }
+            }
+        }
+
+        if (level == 0)
+        {
+            @function.Name
+        }
+    }
+}

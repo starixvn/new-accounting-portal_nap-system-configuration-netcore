@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdmin", "NapAdmin\NapAdmin.csproj", "{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NapAdminCore", "NapAdminCore\NapAdminCore.csproj", "{A3AB994D-510A-4926-A25E-656BB46C3F2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DC05D74-6634-442E-8A7C-A06E2C81BB3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3AB994D-510A-4926-A25E-656BB46C3F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3AB994D-510A-4926-A25E-656BB46C3F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3AB994D-510A-4926-A25E-656BB46C3F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3AB994D-510A-4926-A25E-656BB46C3F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5EC6FC1A-B000-4BB6-A923-F6CE28360663}
+	EndGlobalSection
+EndGlobal

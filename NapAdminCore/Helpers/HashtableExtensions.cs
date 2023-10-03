@@ -1,0 +1,49 @@
+namespace NapAdminCore.Helpers;
+
+using System.Collections;
+using System.Reflection;
+using Fanex.Data;
+
+public static class HashtableExtensions
+{
+    public static Hashtable ToHashtable(object obj)
+    {
+        var dict = obj.GetType().GetProperties()
+            .Where(p=>!IsIgnoredSpParam(p))
+            .ToDictionary(p => p.Name, p => p.GetValue(obj));
+
+        return new Hashtable(dict);
+    }
+
+    public static Hashtable ToHashtable(object first, object second)
+    {
+        var firstHash = ToHashtable(first);
+        var secondHash = ToHashtable(second);
+
+        var dict = firstHash.Cast<DictionaryEntry>()
+            .Union(secondHash.Cast<DictionaryEntry>())
+            .ToDictionary(e => e.Key, e => e.Value);
+
+        return new Hashtable(dict);
+    }
+
+    public static Hashtable ToHashtable(object first, object second, object third)
+    {
+        var firstHash = ToHashtable(first);
+        var secondHash = ToHashtable(second);
+        var thirdHash = ToHashtable(third);
+
+        var dict = firstHash.Cast<DictionaryEntry>()
+            .Union(secondHash.Cast<DictionaryEntry>())
+            .Union(thirdHash.Cast<DictionaryEntry>())
+            .ToDictionary(e => e.Key, e => e.Value);
+
+        return new Hashtable(dict);
+    }
+
+    private static bool IsIgnoredSpParam(PropertyInfo info)
+    {
+        var map = Attribute.GetCustomAttribute(info, typeof(SpParamAttribute)) as SpParamAttribute;
+        return map?.Ignored == true;
+    }
+}

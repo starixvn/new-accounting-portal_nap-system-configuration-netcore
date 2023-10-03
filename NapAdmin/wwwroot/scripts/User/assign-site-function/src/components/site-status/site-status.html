@@ -1,0 +1,8 @@
+﻿<div>
+    <input v-if="LoginUserHasAssignSitePermission"
+           type="checkbox"
+           :disabled="IsEnable === false"
+           v-model="Site.siteLevel.isActive"
+           @change="OnChangeSiteStatus(Site.siteLevel.isActive)" />
+    <img v-else-if="LoginUserHasAssignSiteReadPermission && Site.siteLevel.isActive" class="ico-tick" src="" />
+</div>

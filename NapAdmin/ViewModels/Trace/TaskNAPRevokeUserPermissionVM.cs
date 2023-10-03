@@ -1,0 +1,8 @@
+namespace NapAdmin.ViewModels.Trace;
+
+using System.Collections.Generic;
+
+public class TaskNAPRevokeUserPermissionVM
+{
+    public IList<RevokedSite> RevokedSites { get; set; } = new List<RevokedSite>();
+}
