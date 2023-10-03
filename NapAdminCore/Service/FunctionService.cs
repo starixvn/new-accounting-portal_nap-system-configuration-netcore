@@ -11,7 +11,7 @@ using Models;
 using Models.ValueObject;
 using Repository;
 
-public interface IFunctionService 
+public interface IFunctionService
 {
     #region Gets Function
 
@@ -127,7 +127,7 @@ public class FunctionService : IFunctionService
     #endregion
 
     #region Get Functions
-    
+
     public IEnumerable<Function> GetBySite(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetBySiteFunctionCriteria
@@ -161,7 +161,9 @@ public class FunctionService : IFunctionService
             Text = s.Name,
             Value = s.Id.ToString(),
             Selected = s.Id == selectedFunctionId
-        }).ToList();
+        })
+            .OrderBy(f => f.Text)
+            .ToList();
     }
 
     public IEnumerable<Function> GetBySiteInHierarchy(int siteId, string env = AdminConstant.Uat, bool? isActive = null)
@@ -177,7 +179,7 @@ public class FunctionService : IFunctionService
 
         return SortFunctionsInHierarchy(functionList);
     }
-    
+
     #endregion
 
     #region Gets Function Policy
@@ -317,7 +319,7 @@ public class FunctionService : IFunctionService
     }
 
     #endregion
-    
+
     public ICommandResult Duplicate(DuplicateFunctionCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();

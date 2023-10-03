@@ -135,7 +135,9 @@ public class MenuItemService : IMenuItemService
             Text = s.Name,
             Value = s.Id.ToString(),
             Selected = s.Id == selectedMenuItemId
-        }).ToList();
+        })
+        .OrderBy(m => m.Text)
+        .ToList();
     }
 
     public ICommandResult Insert(InsertMenuItemCriteria criteria)
