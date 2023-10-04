@@ -41,18 +41,6 @@ public static class IServiceCollectionExtensions
 
     public static void AddFanex(this IServiceCollection services, IConfiguration configuration)
     {
-        var sections = configuration.GetSection("ConnectionStrings")
-            .GetChildren()
-            .ToList();
-        var connections = sections.ToDictionary(section => section.GetValue<string>("Name"), section => new ConnectionConfiguration(section.GetValue<string>("Name"), section.GetValue<string>("ConnectionString"), section.GetValue<string>("ProviderName")));
-
-        DbSettingProviderManager
-            .StartNewSession()
-            .Use(connections)
-            .WithSqlServer()
-            .UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
-            .Run();
-
         LogManager
             .SetDefaultLogCategory(configuration.GetSection("LogCategory").Value)
             .Use(new List<ILogEngine>
