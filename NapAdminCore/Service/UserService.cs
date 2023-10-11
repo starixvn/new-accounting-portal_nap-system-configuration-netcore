@@ -16,7 +16,7 @@ using ONEbook.OTP.Services;
 
 public interface IUserService
 {
-    void SyncUserToOWP(int userId);
+    string SyncUserToOWP(int userId);
 
     bool IgnoredOTP(int userId, string system);
 
@@ -223,7 +223,7 @@ public class UserService : IUserService
         return userRepository.GetUserListSiteFunctionKeyPolicy(criteria);
     }
 
-    public void SyncUserToOWP(int userId)
+    public string SyncUserToOWP(int userId)
     {
 
         var command = new InsertUserToOWPCommand(userId);
@@ -231,10 +231,13 @@ public class UserService : IUserService
 
         if (command.ErrCode > 0)
         {
-            throw new ArgumentException($"SyncUserToOWP error: UserId: {userId}; Message: {command.ErrMsg}");
+            var message = $"SyncUserToOWP error: UserId: {userId}; Message: {command.ErrMsg}";
+
+            Logger.Log.Error(message);
+            return message;
         }
 
-        Logger.Log.Info($"SyncUserToOWP error: UserId: {userId}");
+        return AdminConstant.Ok;
     }
 
     public bool IgnoredOTP(int userId, string system)

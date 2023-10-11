@@ -11,11 +11,11 @@ public class InsertUserToOWPCommand : NonQueryCommand
         ErrMsg = string.Empty;
     }
 
-    public int UserId { get; }
+    public int UserId { get; set; }
 
-    public int ErrCode { get; }
+    public int ErrCode { get; set; }
 
-    public string ErrMsg { get; }
+    public string ErrMsg { get; set; }
 
     public override string GetSettingKey() => "OWP_UserInsert";
 

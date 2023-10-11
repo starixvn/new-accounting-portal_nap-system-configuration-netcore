@@ -879,17 +879,15 @@ public class UserController : BaseController
 
         var result = _userService.AssignSite(criteria);
 
-        if (result is { IsSuccessful: true })
+        if (result is not { IsSuccessful: true })
         {
-            if (siteId == NapAdminSettings.OWPSiteID)
-            {
-                userService.SyncUserToOWP(userId);
-            }
-
-            return AdminConstant.Ok;
+            return result.Message;
         }
 
-        return AdminConstant.Error;
+        return siteId == NapAdminSettings.OWPSiteID 
+            ? userService.SyncUserToOWP(userId) 
+            : AdminConstant.Ok;
+
     }
 
     [HttpGet]
