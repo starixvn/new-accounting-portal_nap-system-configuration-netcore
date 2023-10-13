@@ -35,7 +35,7 @@
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.1" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.0.9" />
     <PackageReference Include="Fanex.NAP.Client" Version="2.0.0" />
-    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.1" />
+    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.11" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.11" />
     <PackageReference Include="ONEbook.OTP" Version="2.0.0" />
