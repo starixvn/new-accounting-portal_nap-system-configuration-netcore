@@ -9,21 +9,6 @@
   <ItemGroup>
     
     <Content Remove="wwwroot\scripts\User\assign-site-function\**" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Content Include="App_Data\Fanex.Data\NAPAdminSpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\Fanex.Data\NAPCommonSpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    
-  </ItemGroup>
-
-
-  <ItemGroup>
     <Content Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css" />
     <AdditionalFiles Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css.map" />
     <Content Include="wwwroot\scripts\User\assign-site-function\dist\main.js" />
@@ -32,22 +17,31 @@
 
 
   <ItemGroup>
+    <Content Include="App_Data\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Views\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Fanex.Common" Version="1.1.1" />
-    <PackageReference Include="Fanex.Data" Version="4.2.2" />
-    <PackageReference Include="Fanex.Data.Repository" Version="4.2.2" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.2" />
-    <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.1-beta1" />
+    <PackageReference Include="Fanex.Data" Version="4.2.3" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.2.3" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.3" />
+    <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.1" />
     <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8" />
-    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1" />
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.1" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.0.9" />
-    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="2.0.0.5" />
-    <PackageReference Include="Fanex.NAP.Signin.AspNetCore" Version="2.0.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.10" />
+    <PackageReference Include="Fanex.NAP.Client" Version="2.0.0" />
+    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.11" />
     <PackageReference Include="ONEbook.OTP" Version="2.0.0" />
-    <PackageReference Include="ONEbook.UM" Version="3.1.4" />
-    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.0" />
-    <PackageReference Include="ONEbook.UM.AspNetCore.Filters" Version="3.1.0" />
+    <PackageReference Include="ONEbook.UM" Version="3.1.6" />
+    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />
+    <PackageReference Include="ONEbook.UM.AspNetCore.Filters" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
   </ItemGroup>

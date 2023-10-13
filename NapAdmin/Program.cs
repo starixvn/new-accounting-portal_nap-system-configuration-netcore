@@ -1,7 +1,8 @@
+using Fanex.Data.SqlServer;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Web;
 using Fanex.NAP.Client;
-using Fanex.NAP.Signin.AspNetCore.Attribute;
+using Fanex.NAP.SignIn.Attribute;
 using Microsoft.AspNetCore.Mvc;
 using NapAdmin.AppStart;
 using ONEbook.UM.AspNetCore.Filters;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+services.AddFanexSql(configuration);
 services.AddFanex(configuration);
 services.AddNapServices(configuration);
 services.AddNapAdminCore();

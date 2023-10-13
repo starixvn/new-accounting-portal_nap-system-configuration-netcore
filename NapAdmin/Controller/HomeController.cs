@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NapAdmin.Controller;
 
+using Fanex.Logging;
 using Fanex.NAP.Client.Configuration;
 using NapAdminCore.Service;
 
@@ -37,6 +38,8 @@ public class HomeController : BaseController
         var ip = Dns.GetHostEntry(instanceName).AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
         ViewBag.InstanceName = instanceName;
         ViewBag.InstanceIp = ip;
+
+        Logger.Log.Info("Test Log");
 
         return View();
     }

@@ -648,48 +648,6 @@ public class UserController : BaseController
 
     #endregion Reset Password
 
-    #region Change Password
-
-    [HttpGet]
-    public ActionResult ChangePassword()
-    {
-        var criteria = new UpdatePasswordCustCriteria
-        {
-            Username = NapSession.UserName
-        };
-
-        return View(criteria);
-    }
-
-    [HttpPost]
-    public ActionResult ChangePassword(UpdatePasswordCustCriteria criteria)
-    {
-
-        ModelState.Clear();
-
-        var user = _userService.GetById(NapSession.UserId);
-        var hashPassword = GetHash(user.Password);
-
-        if (hashPassword.Equals(criteria.OldUserPwd))
-        {
-            criteria.CustId = user.Id;
-
-            var result = _userService.InsertOrUpdate(criteria);
-
-            if (result is { IsSuccessful: true })
-            {
-                ViewBag.Success = true;
-            }
-        }
-        else
-        {
-            ModelState.AddModelError("OldUserPwd", ViewResources.Wrong_password);
-        }
-        return View(criteria);
-    }
-
-    #endregion Change Password
-
     #region Assign Permission
 
     [HttpGet]
@@ -921,17 +879,15 @@ public class UserController : BaseController
 
         var result = _userService.AssignSite(criteria);
 
-        if (result is { IsSuccessful: true })
+        if (result is not { IsSuccessful: true })
         {
-            if (siteId == NapAdminSettings.OWPSiteID)
-            {
-                userService.SyncUserToOWP(userId);
-            }
-
-            return AdminConstant.Ok;
+            return result.Message;
         }
 
-        return AdminConstant.Error;
+        return siteId == NapAdminSettings.OWPSiteID 
+            ? userService.SyncUserToOWP(userId) 
+            : AdminConstant.Ok;
+
     }
 
     [HttpGet]

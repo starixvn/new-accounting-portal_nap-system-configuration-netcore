@@ -13,14 +13,14 @@
     </span>
     <div class="button-action">
         @Html.ActionLink("← " + ViewResources.Back_To_List, "Manage", "User",
-           new
-           {
-               userName = Model.ReturnData.ReturnUserName,
-               siteId = Model.ReturnData.ReturnSiteId,
-               id = Model.ReturnData.ReturnPageIndex,
-               groupId = Model.ReturnData.ReturnGroupId
-           },
-           new { @class = "back-button" })
+    new
+    {
+        userName = Model.ReturnData.ReturnUserName,
+        siteId = Model.ReturnData.ReturnSiteId,
+        id = Model.ReturnData.ReturnPageIndex,
+        groupId = Model.ReturnData.ReturnGroupId
+    },
+    new { @class = "back-button" })
     </div>
 }
 @using (Html.BeginForm(null, null, FormMethod.Post, new { @role = "form", @class = "form-horizontal col-sm-7 col-md-5 common-form" }))
@@ -41,7 +41,7 @@
             @Html.LabelFor(c => c.Criteria.UserPwd)
         </div>
         <div class="col-xs-12 col-sm-8">
-            @Html.PasswordFor(c => c.Criteria.UserPwd, new { @class = "form-control" })
+            @Html.PasswordFor(c => c.Criteria.UserPwd, new { @class = "form-control", id = "password" })
         </div>
     </div>
     <div class="form-group">
@@ -54,7 +54,7 @@
     </div>
     <div class="form-group">
         <div class="col-xs-12 col-sm-3 lbl-field">@Html.LabelFor(c => c.Criteria.LastName)</div>
-        <div class="col-xs-12 col-sm-8">@Html.TextBoxFor(c => c.Criteria.FirstName, new { @class = "form-control" })</div>
+        <div class="col-xs-12 col-sm-8">@Html.TextBoxFor(c => c.Criteria.LastName, new { @class = "form-control" })</div>
     </div>
     <div class="form-group">
         <div class="col-xs-12 col-sm-3 lbl-field">@Html.LabelFor(c => c.Criteria.Email)</div>
@@ -96,4 +96,14 @@
             });
         </script>
     }
+    <script type="text/ecmascript" src="/nap-auth/cryptojs.js"></script>
+    <script type="text/ecmascript">
+        $(document).ready(function(){
+               $("form").on('submit',function(){
+                   var pwdInputByUser = $("#password").val();                   
+                   var pwdInDb = CryptoJS.CfsEnCode(pwdInputByUser);
+                   $("#password").val(pwdInDb);
+               });
+           });
+    </script>
 }

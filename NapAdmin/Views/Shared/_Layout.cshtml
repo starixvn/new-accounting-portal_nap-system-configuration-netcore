@@ -36,8 +36,7 @@
                         <span class="info-more"></span>
                     </h2>
                     <ul>
-                        <li>@Html.ActionLink(ViewResources.Profile, "UserProfile", "User")</li>
-                        <li>@Html.ActionLink(ViewResources.Change_Password, "ChangePassword", "User")</li>
+                        <li>@Html.ActionLink(ViewResources.Change_Password, "ChangePassword", "Auth")</li>
                         <li>@Html.ActionLink(ViewResources.Sign_Out, "LogOut", "Auth")</li>
                     </ul>
                 </div>
@@ -69,7 +68,7 @@
     <script type="text/ecmascript" src="~/scripts/lib/pagination.js"></script>
     @if (IServiceCollectionExtensions.NapSettings.EnableReCheckIn)
     {
-        <script src="~/Areas/UserLogin/scripts/ReCheckIn.js" type="text/javascript"></script>
+        <script src="~/nap-auth/re-checkin.js" type="text/javascript"></script>
     }
     @RenderSection("Foot", false)
 </body>
