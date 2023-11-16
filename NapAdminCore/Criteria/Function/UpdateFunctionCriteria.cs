@@ -3,11 +3,10 @@ namespace NapAdminCore.Criteria.Function;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Models;
 using Web;
 
-public class UpdateFunctionCriteria : CriteriaBase
+public class UpdateFunctionCriteria : UpdateCommandBase
 {
     public int FunctionId { get; set; }
 

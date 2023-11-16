@@ -245,21 +245,21 @@ public class SiteService : ISiteService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Insert(criteria, logCriteria);
+        return siteRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateSiteCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Update(criteria, logCriteria);
+        return siteRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusSiteCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Update(criteria, logCriteria);
+        return siteRepository.Execute(criteria, logCriteria);
     }
 
     #region SiteUrl services
@@ -300,21 +300,21 @@ public class SiteService : ISiteService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Update(criteria, logCriteria);
+        return siteRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateDefaultSiteUrl(UpdateDefaultSiteUrlCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Update(criteria, logCriteria);
+        return siteRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult InsertSiteUrl(InsertSiteUrlCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.InsertSiteUrl(criteria, logCriteria);
+        return siteRepository.Execute(criteria, logCriteria);
     }
 
     #endregion

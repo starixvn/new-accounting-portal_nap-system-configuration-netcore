@@ -10,13 +10,7 @@ public class GetByUserAndSiteIncludeGroupMenuItemCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_MenuItem_GetByUserAndSiteIncludeGroup";
-    }
+    public override string GetSettingKey() => "NAP_MenuItem_GetByUserAndSiteIncludeGroup";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

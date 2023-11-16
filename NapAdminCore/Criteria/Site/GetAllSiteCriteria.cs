@@ -5,22 +5,11 @@ using Models;
 
 public class GetAllSiteCriteria : CriteriaBase
 {
-    public GetAllSiteCriteria()
-    {
-        Environment = AdminConstant.Uat;
-    }
-
-    public string Environment { get; set; }
+    public string Environment { get; set; } = AdminConstant.Uat;
 
     public bool? IsActive { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetAll";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetAll";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

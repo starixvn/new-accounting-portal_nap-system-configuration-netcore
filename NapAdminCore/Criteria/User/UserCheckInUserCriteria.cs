@@ -36,13 +36,7 @@ public class UserCheckInUserCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public int Duration { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_CheckIn";
-    }
+    public override string GetSettingKey() => "NAP_User_CheckIn";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

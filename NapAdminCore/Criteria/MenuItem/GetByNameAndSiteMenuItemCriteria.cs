@@ -8,13 +8,7 @@ public class GetByNameAndSiteMenuItemCriteria : CriteriaBase
 
     public int SiteId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_MenuItem_GetByNameAndSite";
-    }
+    public override string GetSettingKey() => "NAP_MenuItem_GetByNameAndSite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

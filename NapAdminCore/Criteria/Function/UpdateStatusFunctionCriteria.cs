@@ -1,9 +1,8 @@
 namespace NapAdminCore.Criteria.Function;
 
 using System;
-using Fanex.Data.Repository;
 
-public class UpdateStatusFunctionCriteria : CriteriaBase
+public class UpdateStatusFunctionCriteria : UpdateCommandBase
 {
     public int FunctionId { get; set; }
 
@@ -13,13 +12,7 @@ public class UpdateStatusFunctionCriteria : CriteriaBase
 
     public DateTime ModifiedDate { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_UpdateStatus";
-    }
+    public override string GetSettingKey() => "NAP_Function_UpdateStatus";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

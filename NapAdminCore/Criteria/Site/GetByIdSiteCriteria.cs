@@ -6,13 +6,7 @@ public class GetByIdSiteCriteria : CriteriaBase
 {
     public int SiteId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetById";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetById";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -8,13 +8,7 @@ public class GetSiteUrlBySiteIdCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetSiteURLBySiteId";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetSiteURLBySiteId";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

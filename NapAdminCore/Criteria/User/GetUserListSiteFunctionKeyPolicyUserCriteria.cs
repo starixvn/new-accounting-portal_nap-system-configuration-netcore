@@ -37,13 +37,7 @@ public class GetUserListSiteFunctionKeyPolicyUserCriteria : CriteriaBase
 
     public string FunctionKey { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetUserListSiteFunctionKeyPolicy";
-    }
+    public override string GetSettingKey() => "NAP_User_GetUserListSiteFunctionKeyPolicy";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

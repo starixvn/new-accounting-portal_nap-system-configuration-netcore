@@ -8,13 +8,7 @@ public class GetAllFunctionCriteria : CriteriaBase
 
     public bool? IsActive { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_GetAll";
-    }
+    public override string GetSettingKey() => "NAP_Function_GetAll";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

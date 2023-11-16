@@ -2,10 +2,9 @@ namespace NapAdminCore.Criteria.User;
 
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Web;
 
-public class UpdateCustCriteria : CriteriaBase
+public class UpdateCustCriteria : UpdateCommandBase
 {
     public int CustId { get; set; }
 
@@ -42,13 +41,7 @@ public class UpdateCustCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public int ReturnGroupId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Cust_Update";
-    }
+    public override string GetSettingKey() => "NAP_Cust_Update";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

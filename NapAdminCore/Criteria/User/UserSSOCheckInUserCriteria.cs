@@ -38,13 +38,7 @@ public class UserSSOCheckInUserCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public int Duration { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_SSOCheckIn";
-    }
+    public override string GetSettingKey() => "NAP_User_SSOCheckIn";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

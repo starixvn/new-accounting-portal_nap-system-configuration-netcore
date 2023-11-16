@@ -8,13 +8,7 @@ public class GetByNameAndSiteFunctionCriteria : CriteriaBase
 
     public int SiteId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_GetByNameAndSite";
-    }
+    public override string GetSettingKey() => "NAP_Function_GetByNameAndSite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

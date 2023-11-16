@@ -8,13 +8,7 @@ public class GetBySiteUserCriteria : CriteriaBase
 
     public bool? IsActive { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetBySite";
-    }
+    public override string GetSettingKey() => "NAP_User_GetBySite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -6,13 +6,7 @@ public class GetBySiteKeyCriteria : CriteriaBase
 {
     public string SiteKey { get; set; }
 
-    public override bool IsValid()
-    {
-        return !string.IsNullOrWhiteSpace(SiteKey);
-    }
+    public override bool IsValid() => !string.IsNullOrWhiteSpace(SiteKey);
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetSiteKey";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetSiteKey";
 }

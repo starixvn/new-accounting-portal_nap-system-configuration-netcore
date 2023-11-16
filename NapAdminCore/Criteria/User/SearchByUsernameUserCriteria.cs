@@ -14,13 +14,7 @@ public class SearchByUsernameUserCriteria : CriteriaBase
 
     public int TotalRows { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_SearchByUsername";
-    }
+    public override string GetSettingKey() => "NAP_User_SearchByUsername";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -1,9 +1,8 @@
 namespace NapAdminCore.Criteria.User;
 
 using System;
-using Fanex.Data.Repository;
 
-public class InsertUserCriteria : CriteriaBase
+public class InsertUserCriteria : UpdateCommandBase
 {
     public int UserId { get; set; }
 
@@ -13,13 +12,7 @@ public class InsertUserCriteria : CriteriaBase
 
     public DateTime CreatedDate { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_Insert";
-    }
+    public override string GetSettingKey() => "NAP_User_Insert";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

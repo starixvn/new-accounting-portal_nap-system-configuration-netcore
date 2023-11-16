@@ -1,9 +1,8 @@
 namespace NapAdminCore.Criteria.Misc;
 
 using System;
-using Fanex.Data.Repository;
 
-public class LogExecSpCriteria : CriteriaBase
+public class LogExecSpCriteria
 {
     public int CurrentUserId { get; set; }
 
@@ -12,8 +11,4 @@ public class LogExecSpCriteria : CriteriaBase
     public DateTime LogDate { get; set; }
 
     public string LoginIp { get; set; }
-
-    public override string GetSettingKey() => string.Empty;
-
-    public override bool IsValid() => true;
 }

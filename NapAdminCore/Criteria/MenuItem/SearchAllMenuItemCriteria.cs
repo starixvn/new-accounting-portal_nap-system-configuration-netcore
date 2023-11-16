@@ -12,13 +12,7 @@ public class SearchAllMenuItemCriteria : CriteriaBase
 
     public int SiteId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_MenuItem_Search";
-    }
+    public override string GetSettingKey() => "NAP_MenuItem_Search";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

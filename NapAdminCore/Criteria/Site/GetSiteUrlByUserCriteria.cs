@@ -8,13 +8,7 @@ public class GetSiteUrlByUserCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetSiteURLByUser";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetSiteURLByUser";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

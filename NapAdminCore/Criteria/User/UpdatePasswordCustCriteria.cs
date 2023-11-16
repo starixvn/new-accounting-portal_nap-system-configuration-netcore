@@ -41,13 +41,7 @@ public class UpdatePasswordCustCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public string Token { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Cust_UpdatePassword";
-    }
+    public override string GetSettingKey() => "NAP_Cust_UpdatePassword";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

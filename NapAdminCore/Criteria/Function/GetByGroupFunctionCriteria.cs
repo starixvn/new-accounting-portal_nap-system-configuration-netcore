@@ -8,13 +8,7 @@ public class GetByGroupFunctionCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_GetByGroup";
-    }
+    public override string GetSettingKey() => "NAP_Function_GetByGroup";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -1,9 +1,8 @@
 namespace NapAdminCore.Criteria.MenuItem;
 
 using System;
-using Fanex.Data.Repository;
 
-public class UpdateStatusMenuItemCriteria : CriteriaBase
+public class UpdateStatusMenuItemCriteria : UpdateCommandBase
 {
     public int MenuItemId { get; set; }
 
@@ -13,13 +12,7 @@ public class UpdateStatusMenuItemCriteria : CriteriaBase
 
     public DateTime ModifiedDate { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_MenuItem_UpdateStatus";
-    }
+    public override string GetSettingKey() => "NAP_MenuItem_UpdateStatus";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

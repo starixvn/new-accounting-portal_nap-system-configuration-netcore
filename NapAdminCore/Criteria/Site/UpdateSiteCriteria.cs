@@ -1,17 +1,11 @@
 namespace NapAdminCore.Criteria.Site;
 
 using System.ComponentModel.DataAnnotations;
-using Fanex.Data.Repository;
 using Models;
 using Web;
 
-public class UpdateSiteCriteria : CriteriaBase
+public class UpdateSiteCriteria : UpdateCommandBase
 {
-    public UpdateSiteCriteria()
-    {
-        Environment = AdminConstant.Uat;
-    }
-
     public int SiteId { get; set; }
 
     [Required]
@@ -35,7 +29,7 @@ public class UpdateSiteCriteria : CriteriaBase
 
     [Required]
     [Display(Name = "Environment", ResourceType = typeof(ViewResources))]
-    public string Environment { get; set; }
+    public string Environment { get; set; } = AdminConstant.Uat;
 
     [Display(Name = "Site_Key", ResourceType = typeof(ViewResources))]
     [StringLength(50, MinimumLength = 2,
@@ -49,13 +43,7 @@ public class UpdateSiteCriteria : CriteriaBase
         ErrorMessageResourceType = typeof(ViewResources))]
     public string SecretAccessKey { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_Update";
-    }
+    public override string GetSettingKey() => "NAP_Site_Update";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

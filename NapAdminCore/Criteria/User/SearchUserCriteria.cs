@@ -20,13 +20,7 @@ public class SearchUserCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_Search";
-    }
+    public override string GetSettingKey() => "NAP_User_Search";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

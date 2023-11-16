@@ -1,9 +1,7 @@
 namespace NapAdmin.AppStart;
 
 using Fanex.Caching;
-using Fanex.Data;
 using Fanex.Data.Repository;
-using Fanex.Data.SqlServer;
 using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.AspNetCore;
@@ -77,11 +75,10 @@ public static class IServiceCollectionExtensions
         services.AddScoped<IDynamicRepository, DynamicRepository>();
         services.AddScoped<IFunctionRepository, FunctionRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<IMenuItemRepository, MenuItemRepository>();
         services.AddScoped<ISiteRepository, SiteRepository>();
         services.AddScoped<ITraceRepository, TraceRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-
+        services.AddScoped<IBaseRepository, BaseRepository>();
         services.AddScoped<IFunctionService, FunctionService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IMenuItemService, MenuItemService>();

@@ -3,17 +3,11 @@ namespace NapAdminCore.Criteria.Function;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Models;
 using Web;
 
-public class DuplicateFunctionCriteria : CriteriaBase
+public class DuplicateFunctionCriteria : UpdateCommandBase
 {
-    public DuplicateFunctionCriteria()
-    {
-        Environment = AdminConstant.Uat;
-    }
-
     public int DuplicateFunctionId { get; set; }
 
     public int FunctionId { get; set; }
@@ -67,7 +61,7 @@ public class DuplicateFunctionCriteria : CriteriaBase
 
     [Required]
     [Display(Name = "Environment", ResourceType = typeof(ViewResources))]
-    public string Environment { get; set; }
+    public string Environment { get; set; } = AdminConstant.Uat;
 
     [SpParam(Ignored = true)]
     public int ReturnSiteId { get; set; }

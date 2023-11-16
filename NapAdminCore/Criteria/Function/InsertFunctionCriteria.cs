@@ -3,17 +3,11 @@ namespace NapAdminCore.Criteria.Function;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Models;
 using Web;
 
-public class InsertFunctionCriteria : CriteriaBase
+public class InsertFunctionCriteria : UpdateCommandBase
 {
-    public InsertFunctionCriteria()
-    {
-        Environment = AdminConstant.Uat;
-    }
-
     public int FunctionId { get; set; }
 
     public int SiteId { get; set; }
@@ -62,15 +56,9 @@ public class InsertFunctionCriteria : CriteriaBase
 
     [Required]
     [Display(Name = "Environment", ResourceType = typeof(ViewResources))]
-    public string Environment { get; set; }
+    public string Environment { get; set; } =AdminConstant.Uat;
+    
+    public override string GetSettingKey() => "NAP_Function_Insert";
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_Insert";
-    }
-
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

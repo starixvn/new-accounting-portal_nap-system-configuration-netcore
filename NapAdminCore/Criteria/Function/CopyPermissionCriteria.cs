@@ -3,17 +3,11 @@ namespace NapAdminCore.Criteria.Function;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Models;
 using Web;
 
-public class CopyPermissionCriteria : CriteriaBase
+public class CopyPermissionCriteria : UpdateCommandBase
 {
-    public CopyPermissionCriteria()
-    {
-        Environment = AdminConstant.Uat;
-    }
-
     public int FromFunctionId { get; set; }
 
     public int ToFunctionId { get; set; }
@@ -29,18 +23,12 @@ public class CopyPermissionCriteria : CriteriaBase
 
     [Required]
     [Display(Name = "Environment", ResourceType = typeof(ViewResources))]
-    public string Environment { get; set; }
+    public string Environment { get; set; } = AdminConstant.Uat;
 
     [SpParam(Ignored = true)]
     public int ReturnSiteId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_CopyPermission";
-    }
+    public override string GetSettingKey() => "NAP_Function_CopyPermission";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

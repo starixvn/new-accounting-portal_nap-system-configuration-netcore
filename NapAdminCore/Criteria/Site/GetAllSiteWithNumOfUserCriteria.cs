@@ -8,13 +8,7 @@ public class GetAllSiteWithNumOfUserCriteria : CriteriaBase
 
     public bool? IsActive { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetAllWithNumOfUser";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetAllWithNumOfUser";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

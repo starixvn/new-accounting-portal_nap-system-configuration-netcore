@@ -5,20 +5,6 @@ using Models;
 
 public class ViewFlags
 {
-    public ViewFlags()
-    {
-        IsLive = false;
-        HasEditRight = false;
-        IsNapAdminSite = false;
-        HasAssignFunctionRight = false;
-        HasAssignFunctionToUserRight = false;
-        HasAssignFunctionToGroupRight = false;
-        HasAssignSiteRight = false;
-        IsShowLevelColumn = false;
-        IsShowActionColumn = false;
-        IsReCheckin = false;
-    }
-
     public bool IsLive { get; set; }
 
     public bool HasEditRight { get; set; }

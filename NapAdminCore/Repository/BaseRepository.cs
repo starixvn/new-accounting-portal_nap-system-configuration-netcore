@@ -1,29 +1,40 @@
 
 namespace NapAdminCore.Repository;
 
-using System;
-using System.Collections;
 using Command;
+using Criteria;
+using Criteria.Misc;
 using Fanex.Data.Repository;
 
 
-public class BaseRepository : DynamicRepository
+public interface IBaseRepository
 {
-    public CommandResult GetCommandResult(Hashtable hashtable)
-    {
-        var ignoredCaseHashtable = new Hashtable(StringComparer.InvariantCultureIgnoreCase);
-        foreach (DictionaryEntry entry in hashtable)
-        {
-            ignoredCaseHashtable.Add(entry.Key, entry.Value);
-        }
+    ICommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria);
+}
 
-        var errCode = ignoredCaseHashtable["errcode"];
-        var errMsg = ignoredCaseHashtable["errmsg"];
+public class BaseRepository : DynamicRepository, IBaseRepository
+{
+    private readonly IDynamicRepository dynamicRepository;
+
+    public BaseRepository()
+    {
+    }
+
+    public BaseRepository(IDynamicRepository dynamicRepository)
+    {
+        this.dynamicRepository = dynamicRepository;
+    }
+
+    public ICommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria)
+    {
+        command.CopyFromLogCriteria(logCriteria);
+
+        dynamicRepository.Execute(command);
 
         return new CommandResult
         {
-            Code = errCode is DBNull ? 0 : Convert.ToInt32(errCode),
-            Message = errMsg is DBNull ? string.Empty : Convert.ToString(errMsg)
+            Code = command.ErrCode,
+            Message = command.ErrMsg
         };
     }
 }

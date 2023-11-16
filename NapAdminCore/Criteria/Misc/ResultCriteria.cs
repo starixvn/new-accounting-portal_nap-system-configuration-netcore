@@ -4,15 +4,9 @@ using Fanex.Data.Repository;
 
 public class ResultCriteria : CriteriaBase
 {
-    public ResultCriteria()
-    {
-        ErrCode = 0;
-        ErrMsg = string.Empty;
-    }
+    public int ErrCode { get; set; } = 0;
 
-    public int ErrCode { get; set; }
-
-    public string ErrMsg { get; set; }
+    public string ErrMsg { get; set; } = string.Empty;
 
     public override string GetSettingKey() => string.Empty;
 

@@ -36,13 +36,13 @@ public interface IMenuItemService
 }
 public class MenuItemService : IMenuItemService
 {
-    private readonly IMenuItemRepository menuItemRepository;
+    private readonly IBaseRepository baseRepository;
     private readonly IDynamicRepository dynamicRepository;
     private readonly LoggedUserContext loggedUserContext;
 
-    public MenuItemService(IMenuItemRepository menuItemRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
+    public MenuItemService(IBaseRepository baseRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     {
-        this.menuItemRepository = menuItemRepository;
+        this.baseRepository = baseRepository;
         this.dynamicRepository = dynamicRepository;
         this.loggedUserContext = loggedUserContext;
     }
@@ -144,21 +144,21 @@ public class MenuItemService : IMenuItemService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return menuItemRepository.Insert(criteria, logCriteria);
+        return baseRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateMenuItemCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return menuItemRepository.Update(criteria, logCriteria);
+        return baseRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return menuItemRepository.Update(criteria, logCriteria);
+        return baseRepository.Execute(criteria, logCriteria);
     }
 
     private IEnumerable<MenuItem> SortMenuItemsInHierarchy(IEnumerable<MenuItem> menuItemList, int parentId = 0)

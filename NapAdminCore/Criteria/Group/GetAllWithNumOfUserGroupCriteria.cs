@@ -16,13 +16,7 @@ public class GetAllWithNumOfUserGroupCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Group_GetAllWithNumOfUser";
-    }
+    public override string GetSettingKey() => "NAP_Group_GetAllWithNumOfUser";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

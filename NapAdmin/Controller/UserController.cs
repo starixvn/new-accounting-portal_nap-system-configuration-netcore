@@ -5,9 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using Fanex.Common.Extensions;
-using Fanex.Data;
 using Fanex.Data.Repository;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
@@ -36,7 +34,6 @@ public class UserController : BaseController
     private readonly IGroupService _groupService;
     private readonly ISiteService _siteService;
     private readonly IFunctionService _functionService;
-    private readonly HashAlgorithm _hashAlgorithm;
     private readonly LoggedUserContext _loggedUserContext;
 
     #endregion Member
@@ -57,7 +54,6 @@ public class UserController : BaseController
         _groupService = groupService;
         _siteService = siteService;
         _functionService = functionService;
-        _hashAlgorithm = SHA256.Create();
         _loggedUserContext = loggedUserContext;
     }
 
@@ -762,7 +758,7 @@ public class UserController : BaseController
         {
             foreach (var itemFunc in criteria.FuncHost)
             {
-                var tempFuncHost = listFunc.FirstOrDefault(f => f.Id == itemFunc);
+                var tempFuncHost = listFunc.Find(f => f.Id == itemFunc);
 
                 if (tempFuncHost.IsNullOrDBNull())
                 {
@@ -786,7 +782,7 @@ public class UserController : BaseController
         foreach (var itemFunc in listUserFuncRemove)
         {
             var tempFunc = listCurrentUserFuncPolicy
-                .FirstOrDefault(f =>
+                .Find(f =>
                     f.Id == itemFunc.Id
                     && f.Policy >= itemFunc.Policy);
 
@@ -1077,7 +1073,7 @@ public class UserController : BaseController
 
         foreach (var site in loginUserHasFunctionPermissionSites)
         {
-            if (userSiteList.All(s => s.Id != site.Id))
+            if (userSiteList.TrueForAll(s => s.Id != site.Id))
             {
                 userSiteList.Add(site);
             }
@@ -1285,28 +1281,28 @@ public class UserController : BaseController
                 Environment,
                 policy: AdminConstant.Policy.Host).ToList();
 
-            if (editableSiteList.All(s => s.Id != siteId))
+            if (editableSiteList.TrueForAll(s => s.Id != siteId))
             {
                 return false;
             }
 
             var currentUserSiteLevelList = _siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
 
-            if (currentUserSiteLevelList.All(s => s.SiteId != siteId))
+            if (currentUserSiteLevelList.TrueForAll(s => s.SiteId != siteId))
             {
                 return false;
             }
 
-            var currentUserSiteLevel = currentUserSiteLevelList.FirstOrDefault(s => s.SiteId == siteId).Level;
+            var currentUserSiteLevel = currentUserSiteLevelList.Find(s => s.SiteId == siteId).Level;
 
             var siteLevelList = _siteService.GetSiteLevelByUser(userId, Environment).ToList();
 
-            if (siteLevelList.All(s => s.SiteId != siteId))
+            if (siteLevelList.TrueForAll(s => s.SiteId != siteId))
             {
                 return false;
             }
 
-            var selectedUserSiteLevel = siteLevelList.FirstOrDefault(s => s.SiteId == siteId).Level;
+            var selectedUserSiteLevel = siteLevelList.Find(s => s.SiteId == siteId).Level;
 
             return currentUserSiteLevel == (int)AdminConstant.Level.User ?
                 selectedUserSiteLevel == (int)AdminConstant.Level.User && level == (int)AdminConstant.Level.User :
@@ -1316,20 +1312,6 @@ public class UserController : BaseController
         return SiteId != siteId && UserIsPortalAdmin;
     }
 
-
-    private string GetHash(string input)
-    {
-        var encrypted = string.Empty;
-
-        if (!string.IsNullOrWhiteSpace(input))
-        {
-            var hashData = _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-            encrypted = BitConverter.ToString(hashData).Replace("-", string.Empty).ToLowerInvariant();
-        }
-
-        return encrypted;
-    }
 
     private IEnumerable<Site> GetUserUnassignedSites(int userId)
     {
@@ -1345,10 +1327,10 @@ public class UserController : BaseController
 
         foreach (var site in availableSites)
         {
-            var loginUserSiteLevel = loginUserSiteLevelList.FirstOrDefault(s => s.SiteId == site.Id);
+            var loginUserSiteLevel = loginUserSiteLevelList.Find(s => s.SiteId == site.Id);
 
             if (loginUserSiteLevel is { Level: >= (int)AdminConstant.Level.User } &&
-                loginUserHasAssignSiteHostRightSites.Any(s => s.Id == site.Id))
+                loginUserHasAssignSiteHostRightSites.Exists(s => s.Id == site.Id))
             {
                 unassignedSite.Add(site);
             }

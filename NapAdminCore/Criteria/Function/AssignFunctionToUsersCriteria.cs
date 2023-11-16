@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Fanex.Data;
-using Fanex.Data.Repository;
 
-public class AssignFunctionToUsersCriteria : CriteriaBase
+public class AssignFunctionToUsersCriteria : UpdateCommandBase
 {
     private const string AssignPermissionTpl = "<FunctionPolicy UserId='{0}' Policy='{1}'></FunctionPolicy>";
 
@@ -50,13 +49,7 @@ public class AssignFunctionToUsersCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public List<string> UserHost { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_AssignFunctionToUsers";
-    }
+    public override string GetSettingKey() => "NAP_Function_AssignFunctionToUsers";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

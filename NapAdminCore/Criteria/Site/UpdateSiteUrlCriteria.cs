@@ -1,10 +1,9 @@
 namespace NapAdminCore.Criteria.Site;
 
 using System.ComponentModel.DataAnnotations;
-using Fanex.Data.Repository;
 using Web;
 
-public class UpdateSiteUrlCriteria : CriteriaBase
+public class UpdateSiteUrlCriteria : UpdateCommandBase
 {
     public int SiteUrlId { get; set; }
 
@@ -29,13 +28,7 @@ public class UpdateSiteUrlCriteria : CriteriaBase
     [Display(Name = "Default", ResourceType = typeof(ViewResources))]
     public bool IsDefault { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_UpdateSiteURL";
-    }
+    public override string GetSettingKey() => "NAP_Site_UpdateSiteURL";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

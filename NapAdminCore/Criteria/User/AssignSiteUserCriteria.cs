@@ -1,9 +1,8 @@
 namespace NapAdminCore.Criteria.User;
 
 using System;
-using Fanex.Data.Repository;
 
-public class AssignSiteUserCriteria : CriteriaBase
+public class AssignSiteUserCriteria : UpdateCommandBase
 {
     public int UserId { get; set; }
 
@@ -19,13 +18,7 @@ public class AssignSiteUserCriteria : CriteriaBase
 
     public DateTime CreatedDate { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_AssignNewSite";
-    }
+    public override string GetSettingKey() => "NAP_User_AssignNewSite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -2,10 +2,9 @@ namespace NapAdminCore.Criteria.Group;
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Fanex.Data.Repository;
 using Web;
 
-public class InsertGroupCriteria : CriteriaBase
+public class InsertGroupCriteria : UpdateCommandBase
 {
     public int GroupId { get; set; }
 
@@ -33,13 +32,7 @@ public class InsertGroupCriteria : CriteriaBase
 
     public DateTime CreatedDate { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Group_Insert";
-    }
+    public override string GetSettingKey() => "NAP_Group_Insert";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

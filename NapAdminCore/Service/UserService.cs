@@ -1,9 +1,7 @@
 namespace NapAdminCore.Service;
 
-using System;
 using System.Collections;
 using DbParams;
-using Fanex.Data;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +11,7 @@ using Criteria.User;
 using Models.ValueObject;
 using Repository;
 using ONEbook.OTP.Services;
+using NapAdminCore.Criteria;
 
 public interface IUserService
 {
@@ -56,7 +55,7 @@ public interface IUserService
 
     ICommandResult AssignFunction(AssignFunctionUserCriteria criteria);
 
-    ICommandResult InsertOrUpdate(ICriteria criteria);
+    ICommandResult InsertOrUpdate(UpdateCommandBase criteria);
 }
 
 public class UserService : IUserService
@@ -140,7 +139,7 @@ public class UserService : IUserService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Insert(criteria, logCriteria);
+        return userRepository.Execute(criteria, logCriteria);
     }
 
 
@@ -148,21 +147,21 @@ public class UserService : IUserService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Update(criteria, logCriteria);
+        return userRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateSite(UpdateSiteToUserCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Update(criteria, logCriteria);
+        return userRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunction(AssignFunctionUserCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Update(criteria, logCriteria);
+        return userRepository.Execute(criteria, logCriteria);
     }
 
     public int GetUserFunctionPolicy(int userId, int functionId)
@@ -193,11 +192,11 @@ public class UserService : IUserService
         return userRepository.SearchByUsername(criteria);
     }
 
-    public ICommandResult InsertOrUpdate(ICriteria criteria)
+    public ICommandResult InsertOrUpdate(UpdateCommandBase criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Update(criteria, logCriteria);
+        return userRepository.Execute(criteria, logCriteria);
     }
 
     public IEnumerable<UserPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -220,7 +219,18 @@ public class UserService : IUserService
             FunctionKey = functionKey
         };
 
-        return userRepository.GetUserListSiteFunctionKeyPolicy(criteria);
+        var models = dynamicRepository.Fetch<SitePolicy>(criteria);
+
+        var hashTable = new Hashtable();
+        foreach (var model in models)
+        {
+            if (!hashTable.ContainsKey(model.SiteId))
+            {
+                hashTable.Add(model.SiteId, model.Policy);
+            }
+        }
+        
+        return hashTable;
     }
 
     public string SyncUserToOWP(int userId)

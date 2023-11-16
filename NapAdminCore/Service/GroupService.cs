@@ -99,28 +99,28 @@ public class GroupService : IGroupService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Update(criteria, logCriteria);
+        return groupRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Update(criteria, logCriteria);
+        return groupRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Insert(InsertGroupCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Insert(criteria, logCriteria);
+        return groupRepository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateGroupCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Update(criteria, logCriteria);
+        return groupRepository.Execute(criteria, logCriteria);
     }
 
     public IEnumerable<GroupPolicy> GetByFunctionAndSite(int functionId, int siteId)

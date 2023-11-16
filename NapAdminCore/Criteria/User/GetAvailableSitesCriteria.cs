@@ -10,13 +10,7 @@ public class GetAvailableSitesCriteria : CriteriaBase
 
     public bool? IsActive { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetAvailableSites";
-    }
+    public override string GetSettingKey() => "NAP_User_GetAvailableSites";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

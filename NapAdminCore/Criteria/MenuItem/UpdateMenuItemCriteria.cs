@@ -3,10 +3,9 @@ namespace NapAdminCore.Criteria.MenuItem;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Web;
 
-public class UpdateMenuItemCriteria : CriteriaBase
+public class UpdateMenuItemCriteria : UpdateCommandBase
 {
     public int MenuItemId { get; set; }
 
@@ -60,10 +59,7 @@ public class UpdateMenuItemCriteria : CriteriaBase
     [Display(Name = "Environment", ResourceType = typeof(ViewResources))]
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_MenuItem_Update";
-    }
+    public override string GetSettingKey() => "NAP_MenuItem_Update";
 
     public override bool IsValid()
     {

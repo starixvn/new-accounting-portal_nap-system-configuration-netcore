@@ -2,10 +2,9 @@ namespace NapAdminCore.Criteria.User;
 
 using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Web;
 
-public class ResetPasswordCustCriteria : CriteriaBase
+public class ResetPasswordCustCriteria : UpdateCommandBase
 {
     public int CustId { get; set; }
 
@@ -42,13 +41,7 @@ public class ResetPasswordCustCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public string Token { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Cust_UpdatePassword";
-    }
+    public override string GetSettingKey() => "NAP_Cust_UpdatePassword";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

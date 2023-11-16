@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Fanex.Data;
-using Fanex.Data.Repository;
 
-public class AssignFunctionToGroupsCriteria : CriteriaBase
+public class AssignFunctionToGroupsCriteria : UpdateCommandBase
 {
     private const string AssignPermissionTpl = "<FunctionPolicy GroupId='{0}' Policy='{1}'></FunctionPolicy>";
 
@@ -50,13 +49,7 @@ public class AssignFunctionToGroupsCriteria : CriteriaBase
     [SpParam(Ignored = true)]
     public List<string> GroupHost { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_AssignFunctionToGroups";
-    }
+    public override string GetSettingKey() => "NAP_Function_AssignFunctionToGroups";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

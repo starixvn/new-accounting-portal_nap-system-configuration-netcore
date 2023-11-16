@@ -6,13 +6,7 @@ public class GetByUserGroupCriteria : CriteriaBase
 {
     public int UserId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Group_GetByUser";
-    }
+    public override string GetSettingKey() => "NAP_Group_GetByUser";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

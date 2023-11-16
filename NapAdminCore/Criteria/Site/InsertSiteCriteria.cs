@@ -4,19 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Fanex.Data;
-using Fanex.Data.Repository;
 using Models;
 using Models.ValueObject;
 using Web;
 
-public class InsertSiteCriteria : CriteriaBase
+public class InsertSiteCriteria : UpdateCommandBase
 {
     private const string UrlTpl = "<SiteURL URL='{0}' Environment='{1}' IsDefault='{2}' IsActive='{3}'></SiteURL>";
-
-    public InsertSiteCriteria()
-    {
-        Environment = AdminConstant.Uat;
-    }
 
     public int SiteId { get; set; }
 
@@ -60,19 +54,13 @@ public class InsertSiteCriteria : CriteriaBase
 
     [Required]
     [Display(Name = "Environment", ResourceType = typeof(ViewResources))]
-    public string Environment { get; set; }
+    public string Environment { get; set; } = AdminConstant.Uat;
 
     public string SecretAccessKey { get; set; }
 
     public string SiteKey { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_InsertWithSiteURL";
-    }
+    public override string GetSettingKey() => "NAP_Site_InsertWithSiteURL";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }
