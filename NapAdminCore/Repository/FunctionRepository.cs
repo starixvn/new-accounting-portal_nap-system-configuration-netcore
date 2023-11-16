@@ -13,14 +13,6 @@ public interface IFunctionRepository: IBaseRepository
 
 public class FunctionRepository : BaseRepository, IFunctionRepository
 {
-    private readonly IDynamicRepository dynamicRepository;
-
-    public FunctionRepository(IDynamicRepository dynamicRepository)
-    {
-        this.dynamicRepository = dynamicRepository;
-    }
-
-    
     public IEnumerable<FunctionPolicy> FetchFunctionPolicy(ICriteria criteria)
     {
         var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);

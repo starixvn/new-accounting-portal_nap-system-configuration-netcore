@@ -5,7 +5,7 @@ using System.Linq;
 using Criteria.Trace;
 using Fanex.Data.Repository;
 using Models.ValueObject;
-public interface ITraceRepository : IDynamicRepository
+public interface ITraceRepository
 {
     IQueryable<LogExecSp> SearchLogExecSp(GetAllLogCriteria criteria);
 
@@ -13,15 +13,9 @@ public interface ITraceRepository : IDynamicRepository
 
     LogExecSp GetById(ICriteria criteria);
 }
-public class TraceRepository : DynamicRepository, ITraceRepository
+public class TraceRepository : ITraceRepository
 {
-    private readonly IDynamicRepository dynamicRepository;
-
-    public TraceRepository(IDynamicRepository dynamicRepository)
-    {
-        this.dynamicRepository = dynamicRepository;
-    }
-
+    private readonly IDynamicRepository dynamicRepository = new DynamicRepository();
 
     public IQueryable<LogExecSp> SearchLogExecSp(GetAllLogCriteria criteria)
     {

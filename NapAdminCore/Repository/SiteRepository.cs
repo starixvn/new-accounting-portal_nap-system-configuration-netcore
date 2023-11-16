@@ -17,12 +17,6 @@ public interface ISiteRepository: IBaseRepository
 }
 public class SiteRepository : BaseRepository, ISiteRepository
 {
-    private readonly IDynamicRepository dynamicRepository;
-    public SiteRepository(IDynamicRepository dynamicRepository)
-    {
-        this.dynamicRepository = dynamicRepository;
-    }
-    
     public SiteUrl GetSiteUrl(ICriteria criteria)
     {
         return dynamicRepository.Get<SiteUrl>(criteria);

@@ -13,13 +13,6 @@ public interface IGroupRepository:IBaseRepository
 
 public class GroupRepository : BaseRepository, IGroupRepository
 {
-    private readonly IDynamicRepository dynamicRepository;
-
-    public GroupRepository(IDynamicRepository dynamicRepository)
-    {
-        this.dynamicRepository = dynamicRepository;
-    }
-
     public IEnumerable<GroupPolicy> GetGroupPolicy(ICriteria criteria)
     {
         var userLevelList = dynamicRepository.Fetch<GroupPolicy>(criteria);

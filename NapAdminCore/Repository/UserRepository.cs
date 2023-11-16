@@ -24,13 +24,6 @@ public interface IUserRepository: IBaseRepository
 
 public class UserRepository : BaseRepository, IUserRepository
 {
-    private readonly IDynamicRepository dynamicRepository;
-
-    public UserRepository(IDynamicRepository dynamicRepository)
-    {
-        this.dynamicRepository = dynamicRepository;
-    }
-
     public User Get(ICriteria criteria)
     {
         return dynamicRepository.Get<User>(criteria);

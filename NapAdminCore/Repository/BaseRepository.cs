@@ -14,16 +14,7 @@ public interface IBaseRepository
 
 public class BaseRepository : DynamicRepository, IBaseRepository
 {
-    private readonly IDynamicRepository dynamicRepository;
-
-    public BaseRepository()
-    {
-    }
-
-    public BaseRepository(IDynamicRepository dynamicRepository)
-    {
-        this.dynamicRepository = dynamicRepository;
-    }
+    protected IDynamicRepository dynamicRepository = new DynamicRepository();
 
     public ICommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria)
     {
