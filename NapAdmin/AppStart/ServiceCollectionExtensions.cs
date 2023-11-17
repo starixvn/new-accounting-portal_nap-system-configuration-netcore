@@ -5,7 +5,6 @@ using Fanex.Data.Repository;
 using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.AspNetCore;
-using Fanex.Logging.Extensions.Database;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Web;
@@ -50,8 +49,7 @@ public static class IServiceCollectionExtensions
             });
 
         ExceptionHandler
-            .UseConfig(new LoggingConfiguration())
-            .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+            .UseConfig(new LoggingConfiguration());
     }
 
     public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)

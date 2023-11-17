@@ -1,4 +1,4 @@
-using Fanex.Data.SqlServer;
+using Fanex.Data;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Web;
 using Fanex.NAP.Client;
@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddFanexSql(configuration);
+services.AddFanexData(configuration);
 services.AddFanex(configuration);
 services.AddNapServices(configuration);
 services.AddNapAdminCore();
