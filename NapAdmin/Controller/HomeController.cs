@@ -10,18 +10,11 @@ using Fanex.Logging;
 using Fanex.NAP.Client.Configuration;
 using NapAdminCore.Service;
 
-public class HomeController : BaseController
-{
-    private readonly INapSession napSession;
-
-    public HomeController(INapSession napSession,
+public class HomeController(INapSession napSession,
         INapSettings napSettings,
         IUserService userService)
-    : base(napSession, napSettings, userService)
-    {
-        this.napSession = napSession;
-    }
-
+    : BaseController(napSession, napSettings, userService)
+{
     [Authorize]
     public IActionResult Index()
     {

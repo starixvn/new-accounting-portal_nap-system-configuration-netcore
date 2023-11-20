@@ -34,18 +34,10 @@ public interface IGroupService
     ICommandResult Update(UpdateGroupCriteria criteria);
 }
 
-public class GroupService : IGroupService
+public class GroupService(IGroupRepository groupRepository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IGroupService
 {
-    private readonly IGroupRepository groupRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-    public GroupService(IGroupRepository groupRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.groupRepository = groupRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-    
     public Group GetById(int id)
     {
         var criteria = new GetByIdGroupCriteria

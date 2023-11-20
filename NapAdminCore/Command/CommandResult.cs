@@ -10,22 +10,16 @@ public interface ICommandResult
     bool IsSuccessful { get; }
 }
 
-public class CommandResultBase : ICommandResult
+public class CommandResultBase(dynamic code, dynamic message) : ICommandResult
 {
     public CommandResultBase()
         : this(string.Empty, string.Empty)
     {
     }
 
-    public CommandResultBase(dynamic code, dynamic message)
-    {
-        Code = code;
-        Message = message;
-    }
+    public dynamic Code { get; set; } = code;
 
-    public dynamic Code { get; set; }
-
-    public dynamic Message { get; set; }
+    public dynamic Message { get; set; } = message;
 
     public virtual bool IsSuccessful => true;
 }

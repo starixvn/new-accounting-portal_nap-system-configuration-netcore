@@ -23,15 +23,8 @@ public static class OnebookUmInitializer
     }
 }
 
-public class HttpContextHelper : IHttpContextHelper
+public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttpContextHelper
 {
-    private readonly IHttpContextAccessor httpContextAccessor;
-
-    public HttpContextHelper(IHttpContextAccessor httpContextAccessor)
-    {
-        this.httpContextAccessor = httpContextAccessor;
-    }
-
     public string GetSession(string key)
     {
         var value = httpContextAccessor?.HttpContext?.Session.GetString(key);

@@ -69,28 +69,10 @@ public interface ISiteService
 
     #endregion
 }
-public class SiteService : ISiteService
+public class SiteService(ISiteRepository siteRepository, IFunctionRepository functionRepository,
+        IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
+    : ISiteService
 {
-    #region members
-
-    private readonly ISiteRepository siteRepository;
-    private readonly IFunctionRepository functionRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-    #endregion
-
-    #region ctors
-
-    public SiteService(ISiteRepository siteRepository, IFunctionRepository functionRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.siteRepository = siteRepository;
-        this.functionRepository = functionRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-
-    #endregion
-
     #region get
 
     public Site GetById(int id)

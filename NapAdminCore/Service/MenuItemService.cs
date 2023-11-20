@@ -34,19 +34,10 @@ public interface IMenuItemService
 
     ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria);
 }
-public class MenuItemService : IMenuItemService
+public class MenuItemService(IBaseRepository baseRepository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IMenuItemService
 {
-    private readonly IBaseRepository baseRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-
-    public MenuItemService(IBaseRepository baseRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.baseRepository = baseRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-
     public MenuItem GetById(int id)
     {
         var criteria = new GetByIdMenuItemCriteria

@@ -16,15 +16,8 @@ public interface ITraceService
 
     IQueryable<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria);
 }
-public class TraceService : ITraceService
+public class TraceService(ITraceRepository traceRepository) : ITraceService
 {
-    private readonly ITraceRepository _traceRepository;
-
-    public TraceService(ITraceRepository traceRepository)
-    {
-        _traceRepository = traceRepository;
-    }
-
     public LogExecSp GetById(int logId)
     {
         var criteria = new GetByIdLogCriteria
@@ -34,7 +27,7 @@ public class TraceService : ITraceService
 
         if (criteria.IsValid())
         {
-            var logExec = _traceRepository.GetById(criteria);
+            var logExec = traceRepository.GetById(criteria);
 
             if (!ReferenceEquals(logExec, null))
             {
@@ -163,12 +156,12 @@ public class TraceService : ITraceService
 
     public IQueryable<LogExecSp> SearchExecSp(GetAllLogCriteria criteria)
     {
-        return _traceRepository.SearchLogExecSp(criteria);
+        return traceRepository.SearchLogExecSp(criteria);
     }
 
     public IQueryable<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria)
     {
-        return _traceRepository.SearchLogUserLogin(criteria);
+        return traceRepository.SearchLogUserLogin(criteria);
     }
     
     private string EncodeXMLValue(string value)

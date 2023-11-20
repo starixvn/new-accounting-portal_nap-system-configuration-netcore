@@ -17,36 +17,14 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 
 [NapSuperAuth]
-public class GroupController : BaseController
-{
-    #region Members
-
-    private readonly IGroupService groupService;
-    private readonly ISiteService _siteService;
-    private readonly IFunctionService _functionService;
-    private readonly IUserService _userService;
-
-    #endregion Members
-
-    #region Ctors
-    
-    public GroupController(
-        IGroupService groupService,
+public class GroupController(IGroupService groupService,
         ISiteService siteService,
         IFunctionService functionService,
         IUserService userService,
         INapSession napSession,
         INapSettings napSettings)
-    : base(napSession, napSettings, userService)
-    {
-        this.groupService = groupService ;
-        _siteService = siteService ;
-        _functionService = functionService ;
-        _userService = userService ;
-    }
-
-    #endregion Ctors
-
+    : BaseController(napSession, napSettings, userService)
+{
     #region Manage
 
     [HttpGet]
@@ -210,7 +188,7 @@ public class GroupController : BaseController
         var siteIdValue = siteId == 0 || SiteId != NapAdminId ? SiteId : siteId;
 
         var group = groupService.GetById(id);
-        var site = _siteService.GetById(siteIdValue);
+        var site = siteService.GetById(siteIdValue);
 
         if (group == null || site == null)
         {
@@ -228,17 +206,17 @@ public class GroupController : BaseController
             HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Host);
 
         ViewBag.SiteSelectList = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
-            _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
-            _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(NapSession.UserId,
+            siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
+            siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(NapSession.UserId,
                 FunctionKeys.AssignFunctionToGroup,
                 Environment,
                 selectedSiteId: criteria.SiteId);
 
-        ViewBag.FunctionList = _functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true);
+        ViewBag.FunctionList = functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true);
         ViewBag.GroupFuncPolicyList =
-            _functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment);
+            functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment);
         ViewBag.UserFuncPolicyList =
-            _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment);
+            functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment);
         ViewBag.UserLevel = NapSession.Level;
 
         return View(criteria);
@@ -249,14 +227,14 @@ public class GroupController : BaseController
     public ActionResult AssignPermission(AssignFunctionGroupCriteria criteria)
     {
         var group = groupService.GetById(criteria.GroupId);
-        var site = _siteService.GetById(criteria.SiteId);
+        var site = siteService.GetById(criteria.SiteId);
 
         if (group == null || site == null)
         {
             return RedirectToAction("Manage");
         }
 
-        var policy = _userService.GetUserSiteFunctionKeyPolicy(
+        var policy = userService.GetUserSiteFunctionKeyPolicy(
             NapSession.UserId,
             criteria.SiteId,
             FunctionKeys.AssignFunctionToGroup);
@@ -272,16 +250,16 @@ public class GroupController : BaseController
         criteria.ModifiedDate = DateTime.Now;
 
         var listFunc =
-            _functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true).ToList();
+            functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true).ToList();
 
         var listGroupFuncPolicy =
-            _functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment).ToList();
+            functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment).ToList();
 
         var listGroupFuncRemove = new List<FunctionPolicy>();
         listGroupFuncRemove.AddRange(listGroupFuncPolicy);
 
         var listCurrentUserFuncPolicy =
-            _functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
+            functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
 
         if (!criteria.FuncHost.IsNullOrDBNull())
         {
@@ -317,12 +295,12 @@ public class GroupController : BaseController
             ViewBag.Success = true;
 
             listGroupFuncPolicy =
-                _functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment).ToList();
+                functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment).ToList();
         }
 
         ViewBag.SiteSelectList = UserIsPortalAdmin ?
-            _siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
-            _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+            siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
+            siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
                 NapSession.UserId,
                 FunctionKeys.AssignFunctionToGroup,
                 Environment,
@@ -343,10 +321,10 @@ public class GroupController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Host)]
     public ActionResult UnassignPermission(int groupId, int functionId)
     {
-        var function = _functionService.GetById(functionId);
+        var function = functionService.GetById(functionId);
         var group = groupService.GetById(groupId);
         
-        var listGroupFuncPolicy = _functionService.GetByGroupAndSite(groupId, function.SiteId, Environment).ToList();
+        var listGroupFuncPolicy = functionService.GetByGroupAndSite(groupId, function.SiteId, Environment).ToList();
 
         var criteria = new AssignFunctionGroupCriteria
         {

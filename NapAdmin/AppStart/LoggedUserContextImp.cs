@@ -6,22 +6,10 @@ using Fanex.NAP.Client.Helpers.Web;
 using NapAdminCore.Criteria.Misc;
 using NapAdminCore.Service;
 
-public class LoggedUserContextImp: LoggedUserContext
+public class LoggedUserContextImp(INapSession napSession, INapSettings napSettings,
+        IHttpContextAccessor httpContextAccessor)
+    : LoggedUserContext
 {
-    private readonly INapSettings napSettings;
-
-    private readonly INapSession napSession;
-
-    private readonly IHttpContextAccessor httpContextAccessor;
-
-    public LoggedUserContextImp(INapSession napSession, INapSettings napSettings, IHttpContextAccessor httpContextAccessor)
-    {
-        this.napSession = napSession;
-        this.napSettings = napSettings;
-        this.httpContextAccessor = httpContextAccessor;
-    }
-
-
     public LogExecSpCriteria GetLogExecSpCriteria()
     {
         return new LogExecSpCriteria

@@ -11,7 +11,7 @@ using Criteria.User;
 using Models.ValueObject;
 using Repository;
 using ONEbook.OTP.Services;
-using NapAdminCore.Criteria;
+using Criteria;
 
 public interface IUserService
 {
@@ -58,18 +58,10 @@ public interface IUserService
     ICommandResult InsertOrUpdate(UpdateCommandBase criteria);
 }
 
-public class UserService : IUserService
+public class UserService(IUserRepository repository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IUserService
 {
-    private readonly IUserRepository userRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-    public UserService(IUserRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        userRepository = repository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-
     public User GetById(int id)
     {
         var criteria = new GetByIdUserCriteria
@@ -111,17 +103,17 @@ public class UserService : IUserService
 
     public IQueryable<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria)
     {
-        return userRepository.GetAllByUsernameGroupSite(criteria);
+        return repository.GetAllByUsernameGroupSite(criteria);
     }
 
     public IQueryable<UserLevel> SearchUser(SearchUserCriteria criteria)
     {
-        return userRepository.Search(criteria);
+        return repository.Search(criteria);
     }
 
     public IQueryable<UserLevel> SearchUserExcludeFunction(SearchUserExcludeFunctionCriteria criteria)
     {
-        return userRepository.SearchUserExcludeFunction(criteria);
+        return repository.SearchUserExcludeFunction(criteria);
     }
 
     public int GetUserSiteLevel(int userId, int siteId)
@@ -139,7 +131,7 @@ public class UserService : IUserService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
 
@@ -147,21 +139,21 @@ public class UserService : IUserService
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateSite(UpdateSiteToUserCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunction(AssignFunctionUserCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public int GetUserFunctionPolicy(int userId, int functionId)
@@ -189,14 +181,14 @@ public class UserService : IUserService
 
     public IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria)
     {
-        return userRepository.SearchByUsername(criteria);
+        return repository.SearchByUsername(criteria);
     }
 
     public ICommandResult InsertOrUpdate(UpdateCommandBase criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return userRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public IEnumerable<UserPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -207,7 +199,7 @@ public class UserService : IUserService
             SiteId = siteId
         };
 
-        return userRepository.GetUserPolicy(criteria).OrderBy(u => u.Username);
+        return repository.GetUserPolicy(criteria).OrderBy(u => u.Username);
     }
 
     public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite)

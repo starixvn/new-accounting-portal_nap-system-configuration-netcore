@@ -2,20 +2,13 @@ namespace NapAdminCore.DbParams;
 
 using Fanex.Data.Repository;
 
-public class InsertUserToOWPCommand : NonQueryCommand
+public class InsertUserToOWPCommand(int userId) : NonQueryCommand
 {
-    public InsertUserToOWPCommand(int userId)
-    {
-        UserId = userId;
-        ErrCode = 0;
-        ErrMsg = string.Empty;
-    }
+    public int UserId { get; set; } = userId;
 
-    public int UserId { get; set; }
+    public int ErrCode { get; set; } = 0;
 
-    public int ErrCode { get; set; }
-
-    public string ErrMsg { get; set; }
+    public string ErrMsg { get; set; } = string.Empty;
 
     public override string GetSettingKey() => "OWP_UserInsert";
 

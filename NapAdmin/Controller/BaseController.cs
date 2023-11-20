@@ -9,22 +9,14 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 using AdminConstant = NapAdminCore.Models.AdminConstant;
 
-public class BaseController : Controller
+public class BaseController(INapSession napSession, INapSettings napSettings, IUserService userService)
+    : Controller
 {
     protected const string EmptyString = "";
 
     protected const int NapAdminId = 1;
 
-    private readonly INapSettings napSettings;
-
-    protected IUserService userService;
-
-    public BaseController(INapSession napSession, INapSettings napSettings, IUserService userService)
-    {
-        this.napSettings = napSettings;
-        this.userService = userService;
-        NapSession = napSession;
-    }
+    protected IUserService userService = userService;
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
@@ -57,7 +49,7 @@ public class BaseController : Controller
 
     protected bool UserIsSiteAdmin => NapSession.Level == (int)AdminConstant.Level.SiteAdmin;
 
-    protected INapSession NapSession { get; }
+    protected INapSession NapSession { get; } = napSession;
 
     public bool HasRight(string functionKey, AdminConstant.Policy policy)
     {

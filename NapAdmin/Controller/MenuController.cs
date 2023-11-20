@@ -14,35 +14,14 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 
 [NapSuperAuth]
-public class MenuController : BaseController
-{
-    #region Properties
-
-    private readonly IMenuItemService _menuItemService;
-    private readonly ISiteService _siteService;
-    private readonly IFunctionService _functionService;
-
-    #endregion Properties
-
-    #region Contructors
-
-
-    public MenuController(
-        IMenuItemService menuitemService,
+public class MenuController(IMenuItemService menuitemService,
         ISiteService siteService,
         IFunctionService functionService,
         IUserService userService,
         INapSession napSession,
-    INapSettings napSettings) :
-    base(napSession, napSettings, userService)
-    {
-        _menuItemService = menuitemService;
-        _siteService = siteService;
-        _functionService = functionService;
-    }
-
-    #endregion Contructors
-
+        INapSettings napSettings)
+    : BaseController(napSession, napSettings, userService)
+{
     #region Manage Menu item
 
     [HttpGet]
@@ -102,7 +81,7 @@ public class MenuController : BaseController
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is 0 or null ? null : criteria.ParentName;
 
-            var result = _menuItemService.Insert(criteria);
+            var result = menuitemService.Insert(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -121,7 +100,7 @@ public class MenuController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult EditMenuItem(int menuItemId)
     {
-        var menuItem = _menuItemService.GetById(menuItemId);
+        var menuItem = menuitemService.GetById(menuItemId);
 
         if (menuItem == null)
         {
@@ -145,15 +124,15 @@ public class MenuController : BaseController
             Environment = menuItem.Environment
         };
 
-        ViewBag.Function = _functionService.GetSelectListItemBySite(
+        ViewBag.Function = functionService.GetSelectListItemBySite(
             criteria.SiteId,
             criteria.Environment,
             isActive: true,
             selectedFunctionId: criteria.FunctionId);
 
         ViewBag.Parent = criteria.ParentId == null ?
-            _menuItemService.GetParentSelectListItemById(id: criteria.MenuItemId, env: criteria.Environment) :
-            _menuItemService.GetParentSelectListItemById(criteria.MenuItemId, (int)criteria.ParentId, criteria.Environment);
+            menuitemService.GetParentSelectListItemById(id: criteria.MenuItemId, env: criteria.Environment) :
+            menuitemService.GetParentSelectListItemById(criteria.MenuItemId, (int)criteria.ParentId, criteria.Environment);
 
         return View(criteria);
     }
@@ -162,15 +141,15 @@ public class MenuController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
     public ActionResult EditMenuItem(UpdateMenuItemCriteria criteria)
     {
-        ViewBag.Function = _functionService.GetSelectListItemBySite(
+        ViewBag.Function = functionService.GetSelectListItemBySite(
             criteria.SiteId,
             criteria.Environment,
             isActive: true,
             selectedFunctionId: criteria.FunctionId);
 
         ViewBag.Parent = criteria.ParentId == null ?
-            _menuItemService.GetParentSelectListItemById(criteria.MenuItemId) :
-            _menuItemService.GetParentSelectListItemById(criteria.MenuItemId, (int)criteria.ParentId);
+            menuitemService.GetParentSelectListItemById(criteria.MenuItemId) :
+            menuitemService.GetParentSelectListItemById(criteria.MenuItemId, (int)criteria.ParentId);
 
         if (ModelState.IsValid)
         {
@@ -180,7 +159,7 @@ public class MenuController : BaseController
             criteria.ParentName = criteria.ParentId is 0 or null ? null
                 : criteria.ParentName;
 
-            var result = _menuItemService.Update(criteria);
+            var result = menuitemService.Update(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -207,8 +186,8 @@ public class MenuController : BaseController
             menuItemList.Add(new MenuItem { Id = 0, Name = ViewResources.None });
 
             var tempMenuItemList = menuItemId.HasValue
-                ? _menuItemService.GetParentById(menuItemId.Value, env: environmentValue).ToList()
-                : _menuItemService.GetBySite(siteId, environmentValue).ToList();
+                ? menuitemService.GetParentById(menuItemId.Value, env: environmentValue).ToList()
+                : menuitemService.GetBySite(siteId, environmentValue).ToList();
             menuItemList.AddRange(tempMenuItemList);
 
             return Json(menuItemList);
@@ -223,7 +202,7 @@ public class MenuController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            return Json(_functionService.GetBySite(
+            return Json(functionService.GetBySite(
                 siteId,
                 !string.IsNullOrEmpty(environment) ? environment : Environment,
                 isActive: true));
@@ -246,7 +225,7 @@ public class MenuController : BaseController
                 ModifiedDate = DateTime.Now
             };
 
-            var result = _menuItemService.UpdateStatus(criteria);
+            var result = menuitemService.UpdateStatus(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -263,13 +242,13 @@ public class MenuController : BaseController
     {
         if (NapSession.Level == (int)AdminConstant.Level.PortalAdmin)
         {
-            ViewBag.Site = _siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId);
+            ViewBag.Site = siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId);
             ViewFlags.HasEditRight = true;
         }
         else
         {
             ViewBag.Site =
-                _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+                siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
                     NapSession.UserId,
                     FunctionKeys.ManageMenu,
                     criteria.Environment,
@@ -279,17 +258,17 @@ public class MenuController : BaseController
                 && HasRightOnSite(criteria.SiteId, FunctionKeys.ManageMenu, AdminConstant.Policy.Host);
         }
 
-        ViewBag.MenuItemList = _menuItemService.GetBySiteInHierarchy(criteria.SiteId, criteria.Environment);
+        ViewBag.MenuItemList = menuitemService.GetBySiteInHierarchy(criteria.SiteId, criteria.Environment);
     }
 
     private void PrepareAddNewData(InsertMenuItemCriteria criteria)
     {
-        ViewBag.Parent = _menuItemService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
-        ViewBag.Function = _functionService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
+        ViewBag.Parent = menuitemService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
+        ViewBag.Function = functionService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
 
         ViewBag.Site = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
-            _siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId) :
-            _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+            siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId) :
+            siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
                 NapSession.UserId,
                 FunctionKeys.ManageMenu,
                 criteria.Environment,

@@ -74,21 +74,10 @@ public interface IFunctionService
 
     ICommandResult CopyPermission(CopyPermissionCriteria criteria);
 }
-public class FunctionService : IFunctionService
+public class FunctionService(IFunctionRepository functionRepository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IFunctionService
 {
-    private readonly IFunctionRepository functionRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-    #region Ctors
-
-    public FunctionService(IFunctionRepository functionRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.functionRepository = functionRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-
-    #endregion
 
     #region Gets Function
 

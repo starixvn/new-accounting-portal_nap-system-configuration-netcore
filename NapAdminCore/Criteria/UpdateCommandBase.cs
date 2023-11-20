@@ -1,7 +1,7 @@
 namespace NapAdminCore.Criteria;
 
 using Fanex.Data.Repository;
-using NapAdminCore.Criteria.Misc;
+using Misc;
 
 public abstract class UpdateCommandBase: NonQueryCommand
 {

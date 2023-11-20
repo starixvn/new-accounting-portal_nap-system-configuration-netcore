@@ -6,20 +6,9 @@ using Fanex.Logging.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using ONEbook.UM.Services;
 
-public class ErrorHandler
+public class ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration configuration, IMaintenanceService maintenanceService)
 {
-    private readonly RequestDelegate next;
-    private readonly ILogger logger;
-    private readonly IMaintenanceService maintenanceService;
-    public IConfiguration Configuration { get; }
-
-    public ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration configuration, IMaintenanceService maintenanceService)
-    {
-        this.next = next;
-        this.logger = logger;
-        this.maintenanceService = maintenanceService;
-        Configuration = configuration;
-    }
+    public IConfiguration Configuration { get; } = configuration;
 
     public async Task InvokeAsync(HttpContext context)
     {
