@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fanex.Common" Version="1.1.1" />
-    <PackageReference Include="Fanex.Data.ProxyClient" Version="0.0.2-alpha01" />
-    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.1" />
+    <PackageReference Include="Fanex.Common" Version="1.1.1.1" />
+    <PackageReference Include="Fanex.Data.ProxyClient" Version="0.0.2-alpha02" />
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.2" />
     <PackageReference Include="ONEbook.OTP" Version="2.0.0" />
   </ItemGroup>
 
