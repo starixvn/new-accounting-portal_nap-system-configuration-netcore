@@ -286,11 +286,11 @@
                     {
                         @if (item.SiteId > 0)
                         {
-                            viewFlags.HasEditRight = (hashManageUser.Contains(item.SiteId) ? (int)hashManageUser[item.SiteId] >= (int)AdminConstant.Policy.Host : false)
+                            viewFlags.HasEditRight = (hashManageUser.ContainsKey(item.SiteId) ? (int)hashManageUser[item.SiteId] >= (int)AdminConstant.Policy.Host : false)
                             && viewFlagsCurrentSite.HasManageUserRight;
-                            viewFlags.HasAssignSiteRight = (hashAssignSite.Contains(item.SiteId) ? (int)hashAssignSite[item.SiteId] >= (int)AdminConstant.Policy.Read : false)
+                            viewFlags.HasAssignSiteRight = (hashAssignSite.ContainsKey(item.SiteId) ? (int)hashAssignSite[item.SiteId] >= (int)AdminConstant.Policy.Read : false)
                             && viewFlagsCurrentSite.HasAssignSiteRight;
-                            viewFlags.HasAssignFunctionRight = (hashAssignFunction.Contains(item.SiteId) ? (int)hashAssignFunction[item.SiteId] >= (int)AdminConstant.Policy.Read : false)
+                            viewFlags.HasAssignFunctionRight = (hashAssignFunction.ContainsKey(item.SiteId) ? (int)hashAssignFunction[item.SiteId] >= (int)AdminConstant.Policy.Read : false)
                             && viewFlagsCurrentSite.HasAssignFunctionRight;
                         }
                         else

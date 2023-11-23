@@ -4,7 +4,7 @@ using System;
 
 public class SiteLevel
 {
-    public byte SiteId { get; set; }
+    public int SiteId { get; set; }
 
     public string SiteName { get; set; }
 
