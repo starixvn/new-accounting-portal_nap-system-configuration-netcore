@@ -30,7 +30,6 @@ public class UserLevel
 
     public string GroupName { get; set; }
 
-
     public bool IsActive { get; set; }
 
     public int Status { get; set; }

@@ -305,8 +305,8 @@
                             var visible =
                             isPortalAdmin 
                             ||
-                            item.UserId == userId || level > item.Level || !item.IsActive 
-                            || (item.UserId == userId || item.Level == (int)AdminConstant.Level.User) && level == item.Level;
+                            item.UserId == userId || level > item.Level
+                            || ((item.UserId == userId || item.Level == (int)AdminConstant.Level.User) && level == item.Level);
 
                             var returnSiteId = (int)AdminConstant.SearchAllSite;
                             var currentSite = item.SiteId > 0 ? listSiteLevel.Where(s => s.SiteId == item.SiteId).FirstOrDefault() : null;
