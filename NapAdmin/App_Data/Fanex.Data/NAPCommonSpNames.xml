@@ -16,11 +16,7 @@
     <Setting Key="NAP_Site_GetByName" SpName="NAP_Site_GetByName" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
-    </Setting>
-    <Setting Key="NAP_Site_GetSiteURLByUser" SpName="NAP_Site_GetSiteURLByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="Id" ObjectProperty="SiteId" />
-      <Mapping DataField="Name" ObjectProperty="SiteName" />
-    </Setting>
+    </Setting>    
     <Setting Key="NAP_Site_GetSiteURLBySiteId" SpName="NAP_Site_GetSiteURLBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="Id" ObjectProperty="SiteId" />
       <Mapping DataField="Name" ObjectProperty="SiteName" />
