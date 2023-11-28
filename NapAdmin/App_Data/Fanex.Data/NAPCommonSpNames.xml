@@ -29,7 +29,6 @@
       <Mapping DataField="Id" ObjectProperty="SiteId" />
       <Mapping DataField="Name" ObjectProperty="SiteName" />
     </Setting>
-    <Setting Key="NAP_Site_GetUserSiteLevel" SpName="NAP_Site_GetUserSiteLevel" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Site_GetSiteKey" SpName="NAP_Site_GetByKey" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
@@ -41,7 +40,6 @@
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
     </Setting>
-    <Setting Key="NAP_Function_GetByGroup" SpName="NAP_Function_GetByGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Function_GetByGroupAndSite" SpName="NAP_Function_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Function_GetById" SpName="NAP_Function_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />

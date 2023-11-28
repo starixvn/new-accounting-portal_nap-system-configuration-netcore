@@ -43,10 +43,6 @@ public interface IFunctionService
 
     Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat);
-
-    Dictionary<Site, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat);
-
     IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat);
 
     IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat);
@@ -212,18 +208,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
 
         return result;
     }
-
-    public IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat)
-    {
-        var criteria = new GetByGroupFunctionCriteria
-        {
-            GroupId = groupId,
-            Environment = env
-        };
-
-        return functionRepository.FetchFunctionPolicy(criteria);
-    }
-
+    
     public IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByGroupAndSiteFunctionCriteria
@@ -235,36 +220,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
 
         return functionRepository.FetchFunctionPolicy(criteria);
     }
-
-    public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat)
-    {
-        var criteria = new GetByGroupFunctionCriteria
-        {
-            GroupId = groupId,
-            Environment = env
-        };
-
-        var functionPolicyList = functionRepository.FetchFunctionPolicy(criteria);
-
-        var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
-
-        var siteList = functionPolicyList.GroupBy(f => f.SiteId)
-            .Select(s => new Site
-            {
-                Id = s.Key,
-                Name = s.FirstOrDefault(f => f.SiteId == s.Key)?.SiteName
-            }).ToList();
-
-        foreach (var site in siteList)
-        {
-            var subFunctionPolicyList = functionPolicyList.Where(f => f.SiteId == site.Id).ToList();
-
-            result.Add(site, subFunctionPolicyList);
-        }
-
-        return result;
-    }
-
+    
     public IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserAndSiteFunctionCriteria

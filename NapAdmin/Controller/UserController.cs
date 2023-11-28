@@ -1167,20 +1167,7 @@ public class UserController(IUserService userService,
 
         return Json(null);
     }
-
-    [HttpPost]
-    public ActionResult GetGroupFunctionPolicy(int groupId)
-    {
-        if (Request.IsAjaxRequest() && groupId != 0)
-        {
-            var listFunctionPolicy = functionService.GetByGroup(groupId, Environment);
-
-            return Json(listFunctionPolicy);
-        }
-
-        return Json(null);
-    }
-
+    
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public string AddUserToGroup(int userId, int groupId)
