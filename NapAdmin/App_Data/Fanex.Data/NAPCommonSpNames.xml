@@ -101,15 +101,15 @@
     <Setting Key="NAP_Function_AssignFunctionToGroups" SpName="NAP_Function_AssignFunctionToGroups" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_Function_AssignFunctionToUsers" SpName="NAP_Function_AssignFunctionToUsers" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
   </Function>
-  <Function Name="MenuItem">
-    <Setting Key="NAP_MenuItem_GetAll" SpName="NAP_MenuItem_GetAll" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_GetById" SpName="NAP_MenuItem_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_GetByNameAndSite" SpName="NAP_MenuItem_GetByNameAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+  <Function Name="MenuItem">    
+    <Setting Key="NAP_MenuItem_GetById" SpName="NAP_MenuItem_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
+    </Setting>
     <Setting Key="NAP_MenuItem_GetBySite" SpName="NAP_MenuItem_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="MenuItemId" ObjectProperty="Id" />
       <Mapping DataField="MenuItemName" ObjectProperty="Name" />
     </Setting>
-    <Setting Key="NAP_MenuItem_GetByUserAndSiteIncludeGroup" SpName="NAP_MenuItem_GetByUserAndSiteIncludeGroup" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
   </Function>
   <Function Name="Group">
     <Setting Key="NAP_Group_GetAll" SpName="NAP_Group_GetAll" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
