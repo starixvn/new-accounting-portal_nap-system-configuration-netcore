@@ -185,7 +185,9 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             Environment = env
         };
 
-        var functionPolicyList = functionRepository.FetchFunctionPolicy(criteria).OrderBy(s => s.SiteName);
+        var functionPolicyList = functionRepository.FetchFunctionPolicy(criteria)
+            .OrderBy(s => s.SiteName)
+            .ToList();
 
         return functionPolicyList.Where(f => f.Policy >= (int)policy)
             .Select(s => new Site

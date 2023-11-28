@@ -49,11 +49,6 @@ public interface IFunctionService
 
     IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(int userId, int siteId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByUserAndFunctionKeyIncludeGroup(
-        int userId,
-        string functionKey,
-        string env = AdminConstant.Uat);
-
     #endregion
 
     ICommandResult Duplicate(DuplicateFunctionCriteria criteria);
@@ -242,21 +237,6 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
         {
             UserId = userId,
             SiteId = siteId,
-            Environment = env
-        };
-
-        return functionRepository.FetchFunctionPolicy(criteria);
-    }
-
-    public IEnumerable<FunctionPolicy> GetByUserAndFunctionKeyIncludeGroup(
-        int userId,
-        string functionKey,
-        string env = AdminConstant.Uat)
-    {
-        var criteria = new GetByUserAndFunctionKeyIncludeGroupFunctionCriteria
-        {
-            UserId = userId,
-            FunctionKey = functionKey,
             Environment = env
         };
 

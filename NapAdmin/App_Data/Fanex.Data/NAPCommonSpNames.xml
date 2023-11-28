@@ -40,7 +40,11 @@
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
       <Mapping DataField="FunctionKey" ObjectProperty="Key" />
     </Setting>
-    <Setting Key="NAP_Function_GetByGroupAndSite" SpName="NAP_Function_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_Function_GetByGroupAndSite" SpName="NAP_Function_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="FunctionId" ObjectProperty="Id" />
+      <Mapping DataField="FunctionName" ObjectProperty="Name" />
+      <Mapping DataField="FunctionKey" ObjectProperty="Key" />
+    </Setting>
     <Setting Key="NAP_Function_GetById" SpName="NAP_Function_GetById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
@@ -153,10 +157,6 @@
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
     </Setting>
-    <Setting Key="NAP_User_CheckIn" SpName="NAP_User_CheckIn" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_Logout" SpName="Nap_User_Logout" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
     <Setting Key="NAP_User_GetUserSiteLevel" SpName="NAP_User_GetUserSiteLevel" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
     <Setting Key="NAP_User_GetUserFunctionPolicy" SpName="NAP_User_GetUserFunctionPolicy" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
     <Setting Key="NAP_User_GetUserSiteFunctionKeyPolicy" SpName="NAP_User_GetUserSiteFunctionKeyPolicy" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
@@ -165,11 +165,7 @@
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
     </Setting>
-    <Setting Key="NAP_User_GetBySite" SpName="NAP_User_GetBySite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
-      <Mapping DataField="UserId" ObjectProperty="Id" />
-      <Mapping DataField="userpwd" ObjectProperty="Password" />
-
-    </Setting>
+    
     <Setting Key="NAP_User_GetByGroupAndSite" SpName="NAP_User_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
@@ -189,7 +185,6 @@
 
     </Setting>
     <Setting Key="NAP_User_GetAllByUsernameGroupSite" SpName="NAP_User_GetAllByUsernameGroupSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
   </Function>
   <Function Name="Site">
     <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
@@ -203,7 +198,6 @@
     <Setting Key="NAP_LogExecSp_GetById" SpName="NAP_LogExecSp_GetById" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet" />
   </Function>
   <Function Name="LogUserLogin">
-    <Setting Key="NAP_LogUserLogin_Insert" SpName="NAP_LogUserLogin_Insert" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet" />
     <Setting Key="NAP_LogUserLogin_Search" SpName="NAP_LogUserLogin_Search" DbName="DBNAP.bodb_NAPLOG.bodbAdminNet">
 
     </Setting>
