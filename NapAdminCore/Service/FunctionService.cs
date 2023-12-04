@@ -65,7 +65,7 @@ public interface IFunctionService
 
     ICommandResult CopyPermission(CopyPermissionCriteria criteria);
 }
-public class FunctionService(IFunctionRepository functionRepository, IDynamicRepository dynamicRepository,
+public class FunctionService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
     : IFunctionService
 {
@@ -172,7 +172,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
             Environment = env
         };
 
-        return functionRepository.FetchFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
 
     public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat)
@@ -183,7 +183,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
             Environment = env
         };
 
-        var functionPolicyList = functionRepository.FetchFunctionPolicy(criteria);
+        var functionPolicyList = repository.FetchFunctionPolicy(criteria);
 
         var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
 
@@ -213,7 +213,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
             Environment = env
         };
 
-        return functionRepository.FetchFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
     
     public IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat)
@@ -225,7 +225,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
             Environment = env
         };
 
-        return functionRepository.FetchFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
 
     public IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(
@@ -240,7 +240,7 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
             Environment = env
         };
 
-        return functionRepository.FetchFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
 
     #endregion
@@ -248,38 +248,38 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
     public ICommandResult Duplicate(DuplicateFunctionCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Insert(InsertFunctionCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateFunctionCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusFunctionCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     private IEnumerable<Function> SortFunctionsInHierarchy(IEnumerable<Function> functionList, int parentId = 0)
@@ -302,6 +302,6 @@ public class FunctionService(IFunctionRepository functionRepository, IDynamicRep
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return functionRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 }

@@ -71,12 +71,7 @@ public static class IServiceCollectionExtensions
     public static void AddNapAdminCore(this IServiceCollection services)
     {
         services.AddScoped<IDynamicRepository, DynamicRepository>();
-        services.AddScoped<IFunctionRepository, FunctionRepository>();
-        services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<ISiteRepository, SiteRepository>();
-        services.AddScoped<ITraceRepository, TraceRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IBaseRepository, BaseRepository>();
+        services.AddScoped<ISimpleRepository, SimpleSimpleRepository>();
         services.AddScoped<IFunctionService, FunctionService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IMenuItemService, MenuItemService>();

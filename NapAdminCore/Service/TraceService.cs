@@ -5,6 +5,7 @@ using System.Collections;
 using System.Linq;
 using System.Xml.Linq;
 using Criteria.Trace;
+using Fanex.Data.Repository;
 using Models.ValueObject;
 using Repository;
 
@@ -12,11 +13,11 @@ public interface ITraceService
 {
     LogExecSp GetById(int logId);
 
-    IQueryable<LogExecSp> SearchExecSp(GetAllLogCriteria criteria);
+    IList<LogExecSp> SearchExecSp(GetAllLogCriteria criteria);
 
-    IQueryable<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria);
+    IList<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria);
 }
-public class TraceService(ITraceRepository traceRepository) : ITraceService
+public class TraceService(IDynamicRepository dynamicRepository) : ITraceService
 {
     public LogExecSp GetById(int logId)
     {
@@ -27,7 +28,7 @@ public class TraceService(ITraceRepository traceRepository) : ITraceService
 
         if (criteria.IsValid())
         {
-            var logExec = traceRepository.GetById(criteria);
+            var logExec = dynamicRepository.Get<LogExecSp>(criteria);
 
             if (!ReferenceEquals(logExec, null))
             {
@@ -154,14 +155,14 @@ public class TraceService(ITraceRepository traceRepository) : ITraceService
         return null;
     }
 
-    public IQueryable<LogExecSp> SearchExecSp(GetAllLogCriteria criteria)
+    public IList<LogExecSp> SearchExecSp(GetAllLogCriteria criteria)
     {
-        return traceRepository.SearchLogExecSp(criteria);
+        return dynamicRepository.Fetch<LogExecSp>(criteria).ToList();
     }
 
-    public IQueryable<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria)
+    public IList<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria)
     {
-        return traceRepository.SearchLogUserLogin(criteria);
+        return dynamicRepository.Fetch<LogUserLogin>(criteria).ToList();
     }
     
     private string EncodeXMLValue(string value)

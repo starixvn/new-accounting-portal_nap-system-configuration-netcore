@@ -27,17 +27,17 @@ public interface IUserService
 
     bool CheckUsernameExist(string username);
 
-    IEnumerable<UserPolicy> GetByFunctionAndSite(int functionId, int siteId);
+    IList<UserPolicy> GetByFunctionAndSite(int functionId, int siteId);
 
-    IEnumerable<User> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null);
+    IList<User> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null);
 
-    IQueryable<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria);
+    IList<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria);
 
-    IQueryable<UserLevel> SearchUser(SearchUserCriteria criteria);
+    IList<UserLevel> SearchUser(SearchUserCriteria criteria);
 
-    IQueryable<UserLevel> SearchUserExcludeFunction(SearchUserExcludeFunctionCriteria criteria);
+    IList<UserLevel> SearchUserExcludeFunction(SearchUserExcludeFunctionCriteria criteria);
 
-    IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria);
+    IList<User> SearchByUsername(SearchByUsernameUserCriteria criteria);
 
     int GetUserSiteLevel(int userId, int siteId);
 
@@ -58,8 +58,7 @@ public interface IUserService
     ICommandResult InsertOrUpdate(UpdateCommandBase criteria);
 }
 
-public class UserService(IUserRepository repository, IDynamicRepository dynamicRepository,
-        LoggedUserContext loggedUserContext)
+public class UserService(ISimpleRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     : IUserService
 {
     public User GetById(int id)
@@ -89,7 +88,7 @@ public class UserService(IUserRepository repository, IDynamicRepository dynamicR
         return user != null && user.Id != 0;
     }
 
-    public IEnumerable<User> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null)
+    public IList<User> GetByGroupAndSite(int groupId = 0, int siteId = 0, bool? isActive = null)
     {
         var criteria = new GetByGroupAndSiteUserCriteria
         {
@@ -98,22 +97,22 @@ public class UserService(IUserRepository repository, IDynamicRepository dynamicR
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<User>(criteria).OrderBy(u => u.Username);
+        return dynamicRepository.Fetch<User>(criteria).OrderBy(u => u.Username).ToList();
     }
 
-    public IQueryable<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria)
+    public IList<UserLevel> GetAllByUsernameGroupSite(GetAllByUsernameGroupSiteUserCriteria criteria)
     {
-        return repository.GetAllByUsernameGroupSite(criteria);
+        return dynamicRepository.Fetch<UserLevel>(criteria).ToList();
     }
 
-    public IQueryable<UserLevel> SearchUser(SearchUserCriteria criteria)
+    public IList<UserLevel> SearchUser(SearchUserCriteria criteria)
     {
-        return repository.Search(criteria);
+        return dynamicRepository.Fetch<UserLevel>(criteria).ToList();
     }
 
-    public IQueryable<UserLevel> SearchUserExcludeFunction(SearchUserExcludeFunctionCriteria criteria)
+    public IList<UserLevel> SearchUserExcludeFunction(SearchUserExcludeFunctionCriteria criteria)
     {
-        return repository.SearchUserExcludeFunction(criteria);
+        return dynamicRepository.Fetch<UserLevel>(criteria).ToList();
     }
 
     public int GetUserSiteLevel(int userId, int siteId)
@@ -179,9 +178,9 @@ public class UserService(IUserRepository repository, IDynamicRepository dynamicR
         return dynamicRepository.Get<int>(criteria);
     }
 
-    public IQueryable<User> SearchByUsername(SearchByUsernameUserCriteria criteria)
+    public IList<User> SearchByUsername(SearchByUsernameUserCriteria criteria)
     {
-        return repository.SearchByUsername(criteria);
+        return dynamicRepository.Fetch<User>(criteria).ToList();
     }
 
     public ICommandResult InsertOrUpdate(UpdateCommandBase criteria)
@@ -191,7 +190,7 @@ public class UserService(IUserRepository repository, IDynamicRepository dynamicR
         return repository.Execute(criteria, logCriteria);
     }
 
-    public IEnumerable<UserPolicy> GetByFunctionAndSite(int functionId, int siteId)
+    public IList<UserPolicy> GetByFunctionAndSite(int functionId, int siteId)
     {
         var criteria = new GetByFunctionAndSiteUserCriteria
         {
@@ -199,7 +198,7 @@ public class UserService(IUserRepository repository, IDynamicRepository dynamicR
             SiteId = siteId
         };
 
-        return repository.GetUserPolicy(criteria).OrderBy(u => u.Username);
+        return dynamicRepository.Fetch<UserPolicy>(criteria).OrderBy(u => u.Username).ToList();
     }
 
     public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite)

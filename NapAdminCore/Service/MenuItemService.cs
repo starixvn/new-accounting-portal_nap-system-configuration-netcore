@@ -34,7 +34,7 @@ public interface IMenuItemService
 
     ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria);
 }
-public class MenuItemService(IBaseRepository baseRepository, IDynamicRepository dynamicRepository,
+public class MenuItemService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
     : IMenuItemService
 {
@@ -135,21 +135,21 @@ public class MenuItemService(IBaseRepository baseRepository, IDynamicRepository 
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return baseRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateMenuItemCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return baseRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return baseRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     private IEnumerable<MenuItem> SortMenuItemsInHierarchy(IEnumerable<MenuItem> menuItemList, int parentId = 0)

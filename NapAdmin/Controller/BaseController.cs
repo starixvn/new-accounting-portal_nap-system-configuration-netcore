@@ -43,8 +43,6 @@ public class BaseController(INapSession napSession, INapSettings napSettings, IU
 
     protected string Environment => napSettings.Environment;
 
-    protected bool ThisSiteIsNapAdmin => napSettings.SiteId == NapAdminId;
-
     protected bool UserIsPortalAdmin => NapSession.Level == (int)AdminConstant.Level.PortalAdmin;
 
     protected bool UserIsSiteAdmin => NapSession.Level == (int)AdminConstant.Level.SiteAdmin;

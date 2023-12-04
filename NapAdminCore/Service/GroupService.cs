@@ -34,7 +34,7 @@ public interface IGroupService
     ICommandResult Update(UpdateGroupCriteria criteria);
 }
 
-public class GroupService(IGroupRepository groupRepository, IDynamicRepository dynamicRepository,
+public class GroupService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
     : IGroupService
 {
@@ -91,28 +91,28 @@ public class GroupService(IGroupRepository groupRepository, IDynamicRepository d
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Insert(InsertGroupCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateGroupCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public IEnumerable<GroupPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -123,7 +123,7 @@ public class GroupService(IGroupRepository groupRepository, IDynamicRepository d
             SiteId = siteId
         };
 
-        return groupRepository.GetGroupPolicy(criteria).OrderBy(g => g.Name);
+        return repository.GetGroupPolicy(criteria).OrderBy(g => g.Name);
     }
 
     public IEnumerable<Group> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0)

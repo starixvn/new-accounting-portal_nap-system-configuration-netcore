@@ -10,9 +10,9 @@ public interface ICommandResult
     bool IsSuccessful { get; }
 }
 
-public class CommandResultBase(dynamic code, dynamic message) : ICommandResult
+public class CommandResult(dynamic code, dynamic message) : ICommandResult
 {
-    public CommandResultBase()
+    public CommandResult()
         : this(string.Empty, string.Empty)
     {
     }
@@ -21,10 +21,5 @@ public class CommandResultBase(dynamic code, dynamic message) : ICommandResult
 
     public dynamic Message { get; set; } = message;
 
-    public virtual bool IsSuccessful => true;
-}
-
-public class CommandResult : CommandResultBase
-{
-    public override bool IsSuccessful => Code == 0;
+    public bool IsSuccessful => Code == 0;
 }

@@ -21,20 +21,20 @@ public interface ISiteService
 
     Site GetByKey(string key);
 
-    IEnumerable<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
+    IList<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
+    IList<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
+    IList<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null);
 
     IList<SelectListItem> GetAllSelectListItem(
         string env = AdminConstant.Uat,
         bool? isActive = null,
         int selectedSiteId = 0);
 
-    IEnumerable<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null);
+    IList<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null);
 
-    IEnumerable<Site> GetByUserAndFunctionKeyIncludeGroup(
+    IList<Site> GetByUserAndFunctionKeyIncludeGroup(
         int userId,
         string functionKey,
         string env = AdminConstant.Uat,
@@ -55,9 +55,9 @@ public interface ISiteService
 
     #region SiteUrl services
 
-    IEnumerable<SiteUrl> GetAllSiteUrl(string env);
+    IList<SiteUrl> GetAllSiteUrl(string env);
 
-    IEnumerable<SiteUrl> GetSiteUrlBySiteId(int siteId, string env);
+    IList<SiteUrl> GetSiteUrlBySiteId(int siteId, string env);
 
     SiteUrl GetSiteUrlById(int siteUrlId);
 
@@ -69,8 +69,7 @@ public interface ISiteService
 
     #endregion
 }
-public class SiteService(ISiteRepository siteRepository, IFunctionRepository functionRepository,
-        IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
+public class SiteService(ISimpleRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     : ISiteService
 {
     #region get
@@ -105,7 +104,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
         return dynamicRepository.Get<Site>(criteria);
     }
     
-    public IEnumerable<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IList<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetByUserSiteCriteria
         {
@@ -114,10 +113,10 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             IsActive = isActive
         };
 
-        return siteRepository.FetchSiteLevel(criteria).OrderBy(sl => sl.SiteName);
+        return dynamicRepository.Fetch<SiteLevel>(criteria).OrderBy(sl => sl.SiteName).ToList();
     }
 
-    public IEnumerable<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
+    public IList<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAvailableSitesCriteria
         {
@@ -126,10 +125,10 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name);
+        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name).ToList();
     }
 
-    public IEnumerable<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
+    public IList<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllSiteCriteria
         {
@@ -137,7 +136,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name);
+        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name).ToList();
     }
 
     public IList<SelectListItem> GetAllSelectListItem(
@@ -151,7 +150,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             IsActive = isActive
         };
 
-        IEnumerable<Site> siteList = dynamicRepository.Fetch<Site>(criteria).OrderBy(s => s.Name);
+        var siteList = dynamicRepository.Fetch<Site>(criteria).OrderBy(s => s.Name).ToList();
 
         return siteList.Select(s => new SelectListItem
         {
@@ -161,7 +160,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
         }).ToList();
     }
 
-    public IEnumerable<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null)
+    public IList<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetAllSiteWithNumOfUserCriteria
         {
@@ -169,10 +168,10 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name);
+        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name).ToList();
     }
 
-    public IEnumerable<Site> GetByUserAndFunctionKeyIncludeGroup(
+    public IList<Site> GetByUserAndFunctionKeyIncludeGroup(
         int userId,
         string functionKey,
         string env = AdminConstant.Uat,
@@ -185,7 +184,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             Environment = env
         };
 
-        var functionPolicyList = functionRepository.FetchFunctionPolicy(criteria)
+        var functionPolicyList = repository.FetchFunctionPolicy(criteria)
             .OrderBy(s => s.SiteName)
             .ToList();
 
@@ -212,7 +211,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
         };
 
 
-        IEnumerable<FunctionPolicy> functionPolicyList = functionRepository.FetchFunctionPolicy(criteria).OrderBy(s => s.SiteName);
+        var functionPolicyList = repository.FetchFunctionPolicy(criteria).OrderBy(s => s.SiteName).ToList();
 
         return functionPolicyList.Where(f => f.Policy >= (int)policy)
             .Select(s => new SelectListItem
@@ -229,36 +228,36 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult Update(UpdateSiteCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateStatus(UpdateStatusSiteCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     #region SiteUrl services
 
-    public IEnumerable<SiteUrl> GetAllSiteUrl(string env)
+    public IList<SiteUrl> GetAllSiteUrl(string env)
     {
         var criteria = new GetAllSiteUrlCriteria
         {
             Environment = env
         };
 
-        return siteRepository.FetchSiteUrl(criteria);
+        return dynamicRepository.Fetch<SiteUrl>(criteria).ToList();
     }
 
-    public IEnumerable<SiteUrl> GetSiteUrlBySiteId(int siteId, string env)
+    public IList<SiteUrl> GetSiteUrlBySiteId(int siteId, string env)
     {
         var criteria = new GetSiteUrlBySiteIdCriteria
         {
@@ -267,7 +266,7 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
         };
 
 
-        return siteRepository.FetchSiteUrl(criteria).OrderBy(su => su.SiteName).ToList();
+        return dynamicRepository.Fetch<SiteUrl>(criteria).OrderBy(su => su.SiteName).ToList();
     }
 
     public SiteUrl GetSiteUrlById(int siteUrlId)
@@ -277,28 +276,28 @@ public class SiteService(ISiteRepository siteRepository, IFunctionRepository fun
             SiteUrlId = siteUrlId
         };
         
-        return siteRepository.GetSiteUrl(criteria);
+        return dynamicRepository.Get<SiteUrl>(criteria);
     }
 
     public ICommandResult UpdateSiteUrl(UpdateSiteUrlCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult UpdateDefaultSiteUrl(UpdateDefaultSiteUrlCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public ICommandResult InsertSiteUrl(InsertSiteUrlCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return siteRepository.Execute(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     #endregion
