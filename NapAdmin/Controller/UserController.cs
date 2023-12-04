@@ -885,48 +885,7 @@ public class UserController(IUserService userService,
 
     #endregion Update Site To User
 
-    #region Profile
-
-    [HttpGet]
-    public ActionResult UserProfile()
-    {
-        var criteria = new UpdateCustCommand();
-        var user = userService.GetById(NapSession.UserId);
-
-        criteria.CustId = user.Id;
-        criteria.Username = user.Username;
-        criteria.FirstName = user.FirstName;
-        criteria.LastName = user.LastName;
-        criteria.Email = user.Email;
-        criteria.GroupId = user.GroupId;
-
-        return View(criteria);
-    }
-
-    [HttpPost]
-    public ActionResult UserProfile(UpdateCustCommand criteria)
-    {
-        if (ModelState.IsValid)
-        {
-            criteria.CustId = NapSession.UserId;
-            criteria.Username = NapSession.UserName;
-            criteria.FirstName ??= string.Empty;
-            criteria.LastName ??= string.Empty;
-            criteria.Email ??= string.Empty;
-
-            var result = userService.InsertOrUpdate(criteria);
-
-            if (result is { IsSuccessful: true })
-            {
-                ViewBag.Success = true;
-            }
-        }
-
-        return View(criteria);
-    }
-
-    #endregion Profile
-
+   
     #region Assign Site/Function To User
 
     [HttpGet]
