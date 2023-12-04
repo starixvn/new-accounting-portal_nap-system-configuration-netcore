@@ -48,7 +48,11 @@ public class UserController(IUserService userService,
     {
         var username = ViewBag.Username = userName.Trim();
         siteId = siteId <= 0 && siteId != AdminConstant.SearchAllSite ? SiteId : siteId;
-        
+
+        ViewFlags.HasEditRight =
+            HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Host)
+            && HasRightOnSite(NapAdminId, FunctionKeys.ManageUser, AdminConstant.Policy.Host);
+
         ViewBag.IsPortalAdmin = userService.GetUserSiteLevel(NapSession.UserId, NapAdminId)
                                 == (int)AdminConstant.Level.PortalAdmin;
         
