@@ -68,17 +68,17 @@ public class UserController(IUserService userService,
         ViewBag.HashLevel = GetHashLevel(listSiteId);
         
         var hashManageUserPolicy =
-            userService.GetUserListSiteFunctionKeyPolicy(NapSession.UserId, FunctionKeys.ManageUser, listSite);
+            userService.GetUserListSiteFunctionKeyPolicy(NapSession.UserId, FunctionKeys.ManageUser, listSiteId);
 
         var hashAssignFunctionPolicy = userService.GetUserListSiteFunctionKeyPolicy(
             NapSession.UserId,
             FunctionKeys.AssignFunctionToUser,
-            listSite);
+            listSiteId);
 
         var hashAssignSite = userService.GetUserListSiteFunctionKeyPolicy(
             NapSession.UserId,
             FunctionKeys.AssignSiteToUser,
-            listSite);
+            listSiteId);
 
         ViewBag.HashManageUser = hashManageUserPolicy;
         ViewBag.HashAssignFunction = hashAssignFunctionPolicy;

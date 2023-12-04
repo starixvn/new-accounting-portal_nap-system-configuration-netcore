@@ -44,7 +44,7 @@ public interface IUserService
 
     int GetUserSiteFunctionKeyPolicy(int userId, int siteId, string functionKey);
 
-    Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite);
+    Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<int> listSite);
 
     CommandResult Insert(InsertCustCommand criteria);
 
@@ -200,7 +200,7 @@ public class UserService(ISimpleRepository repository, IDynamicRepository dynami
         return dynamicRepository.Fetch<UserPolicy>(criteria).OrderBy(u => u.Username).ToList();
     }
 
-    public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<SelectListItem> listSite)
+    public Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<int> listSite)
     {
         var criteria = new GetUserListSiteFunctionKeyPolicyUserCriteria
         {

@@ -22,7 +22,7 @@ public class GetUserListSiteFunctionKeyPolicyUserCriteria : CriteriaBase
 
                 foreach (var siteId in ListSite)
                 {
-                    value.AppendFormat(_siteTml, siteId.Value); // 1 -> read
+                    value.AppendFormat(_siteTml, siteId); // 1 -> read
                 }
 
                 return value.Append("</ROOT>").ToString();
@@ -33,7 +33,7 @@ public class GetUserListSiteFunctionKeyPolicyUserCriteria : CriteriaBase
     }
 
     [SpParam(Ignored = true)]
-    public List<SelectListItem> ListSite { get; set; }
+    public List<int> ListSite { get; set; }
 
     public string FunctionKey { get; set; }
 

@@ -9,6 +9,8 @@ public class ViewFlags
 
     public bool HasEditRight { get; set; }
 
+    public int NapAdminSiteId { get; set; }
+
     public bool IsNapAdminSite { get; set; }
 
     public bool HasAssignSiteReadRight { get; set; }

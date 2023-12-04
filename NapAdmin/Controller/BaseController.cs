@@ -14,7 +14,7 @@ public class BaseController(INapSession napSession, INapSettings napSettings, IU
 {
     protected const string EmptyString = "";
 
-    protected const int NapAdminId = 1;
+    protected readonly int NapAdminId = napSettings.SiteId;
 
     protected IUserService userService = userService;
 
@@ -24,6 +24,7 @@ public class BaseController(INapSession napSession, INapSettings napSettings, IU
         ViewFlags = new ViewFlags
         {
             IsLive = Environment.Equals(AdminConstant.Live),
+            NapAdminSiteId =  napSettings.SiteId,
             IsNapAdminSite = napSettings.SiteId.Equals(NapAdminId),
             HasEditRight = false,
             IsReCheckin = napSettings.EnableReCheckIn

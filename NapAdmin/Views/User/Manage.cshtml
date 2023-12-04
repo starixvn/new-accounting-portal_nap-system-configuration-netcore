@@ -180,7 +180,7 @@
                         }
                     </td>
                     @{
-                        var level = isPortalAdmin ? (int)AdminConstant.Level.PortalAdmin : hashLevel.SafeGetInt(item.SiteId);
+                        var level = isPortalAdmin && item.SiteId == viewFlags.NapAdminSiteId ? (int)AdminConstant.Level.PortalAdmin : hashLevel.SafeGetInt(item.SiteId);
                         var hasEditRight = (hashManageUser.SafeGetInt(item.SiteId) >= (int)AdminConstant.Policy.Host)
                         && viewFlagsCurrentSite.HasManageUserRight;
                         var hasAssignSiteRight = (hashAssignSite.SafeGetInt(item.SiteId) >= (int)AdminConstant.Policy.Read)
