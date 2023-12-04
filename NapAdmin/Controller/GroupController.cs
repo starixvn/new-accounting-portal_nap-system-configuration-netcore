@@ -63,12 +63,12 @@ public class GroupController(IGroupService groupService,
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
     public ActionResult AddNew()
     {
-        return View(new InsertGroupCriteria());
+        return View(new InsertGroupCommand());
     }
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
-    public ActionResult AddNew(InsertGroupCriteria criteria)
+    public ActionResult AddNew(InsertGroupCommand criteria)
     {
         if (ModelState.IsValid)
         {
@@ -109,7 +109,7 @@ public class GroupController(IGroupService groupService,
             return RedirectToAction("Manage");
         }
 
-        var criteria = new UpdateGroupCriteria
+        var criteria = new UpdateGroupCommand
         {
             GroupId = group.Id,
             Description = group.Description,
@@ -122,7 +122,7 @@ public class GroupController(IGroupService groupService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageGroup, Policy = Constant.Policy.Host)]
-    public ActionResult Edit(UpdateGroupCriteria criteria)
+    public ActionResult Edit(UpdateGroupCommand criteria)
     {
         if (ModelState.IsValid)
         {
@@ -158,7 +158,7 @@ public class GroupController(IGroupService groupService,
     {
         if (Request.IsAjaxRequest())
         {
-            var criteria = new UpdateStatusGroupCriteria
+            var criteria = new UpdateStatusGroupCommand
             {
                 GroupId = id,
                 IsActive = isActive,
@@ -195,7 +195,7 @@ public class GroupController(IGroupService groupService,
             return RedirectToAction("Manage");
         }
 
-        var criteria = new AssignFunctionGroupCriteria
+        var criteria = new AssignFunctionGroupCommand
         {
             GroupId = group.Id,
             GroupName = group.Name,
@@ -224,7 +224,7 @@ public class GroupController(IGroupService groupService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Host)]
-    public ActionResult AssignPermission(AssignFunctionGroupCriteria criteria)
+    public ActionResult AssignPermission(AssignFunctionGroupCommand criteria)
     {
         var group = groupService.GetById(criteria.GroupId);
         var site = siteService.GetById(criteria.SiteId);
@@ -326,7 +326,7 @@ public class GroupController(IGroupService groupService,
         
         var listGroupFuncPolicy = functionService.GetByGroupAndSite(groupId, function.SiteId, Environment).ToList();
 
-        var criteria = new AssignFunctionGroupCriteria
+        var criteria = new AssignFunctionGroupCommand
         {
             FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),

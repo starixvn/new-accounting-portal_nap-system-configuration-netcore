@@ -3,12 +3,12 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Command;
 using Criteria.Group;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
+using NapAdminCore.Criteria;
 using Repository;
 
 public interface IGroupService
@@ -25,13 +25,13 @@ public interface IGroupService
 
     IEnumerable<Group> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null);
 
-    ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria);
+    CommandResult AssignFunction(AssignFunctionGroupCommand criteria);
 
-    ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria);
+    CommandResult UpdateStatus(UpdateStatusGroupCommand criteria);
 
-    ICommandResult Insert(InsertGroupCriteria criteria);
+    CommandResult Insert(InsertGroupCommand criteria);
 
-    ICommandResult Update(UpdateGroupCriteria criteria);
+    CommandResult Update(UpdateGroupCommand criteria);
 }
 
 public class GroupService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
@@ -87,28 +87,28 @@ public class GroupService(ISimpleRepository repository, IDynamicRepository dynam
         return dynamicRepository.Fetch<Group>(criteria).OrderBy(g => g.Name);
     }
 
-    public ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria)
+    public CommandResult AssignFunction(AssignFunctionGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria)
+    public CommandResult UpdateStatus(UpdateStatusGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Insert(InsertGroupCriteria criteria)
+    public CommandResult Insert(InsertGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Update(UpdateGroupCriteria criteria)
+    public CommandResult Update(UpdateGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 

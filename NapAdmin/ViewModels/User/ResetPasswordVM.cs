@@ -6,5 +6,5 @@ public class ResetPasswordVM
 {
     public ReturnData ReturnData { get; set; } = new();
 
-    public ResetPasswordCustCriteria Criteria { get; set; }
+    public ResetPasswordCustCommand Criteria { get; set; }
 }

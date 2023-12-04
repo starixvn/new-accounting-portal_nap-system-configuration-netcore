@@ -107,7 +107,7 @@ public class MenuController(IMenuItemService menuitemService,
             return RedirectToAction("Manage");
         }
 
-        var criteria = new UpdateMenuItemCriteria
+        var criteria = new UpdateMenuItemCommand
         {
             MenuItemId = menuItem.Id,
             MenuItemName = menuItem.Name,
@@ -139,7 +139,7 @@ public class MenuController(IMenuItemService menuitemService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageMenu, Policy = Constant.Policy.Host)]
-    public ActionResult EditMenuItem(UpdateMenuItemCriteria criteria)
+    public ActionResult EditMenuItem(UpdateMenuItemCommand criteria)
     {
         ViewBag.Function = functionService.GetSelectListItemBySite(
             criteria.SiteId,
@@ -217,7 +217,7 @@ public class MenuController(IMenuItemService menuitemService,
     {
         if (Request.IsAjaxRequest())
         {
-            var criteria = new UpdateStatusMenuItemCriteria
+            var criteria = new UpdateStatusMenuItemCommand
             {
                 IsActive = isActive,
                 MenuItemId = id,

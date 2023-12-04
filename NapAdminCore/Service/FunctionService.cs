@@ -3,12 +3,12 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Command;
 using Criteria.Function;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
+using NapAdminCore.Criteria;
 using Repository;
 
 public interface IFunctionService
@@ -51,19 +51,19 @@ public interface IFunctionService
 
     #endregion
 
-    ICommandResult Duplicate(DuplicateFunctionCriteria criteria);
+    CommandResult Duplicate(DuplicateFunctionCommand criteria);
 
-    ICommandResult Insert(InsertFunctionCriteria criteria);
+    CommandResult Insert(InsertFunctionCommand criteria);
 
-    ICommandResult Update(UpdateFunctionCriteria criteria);
+    CommandResult Update(UpdateFunctionCommand criteria);
 
-    ICommandResult UpdateStatus(UpdateStatusFunctionCriteria criteria);
+    CommandResult UpdateStatus(UpdateStatusFunctionCommand criteria);
 
-    ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria);
+    CommandResult AssignFunctionToUsers(AssignFunctionToUsersCommand criteria);
 
-    ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria);
+    CommandResult AssignFunctionToGroups(AssignFunctionToGroupsCommand criteria);
 
-    ICommandResult CopyPermission(CopyPermissionCriteria criteria);
+    CommandResult CopyPermission(CopyPermissionCommand criteria);
 }
 public class FunctionService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
@@ -245,37 +245,37 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
 
     #endregion
 
-    public ICommandResult Duplicate(DuplicateFunctionCriteria criteria)
+    public CommandResult Duplicate(DuplicateFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Insert(InsertFunctionCriteria criteria)
+    public CommandResult Insert(InsertFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Update(UpdateFunctionCriteria criteria)
+    public CommandResult Update(UpdateFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult UpdateStatus(UpdateStatusFunctionCriteria criteria)
+    public CommandResult UpdateStatus(UpdateStatusFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria)
+    public CommandResult AssignFunctionToUsers(AssignFunctionToUsersCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria)
+    public CommandResult AssignFunctionToGroups(AssignFunctionToGroupsCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
@@ -298,7 +298,7 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
         return sortedFunctionList;
     }
 
-    public ICommandResult CopyPermission(CopyPermissionCriteria criteria)
+    public CommandResult CopyPermission(CopyPermissionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 

@@ -48,7 +48,7 @@ public class SiteController(ISiteService siteService,
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
     public ActionResult AddNew()
     {
-        var criteria = new InsertSiteCriteria
+        var criteria = new InsertSiteCommand
         {
             Environment = Environment,
             Urls = new List<SiteUrl>
@@ -66,7 +66,7 @@ public class SiteController(ISiteService siteService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
-    public ActionResult AddNew(InsertSiteCriteria criteria)
+    public ActionResult AddNew(InsertSiteCommand criteria)
     {
         if (!ModelState.IsValid)
         {
@@ -145,7 +145,7 @@ public class SiteController(ISiteService siteService,
             return RedirectToAction("NotFound", "Common");
         }
 
-        var criteria = new UpdateSiteCriteria
+        var criteria = new UpdateSiteCommand
         {
             SiteId = site.Id,
             SiteName = site.Name,
@@ -161,7 +161,7 @@ public class SiteController(ISiteService siteService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
-    public ActionResult Edit(UpdateSiteCriteria criteria)
+    public ActionResult Edit(UpdateSiteCommand criteria)
     {
         if (ModelState.IsValid)
         {
@@ -255,7 +255,7 @@ public class SiteController(ISiteService siteService,
             }
             else
             {
-                var criteria = new UpdateSiteUrlCriteria
+                var criteria = new UpdateSiteUrlCommand
                 {
                     SiteUrlId = id,
                     SiteId = siteUrl.SiteId,
@@ -287,7 +287,7 @@ public class SiteController(ISiteService siteService,
 
             if (siteUrl != null)
             {
-                var criteria = new UpdateDefaultSiteUrlCriteria
+                var criteria = new UpdateDefaultSiteUrlCommand
                 {
                     SiteUrlId = id,
                     SiteId = siteUrl.SiteId,
@@ -334,7 +334,7 @@ public class SiteController(ISiteService siteService,
             }
             else
             {
-                var criteria = new InsertSiteUrlCriteria
+                var criteria = new InsertSiteUrlCommand
                 {
                     SiteId = siteId,
                     Url = url.OriginalString,
@@ -363,7 +363,7 @@ public class SiteController(ISiteService siteService,
     {
         if (Request.IsAjaxRequest())
         {
-            var result = siteService.UpdateStatus(new UpdateStatusSiteCriteria
+            var result = siteService.UpdateStatus(new UpdateStatusSiteCommand
             {
                 SiteId = id,
                 IsActive = isActive

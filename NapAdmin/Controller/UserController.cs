@@ -13,8 +13,8 @@ using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Configuration;
+using NapAdminCore.Criteria.OTP;
 using NapAdminCore.Criteria.User;
-using NapAdminCore.DbParams;
 using NapAdminCore.Helpers;
 using NapAdminCore.Models;
 using NapAdminCore.Models.ValueObject;
@@ -416,7 +416,7 @@ public class UserController(IUserService userService,
         return View(new AddNewUserVM
         {
             ReturnData = returnData,
-            Criteria = new InsertCustCriteria()
+            Criteria = new InsertCustCommand()
         });
     }
 
@@ -471,7 +471,7 @@ public class UserController(IUserService userService,
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        var criteria = new UpdateCustCriteria();
+        var criteria = new UpdateCustCommand();
 
         var user = userService.GetById(id);
 
@@ -558,7 +558,7 @@ public class UserController(IUserService userService,
                 ReturnGroupId = returnGroupId,
                 ReturnPageIndex = returnPageIndex
             },
-            Criteria = new ResetPasswordCustCriteria
+            Criteria = new ResetPasswordCustCommand
             {
                 CustId = user.Id,
                 Username = user.Username,
@@ -622,7 +622,7 @@ public class UserController(IUserService userService,
             return NotFound();
         }
 
-        var criteria = new AssignFunctionUserCriteria
+        var criteria = new AssignFunctionUserCommand
         {
             UserId = id,
             Username = user.Username,
@@ -797,7 +797,7 @@ public class UserController(IUserService userService,
         var function = functionService.GetById(functionId);
         var listUserFuncPolicy = functionService.GetByUserAndSite(userId, function.SiteId, Environment).ToList();
 
-        var criteria = new AssignFunctionUserCriteria
+        var criteria = new AssignFunctionUserCommand
         {
             FuncHost = listUserFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             FuncRead = listUserFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
@@ -817,7 +817,7 @@ public class UserController(IUserService userService,
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Host)]
     public string AssignSiteToUser(int userId, int siteId, int level, bool isActive)
     {
-        var criteria = new AssignSiteUserCriteria
+        var criteria = new AssignSiteUserCommand
         {
             CreatedBy = NapSession.UserId,
             CreatedDate = DateTime.Now,
@@ -860,7 +860,7 @@ public class UserController(IUserService userService,
 
         if (canUpdateSiteToUser)
         {
-            var criteria = new UpdateSiteToUserCriteria
+            var criteria = new UpdateSiteToUserCommand
             {
                 ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now,
@@ -890,7 +890,7 @@ public class UserController(IUserService userService,
     [HttpGet]
     public ActionResult UserProfile()
     {
-        var criteria = new UpdateCustCriteria();
+        var criteria = new UpdateCustCommand();
         var user = userService.GetById(NapSession.UserId);
 
         criteria.CustId = user.Id;
@@ -904,7 +904,7 @@ public class UserController(IUserService userService,
     }
 
     [HttpPost]
-    public ActionResult UserProfile(UpdateCustCriteria criteria)
+    public ActionResult UserProfile(UpdateCustCommand criteria)
     {
         if (ModelState.IsValid)
         {
@@ -972,7 +972,7 @@ public class UserController(IUserService userService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Host)]
-    public ActionResult AssignFunction([FromBody] List<AssignFunctionUserCriteria> payload)
+    public ActionResult AssignFunction([FromBody] List<AssignFunctionUserCommand> payload)
     {
         foreach (var data in payload)
         {
@@ -1155,7 +1155,7 @@ public class UserController(IUserService userService,
     {
         if (Request.IsAjaxRequest() && userId > 0 && groupId > 0)
         {
-            var criteria = new InsertUserCriteria
+            var criteria = new InsertUserCommand
             {
                 UserId = userId,
                 GroupId = groupId,

@@ -1,7 +1,6 @@
 
 namespace NapAdminCore.Repository;
 
-using Command;
 using Criteria;
 using Criteria.Misc;
 using Fanex.Data.Repository;
@@ -9,7 +8,7 @@ using Models.ValueObject;
 
 public interface ISimpleRepository
 {
-    ICommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria);
+    CommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria);
 
     IList<FunctionPolicy> FetchFunctionPolicy(ICriteria criteria);
 
@@ -20,7 +19,7 @@ public class SimpleSimpleRepository : ISimpleRepository
 {
     protected IDynamicRepository dynamicRepository = new DynamicRepository();
 
-    public ICommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria)
+    public CommandResult Execute(UpdateCommandBase command, LogExecSpCriteria logCriteria)
     {
         command.CopyFromLogCriteria(logCriteria);
 

@@ -7,7 +7,6 @@ using System.Xml.Linq;
 using Criteria.Trace;
 using Fanex.Data.Repository;
 using Models.ValueObject;
-using Repository;
 
 public interface ITraceService 
 {

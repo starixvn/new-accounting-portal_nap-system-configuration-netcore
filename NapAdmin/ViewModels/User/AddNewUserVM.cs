@@ -6,5 +6,5 @@ public class AddNewUserVM
 {
     public ReturnData ReturnData { get; set; } = new();
 
-    public InsertCustCriteria Criteria { get; set; }
+    public InsertCustCommand Criteria { get; set; }
 }

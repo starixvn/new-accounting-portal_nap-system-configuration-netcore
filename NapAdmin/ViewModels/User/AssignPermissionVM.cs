@@ -10,7 +10,7 @@ public class AssignPermissionVM
 {
     public ReturnData ReturnData { get; set; } = new();
 
-    public AssignFunctionUserCriteria Criteria { get; set; }
+    public AssignFunctionUserCommand Criteria { get; set; }
 
     public List<FunctionPolicy> GroupFuncPolicyList { get; set; }
 

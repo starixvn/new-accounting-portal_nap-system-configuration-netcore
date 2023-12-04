@@ -60,7 +60,7 @@ public class FunctionController(IFunctionService functionService,
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(int? siteId = null)
     {
-        var criteria = new InsertFunctionCriteria
+        var criteria = new InsertFunctionCommand
         {
             SiteId = siteId ?? SiteId,
             Environment = Environment
@@ -73,7 +73,7 @@ public class FunctionController(IFunctionService functionService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult AddNew(InsertFunctionCriteria criteria)
+    public ActionResult AddNew(InsertFunctionCommand criteria)
     {
         GetSitesAndFunctionsForAddNew(criteria);
 
@@ -132,7 +132,7 @@ public class FunctionController(IFunctionService functionService,
 
         var site = siteService.GetById(function.SiteId);
 
-        var criteria = new DuplicateFunctionCriteria
+        var criteria = new DuplicateFunctionCommand
         {
             FunctionId = function.Id,
             FunctionName = function.Name + " Copy",
@@ -154,7 +154,7 @@ public class FunctionController(IFunctionService functionService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult Duplicate(DuplicateFunctionCriteria criteria)
+    public ActionResult Duplicate(DuplicateFunctionCommand criteria)
     {
         var function = functionService.GetById(criteria.FunctionId);
 
@@ -217,7 +217,7 @@ public class FunctionController(IFunctionService functionService,
             return NotFound();
         }
 
-        var criteria = new CopyPermissionCriteria
+        var criteria = new CopyPermissionCommand
         {
             ToFunctionId = function.Id,
             ToFunctionName = function.Name,
@@ -234,7 +234,7 @@ public class FunctionController(IFunctionService functionService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult CopyPermission(CopyPermissionCriteria criteria)
+    public ActionResult CopyPermission(CopyPermissionCommand criteria)
     {
         var function = functionService.GetById(criteria.ToFunctionId);
 
@@ -277,7 +277,7 @@ public class FunctionController(IFunctionService functionService,
             return RedirectToAction("Manage");
         }
 
-        var criteria = new UpdateFunctionCriteria
+        var criteria = new UpdateFunctionCommand
         {
             FunctionId = function.Id,
             SiteId = function.SiteId,
@@ -309,7 +309,7 @@ public class FunctionController(IFunctionService functionService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult Edit(UpdateFunctionCriteria criteria)
+    public ActionResult Edit(UpdateFunctionCommand criteria)
     {
         var currentFunction = functionService.GetById(criteria.FunctionId);
 
@@ -400,7 +400,7 @@ public class FunctionController(IFunctionService functionService,
     {
         if (Request.IsAjaxRequest())
         {
-            var criteria = new UpdateStatusFunctionCriteria
+            var criteria = new UpdateStatusFunctionCommand
             {
                 FunctionId = id,
                 IsActive = isActive,
@@ -510,7 +510,7 @@ public class FunctionController(IFunctionService functionService,
                 throw new ArgumentException($"Function (id={id}) not found");
             }
 
-            var criteria = new AssignFunctionToUsersCriteria
+            var criteria = new AssignFunctionToUsersCommand
             {
                 FunctionId = id,
                 SiteId = function.SiteId,
@@ -568,7 +568,7 @@ public class FunctionController(IFunctionService functionService,
                 throw new ArgumentException($"Function (id={id}) not found");
             }
 
-            var criteria = new AssignFunctionToGroupsCriteria
+            var criteria = new AssignFunctionToGroupsCommand
             {
                 FunctionId = id,
                 SiteId = function.SiteId,

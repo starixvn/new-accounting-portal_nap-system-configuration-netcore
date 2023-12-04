@@ -62,4 +62,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Command\" />
+  </ItemGroup>
+
 </Project>

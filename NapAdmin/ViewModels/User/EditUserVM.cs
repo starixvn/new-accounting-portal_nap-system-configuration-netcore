@@ -6,5 +6,5 @@ public class EditUserVM
 {
     public ReturnData ReturnData { get; set; } = new();
 
-    public UpdateCustCriteria Criteria { get; set; }
+    public UpdateCustCommand Criteria { get; set; }
 }
