@@ -99,7 +99,7 @@ public class FunctionController(IFunctionService functionService,
 
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
-            criteria.CreatedBy = NapSession.UserId;
+            criteria.CreatedBy = napSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
             var result = functionService.Insert(criteria);
@@ -188,7 +188,7 @@ public class FunctionController(IFunctionService functionService,
             criteria.DuplicateFunctionId = function.Id;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
-            criteria.CreatedBy = NapSession.UserId;
+            criteria.CreatedBy = napSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
             var result = functionService.Duplicate(criteria);
@@ -248,7 +248,7 @@ public class FunctionController(IFunctionService functionService,
 
         if (ModelState.IsValid)
         {
-            criteria.ModifiedBy = NapSession.UserId;
+            criteria.ModifiedBy = napSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
             var result = functionService.CopyPermission(criteria);
@@ -358,8 +358,8 @@ public class FunctionController(IFunctionService functionService,
             }
 
             if (criteria.Crud < currentFunction.Crud &&
-                NapSession.Level != (int)AdminConstant.Level.SiteAdmin &&
-                NapSession.Level != (int)AdminConstant.Level.PortalAdmin)
+                napSession.Level != (int)AdminConstant.Level.SiteAdmin &&
+                napSession.Level != (int)AdminConstant.Level.PortalAdmin)
             {
                 var listUsers = userService.GetByFunctionAndSite(currentFunction.Id, currentFunction.SiteId)
                     .Where(u => u.Policy == (int)AdminConstant.Policy.Host).ToList();
@@ -377,7 +377,7 @@ public class FunctionController(IFunctionService functionService,
 
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
-            criteria.ModifiedBy = NapSession.UserId;
+            criteria.ModifiedBy = napSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
             var result = functionService.Update(criteria);
@@ -404,7 +404,7 @@ public class FunctionController(IFunctionService functionService,
             {
                 FunctionId = id,
                 IsActive = isActive,
-                ModifiedBy = NapSession.UserId,
+                ModifiedBy = napSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
@@ -489,7 +489,7 @@ public class FunctionController(IFunctionService functionService,
 
             var userList = new PagerList<UserLevel>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, users);
 
-            var adminPolicy = userService.GetUserFunctionPolicy(NapSession.UserId, fid);
+            var adminPolicy = userService.GetUserFunctionPolicy(napSession.UserId, fid);
             ViewBag.IsReadonlyAssign = adminPolicy < (int)AdminConstant.Policy.Host;
 
             return View(userList);
@@ -516,7 +516,7 @@ public class FunctionController(IFunctionService functionService,
                 SiteId = function.SiteId,
                 UserRead = readList.Split(',').ToList(),
                 UserHost = hostList.Split(',').ToList(),
-                ModifiedBy = NapSession.UserId,
+                ModifiedBy = napSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
@@ -547,7 +547,7 @@ public class FunctionController(IFunctionService functionService,
 
             var group = groupService.SearchGroupExcludeFunction(groupName, function.SiteId, fid);
 
-            var adminPolicy = userService.GetUserFunctionPolicy(NapSession.UserId, fid);
+            var adminPolicy = userService.GetUserFunctionPolicy(napSession.UserId, fid);
             ViewBag.IsReadonlyAssign = adminPolicy < (int)AdminConstant.Policy.Host;
 
             return View(group);
@@ -574,7 +574,7 @@ public class FunctionController(IFunctionService functionService,
                 SiteId = function.SiteId,
                 GroupRead = readList.Split(',').ToList(),
                 GroupHost = hostList.Split(',').ToList(),
-                ModifiedBy = NapSession.UserId,
+                ModifiedBy = napSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
@@ -679,7 +679,7 @@ public class FunctionController(IFunctionService functionService,
             ViewBag.SiteItemList = UserIsPortalAdmin ?
                 siteService.GetAllSelectListItem(criteria.Environment, isActive: true, selectedSiteId: criteria.SiteId) :
                 siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    NapSession.UserId,
+                    napSession.UserId,
                     FunctionKeys.ManageFunction,
                     criteria.Environment,
                     policy: AdminConstant.Policy.Host,
@@ -708,7 +708,7 @@ public class FunctionController(IFunctionService functionService,
         {
             ViewBag.SiteItemList =
                 siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    NapSession.UserId,
+                    napSession.UserId,
                     FunctionKeys.ManageFunction,
                     criteria.Environment,
                     selectedSiteId: criteria.SiteId);

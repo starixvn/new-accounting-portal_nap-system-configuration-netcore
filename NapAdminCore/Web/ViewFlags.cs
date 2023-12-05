@@ -11,8 +11,6 @@ public class ViewFlags
 
     public int NapAdminSiteId { get; set; }
 
-    public bool IsNapAdminSite { get; set; }
-
     public bool HasAssignSiteReadRight { get; set; }
 
     public bool HasAssignSiteRight { get; set; }

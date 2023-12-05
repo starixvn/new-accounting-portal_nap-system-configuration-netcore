@@ -22,20 +22,17 @@
         @Html.ActionLink("← " + ViewResources.Back_To_List, "Manage", "Group", null, new { @class = "back-button" })
     </div>
 }
-@if (viewFlags.IsNapAdminSite)
+@using (Html.BeginForm("AssignPermission", "Group", FormMethod.Get, new { @class = "form-inline col-sm-12 filter-form" }))
 {
-
-    using (Html.BeginForm("AssignPermission", "Group", FormMethod.Get, new { @class = "form-inline col-sm-12 filter-form" }))
-    {
-        <div class="form-group">
-            @Html.LabelFor(m => m.SiteId)
-            @Html.DropDownListFor(m => m.SiteId, ViewBag.SiteSelectList as List<SelectListItem>)
-        </div>
-        <div class="form-group">
-            <input type="submit" value="@ViewResources.Submit" />
-        </div>
-    }
+    <div class="form-group">
+        @Html.LabelFor(m => m.SiteId)
+        @Html.DropDownListFor(m => m.SiteId, ViewBag.SiteSelectList as List<SelectListItem>)
+    </div>
+    <div class="form-group">
+        <input type="submit" value="@ViewResources.Submit" />
+    </div>
 }
+
 @using (Html.BeginForm())
 {
     <table class="grid no-scale">
@@ -69,7 +66,7 @@
                     var parentId = function.ParentId > 0 ? function.ParentId.ToString() : string.Empty;
 
                     var funcNameStyle = i == functionCount - 1 ? "nbt" : "nbt nbb";
-                    if (function.ParentId ==0)
+                    if (function.ParentId == 0)
                     {
                         funcNameStyle = i == functionCount - 1 ? string.Empty : "nbb";
                     }
@@ -100,7 +97,7 @@
                             else
                             {
                                 <input id="@chkReadId" name="funcRead" value="@function.Id" pid="@parentId"
-                       type="checkbox" @Html.Raw(checkedReadCss) />
+                                       type="checkbox" @Html.Raw(checkedReadCss) />
                             }
                         </td>
                         <td class="text-center">
@@ -125,7 +122,7 @@
                                 else
                                 {
                                     <input id="@chkHostId" name="funcHost" value="@function.Id" pid="@parentId"
-                       type="checkbox" @Html.Raw(checkedHostCss) />
+                                           type="checkbox" @Html.Raw(checkedHostCss) />
                                 }
                             }
                         </td>

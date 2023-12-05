@@ -8,8 +8,6 @@ using ONEbook.UM.Services;
 
 public class ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration configuration, IMaintenanceService maintenanceService)
 {
-    public IConfiguration Configuration { get; } = configuration;
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -54,7 +52,7 @@ public class ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration c
 
         await context.Response.WriteAsync(exception.Message);
 
-        var env = Configuration.GetSection("Fanex.NAP.Client:Environment").Value;
+        var env = configuration.GetSection("Fanex.NAP.Client:Environment").Value;
 
         if (exception.StackTrace != null && !env.Equals("LIVE", StringComparison.CurrentCultureIgnoreCase))
         {

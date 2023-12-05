@@ -28,34 +28,31 @@
     </span>
     <div class="button-action">
         @Html.ActionLink("← " + ViewResources.Back_To_List, "Manage", "User",
-    new
-    {
-    userName = Model.ReturnData.ReturnUserName,
-    siteId = Model.ReturnData.ReturnSiteId,
-    id = Model.ReturnData.ReturnPageIndex,
-    groupId = Model.ReturnData.ReturnGroupId
-    }, new { @class = "back-button" })
+                new
+                {
+                    userName = Model.ReturnData.ReturnUserName,
+                    siteId = Model.ReturnData.ReturnSiteId,
+                    id = Model.ReturnData.ReturnPageIndex,
+                    groupId = Model.ReturnData.ReturnGroupId
+                }, new { @class = "back-button" })
     </div>
 }
-@if (viewFlags.IsNapAdminSite)
+@using (Html.BeginForm("AssignPermission", "User", FormMethod.Get, new { @class = "form-inline col-sm-12 filter-form" }))
 {
-    using (Html.BeginForm("AssignPermission", "User", FormMethod.Get, new { @class = "form-inline col-sm-12 filter-form" }))
-    {
-        @Html.Hidden("returnUserName", @Model.ReturnData.ReturnUserName)
-        @Html.Hidden("returnSiteId", @Model.ReturnData.ReturnSiteId)
-        @Html.Hidden("returnGroupId", @Model.ReturnData.ReturnGroupId)
-        @Html.Hidden("returnPageIndex", @Model.ReturnData.ReturnPageIndex)
+    @Html.Hidden("returnUserName", @Model.ReturnData.ReturnUserName)
+    @Html.Hidden("returnSiteId", @Model.ReturnData.ReturnSiteId)
+    @Html.Hidden("returnGroupId", @Model.ReturnData.ReturnGroupId)
+    @Html.Hidden("returnPageIndex", @Model.ReturnData.ReturnPageIndex)
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Criteria.SiteId)
-            @Html.DropDownList("siteId", Model.Sites as List<SelectListItem>, new { @value = Model.Criteria.SiteId })
-        </div>
-        <div class="form-group">
-            <input type="submit" value="@ViewResources.Submit" />
-        </div>
-    }
-
+    <div class="form-group">
+        @Html.LabelFor(m => m.Criteria.SiteId)
+        @Html.DropDownList("siteId", Model.Sites as List<SelectListItem>, new { @value = Model.Criteria.SiteId })
+    </div>
+    <div class="form-group">
+        <input type="submit" value="@ViewResources.Submit" />
+    </div>
 }
+
 @using (Html.BeginForm())
 {
     <table class="grid no-scale">
@@ -136,7 +133,7 @@
                             else
                             {
                                 <input id="@chkReadId" name="criteria.funcRead" value="@function.Id" pid="@parentId"
-                       type="checkbox" @Html.Raw(checkedReadCss) />
+                                       type="checkbox" @Html.Raw(checkedReadCss) />
                             }
                         </td>
                         <td class="text-center">
@@ -161,7 +158,7 @@
                                 else
                                 {
                                     <input id="@chkHostId" name="criteria.funcHost" value="@function.Id" pid="@parentId"
-                       type="checkbox" @Html.Raw(checkedHostCss) />
+                                           type="checkbox" @Html.Raw(checkedHostCss) />
                                 }
                             }
                         </td>

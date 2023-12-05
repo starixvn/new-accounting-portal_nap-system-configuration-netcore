@@ -31,7 +31,7 @@ public class SiteController(ISiteService siteService,
         ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Read);
 
         ViewBag.Site = siteService.GetByUserAndFunctionKeyIncludeGroup(
-            NapSession.UserId,
+            napSession.UserId,
             FunctionKeys.ManageUser,
             Environment).Select(s => s.Id).ToList();
         ViewBag.SiteList = siteService.GetAllWithNumOfUsers(Environment).OrderByDescending(s => s.IsActive).ThenBy(s => s.Id).ToList();
@@ -216,7 +216,7 @@ public class SiteController(ISiteService siteService,
         ViewBag.SiteName = site.Name;
         ViewBag.Urls = siteService.GetSiteUrlBySiteId(id, string.Empty).ToList();
         ViewFlags.SetEditRight(userService.GetUserSiteFunctionKeyPolicy(
-            NapSession.UserId,
+            napSession.UserId,
             SiteId,
             FunctionKeys.ManageSite));
 
