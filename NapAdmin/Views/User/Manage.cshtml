@@ -188,9 +188,12 @@
                         var hasAssignFunctionRight = (hashAssignFunction.SafeGetInt(item.SiteId) >= (int)AdminConstant.Policy.Read)
                         && viewFlagsCurrentSite.HasAssignFunctionRight;
 
-                        var canEditDetail = hasEditRight && (level > item.Level || item.UserId == userId);
+                        var selfEdit = item.UserId == userId;
+                        var userEditUser = item.Level == (int)AdminConstant.Level.User && level == item.Level;
 
-                        var canAssignSite = hasAssignSiteRight && level >= item.Level;
+                        var canEditDetail = item.SiteId == 0 || (hasEditRight && (level > item.Level || selfEdit || userEditUser));
+
+                        var canAssignSite = item.SiteId == 0 || (hasAssignSiteRight && level >= item.Level);
 
                         var canAssignPermission = hasAssignFunctionRight && level >= item.Level;
 
