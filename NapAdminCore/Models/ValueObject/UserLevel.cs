@@ -30,7 +30,6 @@ public class UserLevel
 
     public string GroupName { get; set; }
 
-
     public bool IsActive { get; set; }
 
     public int Status { get; set; }
@@ -43,7 +42,7 @@ public class UserLevel
 
     public string ModifierUsername { get; set; }
 
-    public byte SiteId { get; set; }
+    public int SiteId { get; set; }
 
     public string SiteName { get; set; }
 }

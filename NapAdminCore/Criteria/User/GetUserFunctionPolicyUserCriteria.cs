@@ -8,13 +8,7 @@ public class GetUserFunctionPolicyUserCriteria : CriteriaBase
 
     public int FunctionId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetUserFunctionPolicy";
-    }
+    public override string GetSettingKey() => "NAP_User_GetUserFunctionPolicy";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -27,13 +27,7 @@ public class GetAllLogCriteria : CriteriaBase
 
     public int TotalRows { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_LogExecSp_Search";
-    }
+    public override string GetSettingKey() => "NAP_LogExecSp_Search";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

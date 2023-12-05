@@ -24,13 +24,7 @@ public class GetAllLogUserLoginCriteria : CriteriaBase
 
     public int TotalRows { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_LogUserLogin_Search";
-    }
+    public override string GetSettingKey() => "NAP_LogUserLogin_Search";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

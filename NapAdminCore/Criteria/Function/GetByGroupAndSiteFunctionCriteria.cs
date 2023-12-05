@@ -10,13 +10,7 @@ public class GetByGroupAndSiteFunctionCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_GetByGroupAndSite";
-    }
+    public override string GetSettingKey() => "NAP_Function_GetByGroupAndSite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -16,30 +16,12 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 
 [NapSuperAuth]
-public class SiteController : BaseController
-{
-    #region Members
-
-    private readonly ISiteService _siteService;
-    private readonly IUserService _userService;
-
-    #endregion Members
-
-    #region Constructors
-
-
-    public SiteController(ISiteService siteService,
+public class SiteController(ISiteService siteService,
         IUserService userService,
         INapSession napSession,
-        INapSettings napSettings) :
-        base(napSession, napSettings, userService)
-    {
-        _siteService = siteService;
-        _userService = userService;
-    }
-
-    #endregion Constructors
-
+        INapSettings napSettings)
+    : BaseController(napSession, napSettings, userService)
+{
     #region Manage
 
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Read)]
@@ -48,12 +30,12 @@ public class SiteController : BaseController
         ViewFlags.HasEditRight = HasRight(FunctionKeys.ManageSite, AdminConstant.Policy.Host);
         ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Read);
 
-        ViewBag.Site = _siteService.GetByUserAndFunctionKeyIncludeGroup(
-            NapSession.UserId,
+        ViewBag.Site = siteService.GetByUserAndFunctionKeyIncludeGroup(
+            napSession.UserId,
             FunctionKeys.ManageUser,
             Environment).Select(s => s.Id).ToList();
-        ViewBag.SiteList = _siteService.GetAllWithNumOfUsers(Environment).OrderByDescending(s => s.IsActive).ThenBy(s => s.Id).ToList();
-        ViewBag.SiteUrlList = _siteService.GetAllSiteUrl(Environment).ToList();
+        ViewBag.SiteList = siteService.GetAllWithNumOfUsers(Environment).OrderByDescending(s => s.IsActive).ThenBy(s => s.Id).ToList();
+        ViewBag.SiteUrlList = siteService.GetAllSiteUrl(Environment).ToList();
 
         return View(criteria);
     }
@@ -66,7 +48,7 @@ public class SiteController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
     public ActionResult AddNew()
     {
-        var criteria = new InsertSiteCriteria
+        var criteria = new InsertSiteCommand
         {
             Environment = Environment,
             Urls = new List<SiteUrl>
@@ -84,7 +66,7 @@ public class SiteController : BaseController
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
-    public ActionResult AddNew(InsertSiteCriteria criteria)
+    public ActionResult AddNew(InsertSiteCommand criteria)
     {
         if (!ModelState.IsValid)
         {
@@ -102,7 +84,7 @@ public class SiteController : BaseController
         }
 
         criteria.SiteName = criteria.SiteName.Trim();
-        var site = _siteService.GetByName(criteria.SiteName);
+        var site = siteService.GetByName(criteria.SiteName);
 
         if (site != null)
         {
@@ -112,7 +94,7 @@ public class SiteController : BaseController
         }
 
         criteria.SiteKey = ConvertToKey(criteria.SiteName);
-        site = _siteService.GetByKey(criteria.SiteKey);
+        site = siteService.GetByKey(criteria.SiteKey);
 
         if (site != null)
         {
@@ -138,7 +120,7 @@ public class SiteController : BaseController
         criteria.Environment = Environment;
         criteria.SecretAccessKey = GenerateAPPKey();
 
-        var result = _siteService.Insert(criteria);
+        var result = siteService.Insert(criteria);
 
         if (result is { IsSuccessful: true })
         {
@@ -156,14 +138,14 @@ public class SiteController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
     public ActionResult Edit(int id)
     {
-        var site = _siteService.GetById(id);
+        var site = siteService.GetById(id);
 
         if (site == null)
         {
             return RedirectToAction("NotFound", "Common");
         }
 
-        var criteria = new UpdateSiteCriteria
+        var criteria = new UpdateSiteCommand
         {
             SiteId = site.Id,
             SiteName = site.Name,
@@ -179,12 +161,12 @@ public class SiteController : BaseController
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
-    public ActionResult Edit(UpdateSiteCriteria criteria)
+    public ActionResult Edit(UpdateSiteCommand criteria)
     {
         if (ModelState.IsValid)
         {
             criteria.SiteName = criteria.SiteName.Trim();
-            var site = _siteService.GetByName(criteria.SiteName);
+            var site = siteService.GetByName(criteria.SiteName);
 
             if (site != null && site.Id != criteria.SiteId)
             {
@@ -195,7 +177,7 @@ public class SiteController : BaseController
 
             if (!string.IsNullOrEmpty(criteria.SiteKey))
             {
-                site = _siteService.GetByKey(criteria.SiteKey);
+                site = siteService.GetByKey(criteria.SiteKey);
 
                 if (site != null && site.Id != criteria.SiteId)
                 {
@@ -204,7 +186,7 @@ public class SiteController : BaseController
                 }
             }
 
-            var result = _siteService.Update(criteria);
+            var result = siteService.Update(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -223,7 +205,7 @@ public class SiteController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Read)]
     public ActionResult EditUrl(int id)
     {
-        var site = _siteService.GetById(id);
+        var site = siteService.GetById(id);
 
         if (site == null)
         {
@@ -232,9 +214,9 @@ public class SiteController : BaseController
 
         ViewBag.SiteId = site.Id;
         ViewBag.SiteName = site.Name;
-        ViewBag.Urls = _siteService.GetSiteUrlBySiteId(id, string.Empty).ToList();
-        ViewFlags.SetEditRight(_userService.GetUserSiteFunctionKeyPolicy(
-            NapSession.UserId,
+        ViewBag.Urls = siteService.GetSiteUrlBySiteId(id, string.Empty).ToList();
+        ViewFlags.SetEditRight(userService.GetUserSiteFunctionKeyPolicy(
+            napSession.UserId,
             SiteId,
             FunctionKeys.ManageSite));
 
@@ -250,7 +232,7 @@ public class SiteController : BaseController
             return NotFound();
         }
 
-        var siteUrl = _siteService.GetSiteUrlById(id);
+        var siteUrl = siteService.GetSiteUrlById(id);
 
         if (siteUrl == null)
         {
@@ -265,7 +247,7 @@ public class SiteController : BaseController
         }
         else
         {
-            var altUrls = _siteService.GetSiteUrlBySiteId(siteUrl.SiteId, siteUrl.Environment);
+            var altUrls = siteService.GetSiteUrlBySiteId(siteUrl.SiteId, siteUrl.Environment);
 
             if (altUrls.Any(x => x.SiteUrlId != id && x.Url == url.OriginalString))
             {
@@ -273,7 +255,7 @@ public class SiteController : BaseController
             }
             else
             {
-                var criteria = new UpdateSiteUrlCriteria
+                var criteria = new UpdateSiteUrlCommand
                 {
                     SiteUrlId = id,
                     SiteId = siteUrl.SiteId,
@@ -283,7 +265,7 @@ public class SiteController : BaseController
                     IsDefault = siteUrl.IsDefault
                 };
 
-                var cmdResult = _siteService.UpdateSiteUrl(criteria);
+                var cmdResult = siteService.UpdateSiteUrl(criteria);
 
                 if (cmdResult is not { IsSuccessful: true })
                 {
@@ -301,18 +283,18 @@ public class SiteController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var siteUrl = _siteService.GetSiteUrlById(id);
+            var siteUrl = siteService.GetSiteUrlById(id);
 
             if (siteUrl != null)
             {
-                var criteria = new UpdateDefaultSiteUrlCriteria
+                var criteria = new UpdateDefaultSiteUrlCommand
                 {
                     SiteUrlId = id,
                     SiteId = siteUrl.SiteId,
                     Environment = siteUrlEnvironment
                 };
 
-                var cmdResult = _siteService.UpdateDefaultSiteUrl(criteria);
+                var cmdResult = siteService.UpdateDefaultSiteUrl(criteria);
 
                 return Json(cmdResult is not { IsSuccessful: true } ? "error" : AdminConstant.Ok);
             }
@@ -330,7 +312,7 @@ public class SiteController : BaseController
             return NotFound();
         }
 
-        var site = _siteService.GetById(siteId);
+        var site = siteService.GetById(siteId);
 
         if (site == null)
         {
@@ -344,7 +326,7 @@ public class SiteController : BaseController
         }
         else
         {
-            var siteUrls = _siteService.GetSiteUrlBySiteId(site.Id, Environment);
+            var siteUrls = siteService.GetSiteUrlBySiteId(site.Id, Environment);
 
             if (siteUrls.Any(x => x.Url == url.OriginalString))
             {
@@ -352,7 +334,7 @@ public class SiteController : BaseController
             }
             else
             {
-                var criteria = new InsertSiteUrlCriteria
+                var criteria = new InsertSiteUrlCommand
                 {
                     SiteId = siteId,
                     Url = url.OriginalString,
@@ -361,7 +343,7 @@ public class SiteController : BaseController
                     IsDefault = false
                 };
 
-                var cmdResult = _siteService.InsertSiteUrl(criteria);
+                var cmdResult = siteService.InsertSiteUrl(criteria);
 
                 result = cmdResult is { IsSuccessful: true } ?
                     criteria.SiteUrlId.ToString() :
@@ -381,7 +363,7 @@ public class SiteController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var result = _siteService.UpdateStatus(new UpdateStatusSiteCriteria
+            var result = siteService.UpdateStatus(new UpdateStatusSiteCommand
             {
                 SiteId = id,
                 IsActive = isActive
@@ -402,14 +384,14 @@ public class SiteController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageSite, Policy = Constant.Policy.Host)]
     public JsonResult GetSiteKey(int siteId, string siteName)
     {
-        var site = _siteService.GetById(siteId);
+        var site = siteService.GetById(siteId);
 
         if (ReferenceEquals(site, null))
         {
             return Json(-1);
         }
 
-        site = _siteService.GetByName(siteName);
+        site = siteService.GetByName(siteName);
 
         if (site != null && site.Id != siteId)
         {
@@ -418,7 +400,7 @@ public class SiteController : BaseController
 
         var siteKey = ConvertToKey(siteName);
 
-        site = _siteService.GetByKey(siteKey);
+        site = siteService.GetByKey(siteKey);
 
         if (site != null && site.Id != siteId)
         {

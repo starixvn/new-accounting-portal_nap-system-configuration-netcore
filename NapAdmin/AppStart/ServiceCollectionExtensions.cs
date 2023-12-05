@@ -1,13 +1,10 @@
 namespace NapAdmin.AppStart;
 
 using Fanex.Caching;
-using Fanex.Data;
 using Fanex.Data.Repository;
-using Fanex.Data.SqlServer;
 using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.AspNetCore;
-using Fanex.Logging.Extensions.Database;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Web;
@@ -52,8 +49,7 @@ public static class IServiceCollectionExtensions
             });
 
         ExceptionHandler
-            .UseConfig(new LoggingConfiguration())
-            .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+            .UseConfig(new LoggingConfiguration());
     }
 
     public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)
@@ -75,13 +71,7 @@ public static class IServiceCollectionExtensions
     public static void AddNapAdminCore(this IServiceCollection services)
     {
         services.AddScoped<IDynamicRepository, DynamicRepository>();
-        services.AddScoped<IFunctionRepository, FunctionRepository>();
-        services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<IMenuItemRepository, MenuItemRepository>();
-        services.AddScoped<ISiteRepository, SiteRepository>();
-        services.AddScoped<ITraceRepository, TraceRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-
+        services.AddScoped<ISimpleRepository, SimpleSimpleRepository>();
         services.AddScoped<IFunctionService, FunctionService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IMenuItemService, MenuItemService>();

@@ -18,13 +18,7 @@ public class SearchUserExcludeFunctionCriteria : CriteriaBase
 
     public int TotalRows { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_SearchExcludeFunction";
-    }
+    public override string GetSettingKey() => "NAP_User_SearchExcludeFunction";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

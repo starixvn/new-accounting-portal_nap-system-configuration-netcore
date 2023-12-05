@@ -19,8 +19,10 @@
     <Setting Key="NAP_MenuItem_Insert" SpName="NAP_MenuItem_Insert" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_MenuItem_Update" SpName="NAP_MenuItem_Update" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
     <Setting Key="NAP_MenuItem_UpdateStatus" SpName="NAP_MenuItem_UpdateStatus" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_Search" SpName="NAP_MenuItem_Search" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_GetParentById" SpName="NAP_MenuItem_GetParentById" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_MenuItem_GetParentById" SpName="NAP_MenuItem_GetParentById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
+    </Setting>
   </Function>
   <Function Name="Group">
     <Setting Key="NAP_Group_AssignFunction" SpName="NAP_Group_AssignFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
@@ -47,6 +49,6 @@
     <Setting Key="NAP_Admin_OTPUpd" SpName="NAP_Admin_OTPUpd" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
   </Function>
   <Function Name="OWP">
-    <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.bodbAdminNet" />    
+    <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.bodbAdminNet" />
   </Function>
 </Functions>

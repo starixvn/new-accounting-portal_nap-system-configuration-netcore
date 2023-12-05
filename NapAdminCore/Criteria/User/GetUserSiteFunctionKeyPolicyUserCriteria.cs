@@ -10,13 +10,7 @@ public class GetUserSiteFunctionKeyPolicyUserCriteria : CriteriaBase
 
     public string FunctionKey { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetUserSiteFunctionKeyPolicy";
-    }
+    public override string GetSettingKey() => "NAP_User_GetUserSiteFunctionKeyPolicy";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

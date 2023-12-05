@@ -10,13 +10,7 @@ public class SearchGroupExcludeFunctionCriteria : CriteriaBase
 
     public int FunctionId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Group_SearchExcludeFunction";
-    }
+    public override string GetSettingKey() => "NAP_Group_SearchExcludeFunction";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

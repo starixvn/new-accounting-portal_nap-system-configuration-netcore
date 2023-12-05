@@ -8,13 +8,7 @@ public class GetUserSiteLevelUserCriteria : CriteriaBase
 
     public int SiteId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetUserSiteLevel";
-    }
+    public override string GetSettingKey() => "NAP_User_GetUserSiteLevel";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

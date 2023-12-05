@@ -3,11 +3,11 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Command;
 using Criteria.MenuItem;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
+using NapAdminCore.Criteria;
 using Repository;
 
 public interface IMenuItemService
@@ -28,25 +28,16 @@ public interface IMenuItemService
 
     IList<SelectListItem> GetParentSelectListItemById(int id, int selectedMenuItemId = 0, string env = AdminConstant.Uat);
 
-    ICommandResult Insert(InsertMenuItemCriteria criteria);
+    CommandResult Insert(InsertMenuItemCriteria criteria);
 
-    ICommandResult Update(UpdateMenuItemCriteria criteria);
+    CommandResult Update(UpdateMenuItemCommand criteria);
 
-    ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria);
+    CommandResult UpdateStatus(UpdateStatusMenuItemCommand command);
 }
-public class MenuItemService : IMenuItemService
+public class MenuItemService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IMenuItemService
 {
-    private readonly IMenuItemRepository menuItemRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-
-    public MenuItemService(IMenuItemRepository menuItemRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.menuItemRepository = menuItemRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-
     public MenuItem GetById(int id)
     {
         var criteria = new GetByIdMenuItemCriteria
@@ -140,25 +131,25 @@ public class MenuItemService : IMenuItemService
         .ToList();
     }
 
-    public ICommandResult Insert(InsertMenuItemCriteria criteria)
+    public CommandResult Insert(InsertMenuItemCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return menuItemRepository.Insert(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Update(UpdateMenuItemCriteria criteria)
+    public CommandResult Update(UpdateMenuItemCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return menuItemRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult UpdateStatus(UpdateStatusMenuItemCriteria criteria)
+    public CommandResult UpdateStatus(UpdateStatusMenuItemCommand command)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return menuItemRepository.Update(criteria, logCriteria);
+        return repository.Execute(command, logCriteria);
     }
 
     private IEnumerable<MenuItem> SortMenuItemsInHierarchy(IEnumerable<MenuItem> menuItemList, int parentId = 0)

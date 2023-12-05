@@ -9,22 +9,10 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 using AdminConstant = NapAdminCore.Models.AdminConstant;
 
-public class BaseController : Controller
+public class BaseController(INapSession napSession, INapSettings napSettings, IUserService userService)
+    : Controller
 {
     protected const string EmptyString = "";
-
-    protected const int NapAdminId = 1;
-
-    private readonly INapSettings napSettings;
-
-    protected IUserService userService;
-
-    public BaseController(INapSession napSession, INapSettings napSettings, IUserService userService)
-    {
-        this.napSettings = napSettings;
-        this.userService = userService;
-        NapSession = napSession;
-    }
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
@@ -32,11 +20,11 @@ public class BaseController : Controller
         ViewFlags = new ViewFlags
         {
             IsLive = Environment.Equals(AdminConstant.Live),
-            IsNapAdminSite = napSettings.SiteId.Equals(NapAdminId),
+            NapAdminSiteId =  napSettings.SiteId,
             HasEditRight = false,
             IsReCheckin = napSettings.EnableReCheckIn
         };
-        ViewBag.NapSession = NapSession;
+        ViewBag.NapSession = napSession;
         ViewBag.ViewFlags = ViewFlags;
     }
 
@@ -51,24 +39,18 @@ public class BaseController : Controller
 
     protected string Environment => napSettings.Environment;
 
-    protected bool ThisSiteIsNapAdmin => napSettings.SiteId == NapAdminId;
-
-    protected bool UserIsPortalAdmin => NapSession.Level == (int)AdminConstant.Level.PortalAdmin;
-
-    protected bool UserIsSiteAdmin => NapSession.Level == (int)AdminConstant.Level.SiteAdmin;
-
-    protected INapSession NapSession { get; }
+    protected bool UserIsPortalAdmin => napSession.Level == (int)AdminConstant.Level.PortalAdmin;
 
     public bool HasRight(string functionKey, AdminConstant.Policy policy)
     {
-        var functionPolicy = userService.GetUserSiteFunctionKeyPolicy(NapSession.UserId, napSettings.SiteId, functionKey);
+        var functionPolicy = userService.GetUserSiteFunctionKeyPolicy(napSession.UserId, napSettings.SiteId, functionKey);
 
         return functionPolicy >= (int)policy;
     }
 
     public bool HasRightOnSite(int siteId, string functionKey, AdminConstant.Policy policy)
     {
-        var functionPolicy = userService.GetUserSiteFunctionKeyPolicy(NapSession.UserId, siteId, functionKey);
+        var functionPolicy = userService.GetUserSiteFunctionKeyPolicy(napSession.UserId, siteId, functionKey);
 
         return functionPolicy >= (int)policy;
     }

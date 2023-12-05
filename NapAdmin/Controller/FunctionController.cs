@@ -18,36 +18,14 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 
 [NapSuperAuth]
-public class FunctionController : BaseController
-{
-    #region Members
-
-    private readonly IFunctionService _functionService;
-    private readonly ISiteService _siteService;
-    private readonly IUserService _userService;
-    private readonly IGroupService _groupService;
-
-    #endregion Members
-
-    #region Constructors
-
-    public FunctionController(
-        IFunctionService functionService,
+public class FunctionController(IFunctionService functionService,
         ISiteService siteService,
         IUserService userService,
         IGroupService groupService,
         INapSession napSession,
-        INapSettings napSettings) :
-        base(napSession, napSettings, userService)
-    {
-        _functionService = functionService;
-        _siteService = siteService;
-        _userService = userService;
-        _groupService = groupService;
-    }
-
-    #endregion Constructors
-
+        INapSettings napSettings)
+    : BaseController(napSession, napSettings, userService)
+{
     #region Manage
 
     [HttpGet]
@@ -82,7 +60,7 @@ public class FunctionController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(int? siteId = null)
     {
-        var criteria = new InsertFunctionCriteria
+        var criteria = new InsertFunctionCommand
         {
             SiteId = siteId ?? SiteId,
             Environment = Environment
@@ -95,14 +73,14 @@ public class FunctionController : BaseController
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult AddNew(InsertFunctionCriteria criteria)
+    public ActionResult AddNew(InsertFunctionCommand criteria)
     {
         GetSitesAndFunctionsForAddNew(criteria);
 
         if (ModelState.IsValid)
         {
             criteria.FunctionName = criteria.FunctionName.Trim();
-            var function = _functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
+            var function = functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
 
             if (function != null)
             {
@@ -111,7 +89,7 @@ public class FunctionController : BaseController
             }
 
             criteria.FunctionKey = ConvertToKey(criteria.FunctionName);
-            function = _functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId);
+            function = functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId);
 
             if (function != null)
             {
@@ -121,10 +99,10 @@ public class FunctionController : BaseController
 
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
-            criteria.CreatedBy = NapSession.UserId;
+            criteria.CreatedBy = napSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
-            var result = _functionService.Insert(criteria);
+            var result = functionService.Insert(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -143,7 +121,7 @@ public class FunctionController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult Duplicate(int id, int? siteId = null)
     {
-        var function = _functionService.GetById(id);
+        var function = functionService.GetById(id);
 
         if (function == null)
         {
@@ -152,9 +130,9 @@ public class FunctionController : BaseController
 
         ViewBag.OriginFunctionName = function.Name;
 
-        var site = _siteService.GetById(function.SiteId);
+        var site = siteService.GetById(function.SiteId);
 
-        var criteria = new DuplicateFunctionCriteria
+        var criteria = new DuplicateFunctionCommand
         {
             FunctionId = function.Id,
             FunctionName = function.Name + " Copy",
@@ -176,9 +154,9 @@ public class FunctionController : BaseController
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult Duplicate(DuplicateFunctionCriteria criteria)
+    public ActionResult Duplicate(DuplicateFunctionCommand criteria)
     {
-        var function = _functionService.GetById(criteria.FunctionId);
+        var function = functionService.GetById(criteria.FunctionId);
 
         if (function == null)
         {
@@ -193,7 +171,7 @@ public class FunctionController : BaseController
         {
             criteria.FunctionName = criteria.FunctionName.Trim();
 
-            if (_functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId) != null)
+            if (functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId) != null)
             {
                 ModelState.AddModelError("FunctionName", string.Format(ViewResources.DuplicateMsg, criteria.FunctionName));
                 return View(criteria);
@@ -201,7 +179,7 @@ public class FunctionController : BaseController
 
             criteria.FunctionKey = ConvertToKey(criteria.FunctionName);
 
-            if (_functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId) != null)
+            if (functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId) != null)
             {
                 ModelState.AddModelError("FunctionKey", string.Format(ViewResources.DuplicateMsg, criteria.FunctionKey));
                 return View(criteria);
@@ -210,10 +188,10 @@ public class FunctionController : BaseController
             criteria.DuplicateFunctionId = function.Id;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
-            criteria.CreatedBy = NapSession.UserId;
+            criteria.CreatedBy = napSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
-            var result = _functionService.Duplicate(criteria);
+            var result = functionService.Duplicate(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -232,14 +210,14 @@ public class FunctionController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult CopyPermission(int id, int? siteId = null)
     {
-        var function = _functionService.GetById(id);
+        var function = functionService.GetById(id);
 
         if (function == null)
         {
             return NotFound();
         }
 
-        var criteria = new CopyPermissionCriteria
+        var criteria = new CopyPermissionCommand
         {
             ToFunctionId = function.Id,
             ToFunctionName = function.Name,
@@ -249,16 +227,16 @@ public class FunctionController : BaseController
         };
 
         ViewBag.FunctionList =
-            _functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
+            functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
 
         return View(criteria);
     }
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult CopyPermission(CopyPermissionCriteria criteria)
+    public ActionResult CopyPermission(CopyPermissionCommand criteria)
     {
-        var function = _functionService.GetById(criteria.ToFunctionId);
+        var function = functionService.GetById(criteria.ToFunctionId);
 
         if (function == null)
         {
@@ -266,14 +244,14 @@ public class FunctionController : BaseController
         }
 
         ViewBag.FunctionList =
-            _functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
+            functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true);
 
         if (ModelState.IsValid)
         {
-            criteria.ModifiedBy = NapSession.UserId;
+            criteria.ModifiedBy = napSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
-            var result = _functionService.CopyPermission(criteria);
+            var result = functionService.CopyPermission(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -292,14 +270,14 @@ public class FunctionController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public ActionResult Edit(int id)
     {
-        var function = _functionService.GetById(id);
+        var function = functionService.GetById(id);
 
         if (ReferenceEquals(function, null))
         {
             return RedirectToAction("Manage");
         }
 
-        var criteria = new UpdateFunctionCriteria
+        var criteria = new UpdateFunctionCommand
         {
             FunctionId = function.Id,
             SiteId = function.SiteId,
@@ -315,7 +293,7 @@ public class FunctionController : BaseController
             Environment = function.Environment
         };
 
-        var functionList = _functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
+        var functionList = functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
 
         ViewBag.ParentFunctionItemList = functionList
             .Where(f => f.Id != id && (f.ParentId == 0 || f.ParentId != id))
@@ -331,16 +309,16 @@ public class FunctionController : BaseController
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult Edit(UpdateFunctionCriteria criteria)
+    public ActionResult Edit(UpdateFunctionCommand criteria)
     {
-        var currentFunction = _functionService.GetById(criteria.FunctionId);
+        var currentFunction = functionService.GetById(criteria.FunctionId);
 
         if (ReferenceEquals(currentFunction, null))
         {
             return RedirectToAction("Manage");
         }
 
-        var functionList = _functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
+        var functionList = functionService.GetBySite(criteria.SiteId, criteria.Environment, true);
 
         ViewBag.ParentFunctionItemList = functionList.Select(s => new SelectListItem
         {
@@ -352,7 +330,7 @@ public class FunctionController : BaseController
         if (ModelState.IsValid)
         {
             criteria.FunctionName = criteria.FunctionName.Trim();
-            var function = _functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
+            var function = functionService.GetByNameAndSite(criteria.FunctionName, criteria.SiteId);
 
             if (function != null && function.Id != criteria.FunctionId)
             {
@@ -365,7 +343,7 @@ public class FunctionController : BaseController
 
             if (criteria.FunctionKey != null)
             {
-                function = _functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId);
+                function = functionService.GetByKeyAndSite(criteria.FunctionKey, criteria.SiteId);
 
                 if (function != null && function.Id != criteria.FunctionId)
                 {
@@ -380,13 +358,13 @@ public class FunctionController : BaseController
             }
 
             if (criteria.Crud < currentFunction.Crud &&
-                NapSession.Level != (int)AdminConstant.Level.SiteAdmin &&
-                NapSession.Level != (int)AdminConstant.Level.PortalAdmin)
+                napSession.Level != (int)AdminConstant.Level.SiteAdmin &&
+                napSession.Level != (int)AdminConstant.Level.PortalAdmin)
             {
-                var listUsers = _userService.GetByFunctionAndSite(currentFunction.Id, currentFunction.SiteId)
+                var listUsers = userService.GetByFunctionAndSite(currentFunction.Id, currentFunction.SiteId)
                     .Where(u => u.Policy == (int)AdminConstant.Policy.Host).ToList();
 
-                var listGroups = _groupService.GetByFunctionAndSite(currentFunction.Id, currentFunction.SiteId)
+                var listGroups = groupService.GetByFunctionAndSite(currentFunction.Id, currentFunction.SiteId)
                     .Where(u => u.Policy == (int)AdminConstant.Policy.Host).ToList();
 
                 if (listUsers.Count > 0 || listGroups.Count > 0)
@@ -399,10 +377,10 @@ public class FunctionController : BaseController
 
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
-            criteria.ModifiedBy = NapSession.UserId;
+            criteria.ModifiedBy = napSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
-            var result = _functionService.Update(criteria);
+            var result = functionService.Update(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -422,15 +400,15 @@ public class FunctionController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var criteria = new UpdateStatusFunctionCriteria
+            var criteria = new UpdateStatusFunctionCommand
             {
                 FunctionId = id,
                 IsActive = isActive,
-                ModifiedBy = NapSession.UserId,
+                ModifiedBy = napSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            var result = _functionService.UpdateStatus(criteria);
+            var result = functionService.UpdateStatus(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -448,7 +426,7 @@ public class FunctionController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Read)]
     public ActionResult PrivilegedGroupsAndUsers(int id = 0)
     {
-        var function = _functionService.GetById(id);
+        var function = functionService.GetById(id);
 
         if (function == null)
         {
@@ -457,14 +435,14 @@ public class FunctionController : BaseController
 
         int siteId = function.SiteId;
 
-        var users = _userService.GetByFunctionAndSite(id, siteId).ToList();
+        var users = userService.GetByFunctionAndSite(id, siteId).ToList();
         var userSiteLevels = users.Select(u => u.UserId)
             .Distinct()
-            .ToDictionary(u => u, u => _userService.GetUserSiteLevel(u, siteId));
+            .ToDictionary(u => u, u => userService.GetUserSiteLevel(u, siteId));
 
         ViewBag.Function = function;
         ViewBag.Users = users;
-        ViewBag.Groups = _groupService.GetByFunctionAndSite(id, siteId).ToList();
+        ViewBag.Groups = groupService.GetByFunctionAndSite(id, siteId).ToList();
         ViewBag.UserSiteLevels = userSiteLevels;
 
         ViewFlags.HasAssignFunctionToUserRight =
@@ -472,7 +450,7 @@ public class FunctionController : BaseController
         ViewFlags.HasAssignFunctionToGroupRight =
             HasRightOnSite(siteId, FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Host);
 
-        ViewBag.GroupSelectList = _groupService.GetAllSelectListItem();
+        ViewBag.GroupSelectList = groupService.GetAllSelectListItem();
         ViewBag.SiteId = siteId.ToString();
 
         return View();
@@ -489,7 +467,7 @@ public class FunctionController : BaseController
 
         if (Request.IsAjaxRequest())
         {
-            var function = _functionService.GetById(fid);
+            var function = functionService.GetById(fid);
 
             if (function == null)
             {
@@ -507,11 +485,11 @@ public class FunctionController : BaseController
                 TotalRows = 0
             };
 
-            var users = _userService.SearchUserExcludeFunction(criteria);
+            var users = userService.SearchUserExcludeFunction(criteria);
 
             var userList = new PagerList<UserLevel>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, users);
 
-            var adminPolicy = _userService.GetUserFunctionPolicy(NapSession.UserId, fid);
+            var adminPolicy = userService.GetUserFunctionPolicy(napSession.UserId, fid);
             ViewBag.IsReadonlyAssign = adminPolicy < (int)AdminConstant.Policy.Host;
 
             return View(userList);
@@ -525,24 +503,24 @@ public class FunctionController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var function = _functionService.GetById(id);
+            var function = functionService.GetById(id);
 
             if (function == null)
             {
                 throw new ArgumentException($"Function (id={id}) not found");
             }
 
-            var criteria = new AssignFunctionToUsersCriteria
+            var criteria = new AssignFunctionToUsersCommand
             {
                 FunctionId = id,
                 SiteId = function.SiteId,
                 UserRead = readList.Split(',').ToList(),
                 UserHost = hostList.Split(',').ToList(),
-                ModifiedBy = NapSession.UserId,
+                ModifiedBy = napSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            var result = _functionService.AssignFunctionToUsers(criteria);
+            var result = functionService.AssignFunctionToUsers(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -560,16 +538,16 @@ public class FunctionController : BaseController
         {
             var groupName = q.Trim();
 
-            var function = _functionService.GetById(fid);
+            var function = functionService.GetById(fid);
 
             if (function == null)
             {
                 return NotFound();
             }
 
-            var group = _groupService.SearchGroupExcludeFunction(groupName, function.SiteId, fid);
+            var group = groupService.SearchGroupExcludeFunction(groupName, function.SiteId, fid);
 
-            var adminPolicy = _userService.GetUserFunctionPolicy(NapSession.UserId, fid);
+            var adminPolicy = userService.GetUserFunctionPolicy(napSession.UserId, fid);
             ViewBag.IsReadonlyAssign = adminPolicy < (int)AdminConstant.Policy.Host;
 
             return View(group);
@@ -583,24 +561,24 @@ public class FunctionController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var function = _functionService.GetById(id);
+            var function = functionService.GetById(id);
 
             if (function == null)
             {
                 throw new ArgumentException($"Function (id={id}) not found");
             }
 
-            var criteria = new AssignFunctionToGroupsCriteria
+            var criteria = new AssignFunctionToGroupsCommand
             {
                 FunctionId = id,
                 SiteId = function.SiteId,
                 GroupRead = readList.Split(',').ToList(),
                 GroupHost = hostList.Split(',').ToList(),
-                ModifiedBy = NapSession.UserId,
+                ModifiedBy = napSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
-            var result = _functionService.AssignFunctionToGroups(criteria);
+            var result = functionService.AssignFunctionToGroups(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -621,7 +599,7 @@ public class FunctionController : BaseController
     {
         if (Request.IsAjaxRequest())
         {
-            var functionList = _functionService.GetBySite(siteId, Environment, true).ToList();
+            var functionList = functionService.GetBySite(siteId, Environment, true).ToList();
 
             functionList.Insert(0, new Function { Id = 0, Name = ViewResources.None });
 
@@ -639,8 +617,8 @@ public class FunctionController : BaseController
         {
             if (functionId != 0)
             {
-                var function = _functionService.GetById(functionId);
-                var functionList = _functionService.GetBySite(function.SiteId, env, true).ToList();
+                var function = functionService.GetById(functionId);
+                var functionList = functionService.GetBySite(function.SiteId, env, true).ToList();
 
                 functionList = functionList.Where(f => f.Id != functionId && (f.ParentId==0
                                                                               || f.ParentId != functionId)).ToList();
@@ -651,7 +629,7 @@ public class FunctionController : BaseController
             }
             else
             {
-                var functionList = _functionService.GetBySite(siteId, env, true).ToList();
+                var functionList = functionService.GetBySite(siteId, env, true).ToList();
 
                 functionList.Insert(0, new Function { Id = 0, Name = ViewResources.None });
 
@@ -666,14 +644,14 @@ public class FunctionController : BaseController
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
     public JsonResult GetFunctionKey(int functionId, string functionName)
     {
-        var tempFunction = _functionService.GetById(functionId);
+        var tempFunction = functionService.GetById(functionId);
 
         if (ReferenceEquals(tempFunction, null))
         {
             return Json(-1);
         }
 
-        var function = _functionService.GetByNameAndSite(functionName, tempFunction.SiteId);
+        var function = functionService.GetByNameAndSite(functionName, tempFunction.SiteId);
 
         if (function != null && function.Id != tempFunction.Id)
         {
@@ -682,7 +660,7 @@ public class FunctionController : BaseController
 
         var functionKey = ConvertToKey(functionName);
 
-        function = _functionService.GetByKeyAndSite(functionKey, tempFunction.SiteId);
+        function = functionService.GetByKeyAndSite(functionKey, tempFunction.SiteId);
 
         if (function != null && function.Id != tempFunction.Id)
         {
@@ -699,9 +677,9 @@ public class FunctionController : BaseController
         if (getSiteList)
         {
             ViewBag.SiteItemList = UserIsPortalAdmin ?
-                _siteService.GetAllSelectListItem(criteria.Environment, isActive: true, selectedSiteId: criteria.SiteId) :
-                _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    NapSession.UserId,
+                siteService.GetAllSelectListItem(criteria.Environment, isActive: true, selectedSiteId: criteria.SiteId) :
+                siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+                    napSession.UserId,
                     FunctionKeys.ManageFunction,
                     criteria.Environment,
                     policy: AdminConstant.Policy.Host,
@@ -709,8 +687,8 @@ public class FunctionController : BaseController
         }
 
         ViewBag.FunctionList = criteria.ParentId == null ?
-            _functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true) :
-            _functionService.GetSelectListItemBySite(
+            functionService.GetSelectListItemBySite(criteria.SiteId, criteria.Environment, isActive: true) :
+            functionService.GetSelectListItemBySite(
                 criteria.SiteId,
                 criteria.Environment,
                 isActive: true,
@@ -719,18 +697,18 @@ public class FunctionController : BaseController
 
     private void PrepareManageData(GetBySiteFunctionCriteria criteria)
     {
-        ViewBag.FunctionList = _functionService.GetBySiteInHierarchy(criteria.SiteId, criteria.Environment);
+        ViewBag.FunctionList = functionService.GetBySiteInHierarchy(criteria.SiteId, criteria.Environment);
 
         if (UserIsPortalAdmin)
         {
-            ViewBag.SiteItemList = _siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId);
+            ViewBag.SiteItemList = siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId);
             ViewBag.ViewFlags.HasEditRight = true;
         }
         else
         {
             ViewBag.SiteItemList =
-                _siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    NapSession.UserId,
+                siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
+                    napSession.UserId,
                     FunctionKeys.ManageFunction,
                     criteria.Environment,
                     selectedSiteId: criteria.SiteId);

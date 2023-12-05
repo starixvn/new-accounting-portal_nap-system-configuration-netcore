@@ -3,12 +3,12 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Command;
 using Criteria.Group;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
+using NapAdminCore.Criteria;
 using Repository;
 
 public interface IGroupService
@@ -25,27 +25,19 @@ public interface IGroupService
 
     IEnumerable<Group> GetAllWithNumOfUser(string name, string env = AdminConstant.Uat, bool? isActive = null);
 
-    ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria);
+    CommandResult AssignFunction(AssignFunctionGroupCommand criteria);
 
-    ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria);
+    CommandResult UpdateStatus(UpdateStatusGroupCommand criteria);
 
-    ICommandResult Insert(InsertGroupCriteria criteria);
+    CommandResult Insert(InsertGroupCommand criteria);
 
-    ICommandResult Update(UpdateGroupCriteria criteria);
+    CommandResult Update(UpdateGroupCommand criteria);
 }
 
-public class GroupService : IGroupService
+public class GroupService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IGroupService
 {
-    private readonly IGroupRepository groupRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-    public GroupService(IGroupRepository groupRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.groupRepository = groupRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-    
     public Group GetById(int id)
     {
         var criteria = new GetByIdGroupCriteria
@@ -95,32 +87,32 @@ public class GroupService : IGroupService
         return dynamicRepository.Fetch<Group>(criteria).OrderBy(g => g.Name);
     }
 
-    public ICommandResult AssignFunction(AssignFunctionGroupCriteria criteria)
+    public CommandResult AssignFunction(AssignFunctionGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult UpdateStatus(UpdateStatusGroupCriteria criteria)
+    public CommandResult UpdateStatus(UpdateStatusGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Insert(InsertGroupCriteria criteria)
+    public CommandResult Insert(InsertGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Insert(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Update(UpdateGroupCriteria criteria)
+    public CommandResult Update(UpdateGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return groupRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     public IEnumerable<GroupPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -131,7 +123,7 @@ public class GroupService : IGroupService
             SiteId = siteId
         };
 
-        return groupRepository.GetGroupPolicy(criteria).OrderBy(g => g.Name);
+        return repository.GetGroupPolicy(criteria).OrderBy(g => g.Name);
     }
 
     public IEnumerable<Group> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0)

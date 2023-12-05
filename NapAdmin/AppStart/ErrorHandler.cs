@@ -3,25 +3,11 @@ using ILogger = Fanex.Logging.ILogger;
 namespace NapAdmin.AppStart;
 
 using Fanex.Logging.Extensions;
-using Fanex.Logging.Extensions.Database;
 using Microsoft.AspNetCore.Http.Extensions;
 using ONEbook.UM.Services;
 
-public class ErrorHandler
+public class ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration configuration, IMaintenanceService maintenanceService)
 {
-    private readonly RequestDelegate next;
-    private readonly ILogger logger;
-    private readonly IMaintenanceService maintenanceService;
-    public IConfiguration Configuration { get; }
-
-    public ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration configuration, IMaintenanceService maintenanceService)
-    {
-        this.next = next;
-        this.logger = logger;
-        this.maintenanceService = maintenanceService;
-        Configuration = configuration;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -50,7 +36,6 @@ public class ErrorHandler
 
         var logMessage = new LogMessage(exception.Message)
                     .AddSection("Request Info", GetRequestInfo(context))
-                    .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                     .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                     .ToString();
@@ -67,7 +52,7 @@ public class ErrorHandler
 
         await context.Response.WriteAsync(exception.Message);
 
-        var env = Configuration.GetSection("Fanex.NAP.Client:Environment").Value;
+        var env = configuration.GetSection("Fanex.NAP.Client:Environment").Value;
 
         if (exception.StackTrace != null && !env.Equals("LIVE", StringComparison.CurrentCultureIgnoreCase))
         {

@@ -6,13 +6,7 @@ public class GetByIdLogCriteria : CriteriaBase
 {
     public int LogId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_LogExecSp_GetById";
-    }
+    public override string GetSettingKey() => "NAP_LogExecSp_GetById";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

@@ -6,13 +6,7 @@ public class GetParentByIdFunctionCriteria : CriteriaBase
 {
     public int FunctionId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_GetParentById";
-    }
+    public override string GetSettingKey() => "NAP_Function_GetParentById";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

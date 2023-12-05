@@ -16,13 +16,7 @@ public class GetByParentKeyAndSiteCriteria : CriteriaBase
 
     public int? UserId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Function_GetByParentKeyAndSite";
-    }
+    public override string GetSettingKey() => "NAP_Function_GetByParentKeyAndSite";
 
-    public override bool IsValid()
-    {
-        return SiteId > 0;
-    }
+    public override bool IsValid() => SiteId > 0;
 }

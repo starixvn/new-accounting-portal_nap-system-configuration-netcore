@@ -19,27 +19,14 @@ using NapAdminCore.Service;
 using NapAdminCore.Web;
 using ViewModels.Trace;
 
-public class TraceController : BaseController
-{
-    private readonly ITraceService _traceService;
-    private readonly IFunctionService _functionService;
-    private readonly ISiteService _siteService;
-
-
-    public TraceController(ITraceService traceService,
+public class TraceController(ITraceService traceService,
         IFunctionService functionService,
         ISiteService siteService,
         INapSession napSession,
         INapSettings napSettings,
         IUserService userService)
-        : base(napSession, napSettings, userService)
-    {
-
-        _traceService = traceService;
-        _functionService = functionService;
-        _siteService = siteService;
-    }
-
+    : BaseController(napSession, napSettings, userService)
+{
     #region Log Exec Sp
 
     [NapAuth(FunctionKey = FunctionKeys.ExecSpLog)]
@@ -65,7 +52,7 @@ public class TraceController : BaseController
             TotalRows = 0
         };
 
-        var listLog = _traceService.SearchExecSp(criteria);
+        var listLog = traceService.SearchExecSp(criteria);
         ViewBag.ListLog = new PagerList<LogExecSp>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, listLog);
 
         return View(criteria);
@@ -112,9 +99,9 @@ public class TraceController : BaseController
             TotalRows = 0
         };
 
-        var listLog = _traceService.SearchUserLogin(criteria);
+        var listLog = traceService.SearchUserLogin(criteria);
 
-        var listSite = _siteService.GetAll().ToList();
+        var listSite = siteService.GetAll().ToList();
         listSite.Add(new Site
         {
             Id = 0,
@@ -155,7 +142,7 @@ public class TraceController : BaseController
     [HttpPost]
     public ActionResult GetLogInsertDetail(int id)
     {
-        var log = _traceService.GetById(id);
+        var log = traceService.GetById(id);
         switch (log.ActionId)
         {
             case (int)LogAction.NAP_Cust_Insert:
@@ -915,7 +902,7 @@ public class TraceController : BaseController
         {
             var siteId = Convert.ToInt32(elementNew.Attribute("SiteId").Value);
 
-            ViewBag.FunctionList = _functionService.GetBySiteInHierarchy(siteId, Environment, true);
+            ViewBag.FunctionList = functionService.GetBySiteInHierarchy(siteId, Environment, true);
 
 
             if (elementOld.Attribute("Value") != null)
@@ -938,7 +925,7 @@ public class TraceController : BaseController
                 }
             }
 
-            var site = _siteService.GetById(siteId);
+            var site = siteService.GetById(siteId);
 
             ViewBag.SiteName = site.Name;
         }

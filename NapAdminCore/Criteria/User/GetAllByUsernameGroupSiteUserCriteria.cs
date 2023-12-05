@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using Fanex.Data;
 using Fanex.Data.Repository;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class GetAllByUsernameGroupSiteUserCriteria : CriteriaBase
 {
@@ -24,7 +23,7 @@ public class GetAllByUsernameGroupSiteUserCriteria : CriteriaBase
 
                 foreach (var siteId in ListSite)
                 {
-                    value.AppendFormat(_siteTml, siteId.Value); // 1 -> read
+                    value.AppendFormat(_siteTml, siteId); // 1 -> read
                 }
 
                 return value.Append("</ROOT>").ToString();
@@ -35,7 +34,7 @@ public class GetAllByUsernameGroupSiteUserCriteria : CriteriaBase
     }
 
     [SpParam(Ignored = true)]
-    public List<SelectListItem> ListSite { get; set; }
+    public List<int> ListSite { get; set; }
 
     public int PageIndex { get; set; }
 
@@ -47,13 +46,7 @@ public class GetAllByUsernameGroupSiteUserCriteria : CriteriaBase
 
     public string Environment { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_User_GetAllByUsernameGroupSite";
-    }
+    public override string GetSettingKey() => "NAP_User_GetAllByUsernameGroupSite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

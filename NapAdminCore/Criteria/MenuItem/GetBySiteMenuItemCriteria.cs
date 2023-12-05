@@ -15,13 +15,7 @@ public class GetBySiteMenuItemCriteria : CriteriaBase
 
     public bool? IsActive { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_MenuItem_GetBySite";
-    }
+    public override string GetSettingKey() => "NAP_MenuItem_GetBySite";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

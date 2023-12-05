@@ -6,13 +6,7 @@ public class GetSiteUrlByIdCriteria : CriteriaBase
 {
     public int SiteUrlId { get; set; }
 
-    public override string GetSettingKey()
-    {
-        return "NAP_Site_GetSiteURLById";
-    }
+    public override string GetSettingKey() => "NAP_Site_GetSiteURLById";
 
-    public override bool IsValid()
-    {
-        return true;
-    }
+    public override bool IsValid() => true;
 }

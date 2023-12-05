@@ -3,12 +3,12 @@ namespace NapAdminCore.Service;
 
 using System.Collections.Generic;
 using System.Linq;
-using Command;
 using Criteria.Function;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
+using NapAdminCore.Criteria;
 using Repository;
 
 public interface IFunctionService
@@ -43,52 +43,32 @@ public interface IFunctionService
 
     Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat);
-
-    Dictionary<Site, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat);
-
     IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat);
 
     IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat);
 
     IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(int userId, int siteId, string env = AdminConstant.Uat);
 
-    IEnumerable<FunctionPolicy> GetByUserAndFunctionKeyIncludeGroup(
-        int userId,
-        string functionKey,
-        string env = AdminConstant.Uat);
-
     #endregion
 
-    ICommandResult Duplicate(DuplicateFunctionCriteria criteria);
+    CommandResult Duplicate(DuplicateFunctionCommand criteria);
 
-    ICommandResult Insert(InsertFunctionCriteria criteria);
+    CommandResult Insert(InsertFunctionCommand criteria);
 
-    ICommandResult Update(UpdateFunctionCriteria criteria);
+    CommandResult Update(UpdateFunctionCommand criteria);
 
-    ICommandResult UpdateStatus(UpdateStatusFunctionCriteria criteria);
+    CommandResult UpdateStatus(UpdateStatusFunctionCommand criteria);
 
-    ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria);
+    CommandResult AssignFunctionToUsers(AssignFunctionToUsersCommand criteria);
 
-    ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria);
+    CommandResult AssignFunctionToGroups(AssignFunctionToGroupsCommand criteria);
 
-    ICommandResult CopyPermission(CopyPermissionCriteria criteria);
+    CommandResult CopyPermission(CopyPermissionCommand criteria);
 }
-public class FunctionService : IFunctionService
+public class FunctionService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
+        LoggedUserContext loggedUserContext)
+    : IFunctionService
 {
-    private readonly IFunctionRepository functionRepository;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly LoggedUserContext loggedUserContext;
-    #region Ctors
-
-    public FunctionService(IFunctionRepository functionRepository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
-    {
-        this.functionRepository = functionRepository;
-        this.dynamicRepository = dynamicRepository;
-        this.loggedUserContext = loggedUserContext;
-    }
-
-    #endregion
 
     #region Gets Function
 
@@ -192,7 +172,7 @@ public class FunctionService : IFunctionService
             Environment = env
         };
 
-        return functionRepository.FetchFullFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
 
     public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat)
@@ -203,7 +183,7 @@ public class FunctionService : IFunctionService
             Environment = env
         };
 
-        var functionPolicyList = functionRepository.FetchFullFunctionPolicy(criteria);
+        var functionPolicyList = repository.FetchFunctionPolicy(criteria);
 
         var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
 
@@ -223,18 +203,7 @@ public class FunctionService : IFunctionService
 
         return result;
     }
-
-    public IEnumerable<FunctionPolicy> GetByGroup(int groupId, string env = AdminConstant.Uat)
-    {
-        var criteria = new GetByGroupFunctionCriteria
-        {
-            GroupId = groupId,
-            Environment = env
-        };
-
-        return functionRepository.FetchFullFunctionPolicy(criteria);
-    }
-
+    
     public IEnumerable<FunctionPolicy> GetByGroupAndSite(int groupId, int siteId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByGroupAndSiteFunctionCriteria
@@ -244,38 +213,9 @@ public class FunctionService : IFunctionService
             Environment = env
         };
 
-        return functionRepository.FetchFullFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
-
-    public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByGroupAndGroupBySite(int groupId, string env = AdminConstant.Uat)
-    {
-        var criteria = new GetByGroupFunctionCriteria
-        {
-            GroupId = groupId,
-            Environment = env
-        };
-
-        var functionPolicyList = functionRepository.FetchFullFunctionPolicy(criteria);
-
-        var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
-
-        var siteList = functionPolicyList.GroupBy(f => f.SiteId)
-            .Select(s => new Site
-            {
-                Id = s.Key,
-                Name = s.FirstOrDefault(f => f.SiteId == s.Key)?.SiteName
-            }).ToList();
-
-        foreach (var site in siteList)
-        {
-            var subFunctionPolicyList = functionPolicyList.Where(f => f.SiteId == site.Id).ToList();
-
-            result.Add(site, subFunctionPolicyList);
-        }
-
-        return result;
-    }
-
+    
     public IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat)
     {
         var criteria = new GetByUserAndSiteFunctionCriteria
@@ -285,7 +225,7 @@ public class FunctionService : IFunctionService
             Environment = env
         };
 
-        return functionRepository.FetchFullFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
 
     public IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(
@@ -300,61 +240,46 @@ public class FunctionService : IFunctionService
             Environment = env
         };
 
-        return functionRepository.FetchFunctionPolicy(criteria);
-    }
-
-    public IEnumerable<FunctionPolicy> GetByUserAndFunctionKeyIncludeGroup(
-        int userId,
-        string functionKey,
-        string env = AdminConstant.Uat)
-    {
-        var criteria = new GetByUserAndFunctionKeyIncludeGroupFunctionCriteria
-        {
-            UserId = userId,
-            FunctionKey = functionKey,
-            Environment = env
-        };
-
-        return functionRepository.FetchFunctionPolicy(criteria);
+        return repository.FetchFunctionPolicy(criteria);
     }
 
     #endregion
 
-    public ICommandResult Duplicate(DuplicateFunctionCriteria criteria)
+    public CommandResult Duplicate(DuplicateFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Duplicate(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Insert(InsertFunctionCriteria criteria)
+    public CommandResult Insert(InsertFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Insert(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult Update(UpdateFunctionCriteria criteria)
+    public CommandResult Update(UpdateFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult UpdateStatus(UpdateStatusFunctionCriteria criteria)
+    public CommandResult UpdateStatus(UpdateStatusFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult AssignFunctionToUsers(AssignFunctionToUsersCriteria criteria)
+    public CommandResult AssignFunctionToUsers(AssignFunctionToUsersCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return functionRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
-    public ICommandResult AssignFunctionToGroups(AssignFunctionToGroupsCriteria criteria)
+    public CommandResult AssignFunctionToGroups(AssignFunctionToGroupsCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return functionRepository.Update(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 
     private IEnumerable<Function> SortFunctionsInHierarchy(IEnumerable<Function> functionList, int parentId = 0)
@@ -373,10 +298,10 @@ public class FunctionService : IFunctionService
         return sortedFunctionList;
     }
 
-    public ICommandResult CopyPermission(CopyPermissionCriteria criteria)
+    public CommandResult CopyPermission(CopyPermissionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return functionRepository.CopyPermission(criteria, logCriteria);
+        return repository.Execute(criteria, logCriteria);
     }
 }
