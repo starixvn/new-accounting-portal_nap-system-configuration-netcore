@@ -166,7 +166,8 @@ $(document).ready(function () {
             'Cash Out Performance',
             'Daily Games',
             'Distribution of Margin',
-            'SMA Win Loss Summary'
+            'SMA Win Loss Summary',
+            'DataWarehouseCurrency'
         ];
 
         for (var i = 0; i < permissionByProductFunctions.length; i++) {

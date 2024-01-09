@@ -49448,7 +49448,8 @@ module.exports = Cancel;
         'Cash Out Performance',
         'Daily Games',
         'Distribution of Margin',
-        'SMA Win Loss Summary'
+        'SMA Win Loss Summary',
+        'DataWarehouseCurrency'
     ]
 });
 
