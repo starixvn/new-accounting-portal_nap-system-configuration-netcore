@@ -1,54 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Functions>
   <Function Name="Site">
-    <Setting Key="NAP_Site_InsertSiteURL" SpName="NAP_Site_InsertSiteURL" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Site_InsertWithSiteURL" SpName="NAP_Site_InsertWithSiteURL" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Site_Update" SpName="NAP_Site_Update" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Site_UpdateSiteURL" SpName="NAP_Site_UpdateSiteURL" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Site_UpdateStatus" SpName="NAP_Site_UpdateStatus" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Site_UpdateDefaultSiteURL" SpName="NAP_Site_UpdateDefaultSiteURL" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_Site_InsertSiteURL" SpName="NAP_Site_InsertSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_InsertWithSiteURL" SpName="NAP_Site_InsertWithSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_Update" SpName="NAP_Site_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_UpdateSiteURL" SpName="NAP_Site_UpdateSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_UpdateStatus" SpName="NAP_Site_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_UpdateDefaultSiteURL" SpName="NAP_Site_UpdateDefaultSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
   </Function>
   <Function Name="Function">
-    <Setting Key="NAP_Function_Duplicate" SpName="NAP_Function_Duplicate" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_CopyPermission" SpName="NAP_Function_CopyPermission" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_Insert" SpName="NAP_Function_Insert" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_Update" SpName="NAP_Function_Update" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Function_UpdateStatus" SpName="NAP_Function_UpdateStatus" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_Function_Duplicate" SpName="NAP_Function_Duplicate" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_CopyPermission" SpName="NAP_Function_CopyPermission" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_Insert" SpName="NAP_Function_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_Update" SpName="NAP_Function_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_UpdateStatus" SpName="NAP_Function_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
   </Function>
   <Function Name="MenuItem">
-    <Setting Key="NAP_MenuItem_Insert" SpName="NAP_MenuItem_Insert" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_Update" SpName="NAP_MenuItem_Update" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_UpdateStatus" SpName="NAP_MenuItem_UpdateStatus" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_MenuItem_GetParentById" SpName="NAP_MenuItem_GetParentById" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+    <Setting Key="NAP_MenuItem_Insert" SpName="NAP_MenuItem_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_MenuItem_Update" SpName="NAP_MenuItem_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_MenuItem_UpdateStatus" SpName="NAP_MenuItem_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_MenuItem_GetParentById" SpName="NAP_MenuItem_GetParentById" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="MenuItemId" ObjectProperty="Id" />
       <Mapping DataField="MenuItemName" ObjectProperty="Name" />
     </Setting>
   </Function>
   <Function Name="Group">
-    <Setting Key="NAP_Group_AssignFunction" SpName="NAP_Group_AssignFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Group_Insert" SpName="NAP_Group_Insert" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Group_Update" SpName="NAP_Group_Update" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
-    <Setting Key="NAP_Group_UpdateStatus" SpName="NAP_Group_UpdateStatus" DbName="DBPOL.NAP_UserControl.bodbAdminNet"></Setting>
+    <Setting Key="NAP_Group_AssignFunction" SpName="NAP_Group_AssignFunction" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Group_Insert" SpName="NAP_Group_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Group_Update" SpName="NAP_Group_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Group_UpdateStatus" SpName="NAP_Group_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
   </Function>
   <Function Name="User">
-    <Setting Key="NAP_User_AssignFunction" SpName="NAP_User_AssignFunction" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_AssignNewSite" SpName="NAP_User_AssignNewSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_UpdateSite" SpName="NAP_User_UpdateSite" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_Insert" SpName="NAP_User_Insert" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_User_GetAvailableSites" SpName="NAP_User_GetAvailableSites" DbName="DBPOL.NAP_UserControl.bodbAdminNet">
+    <Setting Key="NAP_User_AssignFunction" SpName="NAP_User_AssignFunction" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_AssignNewSite" SpName="NAP_User_AssignNewSite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_UpdateSite" SpName="NAP_User_UpdateSite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_Insert" SpName="NAP_User_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_GetAvailableSites" SpName="NAP_User_GetAvailableSites" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
   </Function>
   <Function Name="Cust">
-    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_Cust_Update" SpName="NAP_Cust_Update" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_Cust_UpdatePassword" SpName="NAP_Cust_UpdatePassword" DbName="DBCUST.CustDB.bodbAdminNet" />
-    <Setting Key="NAP_Admin_OTPSel" SpName="NAP_Admin_OTPSel" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_Admin_GetOTP" SpName="NAP_Admin_GetOTP" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
-    <Setting Key="NAP_Admin_OTPUpd" SpName="NAP_Admin_OTPUpd" DbName="DBPOL.NAP_UserControl.bodbAdminNet" />
+    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Cust_Update" SpName="NAP_Cust_Update" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Cust_UpdatePassword" SpName="NAP_Cust_UpdatePassword" DbName="DBCUST.CustDB.wsv_nap" />
+    <Setting Key="NAP_Admin_OTPSel" SpName="NAP_Admin_OTPSel" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Admin_GetOTP" SpName="NAP_Admin_GetOTP" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Admin_OTPUpd" SpName="NAP_Admin_OTPUpd" DbName="DBPOL.NAP_UserControl.wsv_nap" />
   </Function>
   <Function Name="OWP">
-    <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.bodbAdminNet" />
+    <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.wsv_nap" />
   </Function>
 </Functions>
