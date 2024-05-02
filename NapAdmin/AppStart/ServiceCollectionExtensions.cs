@@ -94,7 +94,7 @@ public static class IServiceCollectionExtensions
         var redisMultiplexer = ConnectionMultiplexer.Connect(redisConfig);
 
         services.AddDataProtection()
-            .PersistKeysToStackExchangeRedis(redisMultiplexer, "Fanex.Settlement-ProtectionKeys");
+            .PersistKeysToStackExchangeRedis(redisMultiplexer, "Nap-Admin-ProtectionKeys");
 
         services.AddSingleton(redisMultiplexer);
 
@@ -127,7 +127,7 @@ public static class IServiceCollectionExtensions
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(configuration.GetSection("AuthSettings:CookieTimeOut").Value));
                 options.Cookie = new CookieBuilder
                 {
-                    Name = "Fanex.Settlement.Cookie",
+                    Name = "Nap-Admin.Cookie",
                     SecurePolicy = CookieSecurePolicy.SameAsRequest
                 };
                 options.Events.OnSigningOut = context =>
