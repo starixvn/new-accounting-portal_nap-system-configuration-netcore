@@ -55,18 +55,18 @@ public class UserController(IUserService userService,
 
         ViewBag.IsPortalAdmin = userService.GetUserSiteLevel(napSession.UserId, napSettings.SiteId)
                                 == (int)AdminConstant.Level.PortalAdmin;
-        
-        var listSite = GetSiteListForManageUser(siteId);
-        var listSiteId = listSite.Select(i=>int.Parse(i.Value)).ToList();
 
-        ViewBag.SiteSelectList = listSite; 
+        var listSite = GetSiteListForManageUser(siteId);
+        var listSiteId = listSite.Select(i => int.Parse(i.Value)).ToList();
+
+        ViewBag.SiteSelectList = listSite;
         ViewBag.GroupSelectList = groupService.GetAllSelectListItem(selectedGroupId: groupId);
         ViewBag.UserId = napSession.UserId;
         ViewBag.ReturnGroupId = groupId;
         ViewBag.SiteId = siteId;
 
         ViewBag.HashLevel = GetHashLevel(listSiteId);
-        
+
         var hashManageUserPolicy =
             userService.GetUserListSiteFunctionKeyPolicy(napSession.UserId, FunctionKeys.ManageUser, listSiteId);
 
@@ -338,6 +338,8 @@ public class UserController(IUserService userService,
         int returnGroupId = 0,
         int returnPageIndex = 0)
     {
+        userName = userName != null ? userName.Trim() : string.Empty;
+        returnUserName = returnUserName != null ? returnUserName.Trim() : string.Empty;
         var addExistingUserVM = new AddExistingUserVM
         {
             ReturnData = new ReturnData
@@ -430,6 +432,7 @@ public class UserController(IUserService userService,
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Host)]
     public ActionResult AddNew(AddNewUserVM addNewUserVM)
     {
+        addNewUserVM.Criteria.Username = addNewUserVM.Criteria.Username != null ? addNewUserVM.Criteria.Username.Trim() : string.Empty;
         var criteria = addNewUserVM.Criteria;
 
         ViewBag.Groups = groupService.GetAllSelectListItem(selectedGroupId: criteria.GroupId);
@@ -891,7 +894,7 @@ public class UserController(IUserService userService,
 
     #endregion Update Site To User
 
-   
+
     #region Assign Site/Function To User
 
     [HttpGet]
