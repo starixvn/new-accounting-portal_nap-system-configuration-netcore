@@ -16,7 +16,7 @@
     <Setting Key="NAP_Site_GetByName" SpName="NAP_Site_GetByName" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
-    </Setting>    
+    </Setting>
     <Setting Key="NAP_Site_GetSiteURLBySiteId" SpName="NAP_Site_GetSiteURLBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="Id" ObjectProperty="SiteId" />
       <Mapping DataField="Name" ObjectProperty="SiteName" />
@@ -99,7 +99,7 @@
     <Setting Key="NAP_Function_AssignFunctionToGroups" SpName="NAP_Function_AssignFunctionToGroups" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
     <Setting Key="NAP_Function_AssignFunctionToUsers" SpName="NAP_Function_AssignFunctionToUsers" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
   </Function>
-  <Function Name="MenuItem">    
+  <Function Name="MenuItem">
     <Setting Key="NAP_MenuItem_GetById" SpName="NAP_MenuItem_GetById" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="MenuItemId" ObjectProperty="Id" />
       <Mapping DataField="MenuItemName" ObjectProperty="Name" />
@@ -165,7 +165,7 @@
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
     </Setting>
-    
+
     <Setting Key="NAP_User_GetByGroupAndSite" SpName="NAP_User_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
@@ -200,6 +200,15 @@
   <Function Name="LogUserLogin">
     <Setting Key="NAP_LogUserLogin_Search" SpName="NAP_LogUserLogin_Search" DbName="DBNAP.bodb_NAPLOG.wsv_nap">
 
+    </Setting>
+  </Function>
+  <Function Name="NapApiCaching">
+
+    <Setting Key="NAP_Caching_GetUserFunctionsBySite" SpName="NAP_Caching_GetUserFunctionsBySite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Caching_GetUserSiteLevel" SpName="NAP_Caching_GetUserSiteLevel" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_MenuItem_GetAll" SpName="NAP_MenuItem_GetAll" DbName="DBPOL.NAP_UserControl.wsv_nap" >
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
     </Setting>
   </Function>
 </Functions>

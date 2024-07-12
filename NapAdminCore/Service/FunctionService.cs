@@ -8,8 +8,10 @@ using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
-using NapAdminCore.Criteria;
+using Criteria;
+using NapApiCaching;
 using Repository;
+using Function = Models.Function;
 
 public interface IFunctionService
 {
@@ -65,7 +67,7 @@ public interface IFunctionService
 
     CommandResult CopyPermission(CopyPermissionCommand criteria);
 }
-public class FunctionService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
+public class FunctionService(UpdateRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
     : IFunctionService
 {
@@ -172,7 +174,8 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
             Environment = env
         };
 
-        return repository.FetchFunctionPolicy(criteria);
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        return policies.OrderBy(f => f.Name).ToList();
     }
 
     public Dictionary<Site, IEnumerable<FunctionPolicy>> GetByUserAndGroupBySite(int userId, string env = AdminConstant.Uat)
@@ -183,7 +186,8 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
             Environment = env
         };
 
-        var functionPolicyList = repository.FetchFunctionPolicy(criteria);
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        var functionPolicyList= policies.OrderBy(f => f.Name).ToList();
 
         var result = new Dictionary<Site, IEnumerable<FunctionPolicy>>();
 
@@ -213,7 +217,8 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
             Environment = env
         };
 
-        return repository.FetchFunctionPolicy(criteria);
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        return policies.OrderBy(f => f.Name).ToList();
     }
     
     public IEnumerable<FunctionPolicy> GetByUserAndSite(int userId, int siteId, string env = AdminConstant.Uat)
@@ -225,7 +230,8 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
             Environment = env
         };
 
-        return repository.FetchFunctionPolicy(criteria);
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        return policies.OrderBy(f => f.Name).ToList();
     }
 
     public IEnumerable<FunctionPolicy> GetByUserAndSiteIncludeGroup(
@@ -240,7 +246,8 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
             Environment = env
         };
 
-        return repository.FetchFunctionPolicy(criteria);
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        return policies.OrderBy(f => f.Name).ToList();
     }
 
     #endregion
@@ -248,38 +255,64 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
     public CommandResult Duplicate(DuplicateFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return repository.Execute(criteria, logCriteria);
+        var result= repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddFunctionCommand();
+
+        return result;
     }
 
     public CommandResult Insert(InsertFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddFunctionCommand();
+        return result;
     }
 
     public CommandResult Update(UpdateFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddFunctionCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     public CommandResult UpdateStatus(UpdateStatusFunctionCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+        
+        var oldFunction = GetById(criteria.FunctionId);
+        DataCachingJobCommands.Instance.AddFunctionCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(oldFunction.SiteId);
+        
+        return result;
     }
 
     public CommandResult AssignFunctionToUsers(AssignFunctionToUsersCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-        return repository.Execute(criteria, logCriteria);
+        var result= repository.Execute(criteria, logCriteria);
+        
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     public CommandResult AssignFunctionToGroups(AssignFunctionToGroupsCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var  result= repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     private IEnumerable<Function> SortFunctionsInHierarchy(IEnumerable<Function> functionList, int parentId = 0)
@@ -302,6 +335,10 @@ public class FunctionService(ISimpleRepository repository, IDynamicRepository dy
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result= repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 }

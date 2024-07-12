@@ -10,10 +10,11 @@ using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
-using NapAdminCore.Criteria;
+using Criteria;
+using NapApiCaching;
 using Repository;
 
-public interface ISiteService 
+public interface ISiteService
 {
     Site GetById(int id);
 
@@ -69,7 +70,7 @@ public interface ISiteService
 
     #endregion
 }
-public class SiteService(ISimpleRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
+public class SiteService(UpdateRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     : ISiteService
 {
     #region get
@@ -103,7 +104,7 @@ public class SiteService(ISimpleRepository repository, IDynamicRepository dynami
 
         return dynamicRepository.Get<Site>(criteria);
     }
-    
+
     public IList<SiteLevel> GetSiteLevelByUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
     {
         var criteria = new GetByUserSiteCriteria
@@ -184,9 +185,10 @@ public class SiteService(ISimpleRepository repository, IDynamicRepository dynami
             Environment = env
         };
 
-        var functionPolicyList = repository.FetchFunctionPolicy(criteria)
-            .OrderBy(s => s.SiteName)
-            .ToList();
+
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        var functionPolicyList = policies.OrderBy(s => s.SiteName)
+                    .ToList();
 
         return functionPolicyList.Where(f => f.Policy >= (int)policy)
             .Select(s => new Site
@@ -210,8 +212,8 @@ public class SiteService(ISimpleRepository repository, IDynamicRepository dynami
             Environment = env
         };
 
-
-        var functionPolicyList = repository.FetchFunctionPolicy(criteria).OrderBy(s => s.SiteName).ToList();
+        var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
+        var functionPolicyList = policies.OrderBy(f => f.SiteName).ToList();
 
         return functionPolicyList.Where(f => f.Policy >= (int)policy)
             .Select(s => new SelectListItem
@@ -228,21 +230,34 @@ public class SiteService(ISimpleRepository repository, IDynamicRepository dynami
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        DataCachingJobCommands.Instance.AddSiteCommand();
+        var result = repository.Execute(criteria, logCriteria);
+
+        return result;
     }
 
     public CommandResult Update(UpdateSiteCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddSiteCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     public CommandResult UpdateStatus(UpdateStatusSiteCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddSiteCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     #region SiteUrl services
@@ -275,7 +290,7 @@ public class SiteService(ISimpleRepository repository, IDynamicRepository dynami
         {
             SiteUrlId = siteUrlId
         };
-        
+
         return dynamicRepository.Get<SiteUrl>(criteria);
     }
 
@@ -283,21 +298,27 @@ public class SiteService(ISimpleRepository repository, IDynamicRepository dynami
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        return result;
     }
 
     public CommandResult UpdateDefaultSiteUrl(UpdateDefaultSiteUrlCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        return result;
     }
 
     public CommandResult InsertSiteUrl(InsertSiteUrlCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        return result;
     }
 
     #endregion

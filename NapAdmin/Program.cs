@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+services.AddFanexCaching(configuration);
 services.AddFanexData(configuration);
 services.AddFanex(configuration);
 services.AddNapServices(configuration);
@@ -20,6 +21,7 @@ services.AddNapSession(configuration);
 services.AddNapAuthorization();
 services.AddNapAuthentication(configuration);
 services.AddMaintenance(configuration);
+services.AddNapApiCaching();
 
 services.AddRazorPages();
 services.AddControllersWithViews(options =>
@@ -51,4 +53,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+await app.RunAsync();

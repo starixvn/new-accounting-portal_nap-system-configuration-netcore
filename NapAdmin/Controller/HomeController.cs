@@ -25,8 +25,8 @@ public class HomeController(INapSession napSession,
     public IActionResult Test()
     {
         ViewBag.IsSessionAvailable = HttpContext.Session.IsAvailable;
-        ViewBag.UserId = napSession.UserId;
-        ViewBag.Username = napSession.UserName;
+        ViewBag.UserId = NapSession.UserId;
+        ViewBag.Username = NapSession.UserName;
         var instanceName = Dns.GetHostName();
         var ip = Dns.GetHostEntry(instanceName).AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
         ViewBag.InstanceName = instanceName;

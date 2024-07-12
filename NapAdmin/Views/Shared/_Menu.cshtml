@@ -1,7 +1,7 @@
 ﻿@model List<Fanex.NAP.Client.Models.MenuItem>
 
 @{
-    var menuItemList = Model ?? new List<Fanex.NAP.Client.Models.MenuItem>();
+    var menuItemList = Model ?? [];
     var lvl0MenuItemList = menuItemList.Where(m => m.ParentId == 0).OrderBy(m => m.DisplayOrder).ToList();
 }
 <nav>

@@ -8,7 +8,6 @@ using Fanex.Common.Extensions;
 using Fanex.Data.Repository;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Business;
 using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,20 +17,22 @@ using NapAdminCore.Criteria.User;
 using NapAdminCore.Helpers;
 using NapAdminCore.Models;
 using NapAdminCore.Models.ValueObject;
+using NapAdminCore.NapApiCaching;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 using Newtonsoft.Json;
 using ONEbook.OTP.Services;
 using ViewModels.User;
+using Constant = Fanex.NAP.Client.Helpers.Business.Constant;
 
 [NapSuperAuth]
-public class UserController(IUserService userService,
-        IGroupService groupService,
+public class UserController(IGroupService groupService,
         ISiteService siteService,
+        IFunctionService functionService,
+        LoggedUserContext loggedUserContext,
         INapSession napSession,
         INapSettings napSettings,
-        IFunctionService functionService,
-        LoggedUserContext loggedUserContext)
+        IUserService userService)
     : BaseController(napSession, napSettings, userService)
 {
     #region Manage
@@ -51,9 +52,9 @@ public class UserController(IUserService userService,
 
         ViewFlags.HasEditRight =
             HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Host)
-            && HasRightOnSite(napSettings.SiteId, FunctionKeys.ManageUser, AdminConstant.Policy.Host);
+            && HasRightOnSite(NapSettings.SiteId, FunctionKeys.ManageUser, AdminConstant.Policy.Host);
 
-        ViewBag.IsPortalAdmin = userService.GetUserSiteLevel(napSession.UserId, napSettings.SiteId)
+        ViewBag.IsPortalAdmin = UserService.GetUserSiteLevel(NapSession.UserId, NapSettings.SiteId)
                                 == (int)AdminConstant.Level.PortalAdmin;
 
         var listSite = GetSiteListForManageUser(siteId);
@@ -61,22 +62,22 @@ public class UserController(IUserService userService,
 
         ViewBag.SiteSelectList = listSite;
         ViewBag.GroupSelectList = groupService.GetAllSelectListItem(selectedGroupId: groupId);
-        ViewBag.UserId = napSession.UserId;
+        ViewBag.UserId = NapSession.UserId;
         ViewBag.ReturnGroupId = groupId;
         ViewBag.SiteId = siteId;
 
         ViewBag.HashLevel = GetHashLevel(listSiteId);
 
         var hashManageUserPolicy =
-            userService.GetUserListSiteFunctionKeyPolicy(napSession.UserId, FunctionKeys.ManageUser, listSiteId);
+            UserService.GetUserListSiteFunctionKeyPolicy(NapSession.UserId, FunctionKeys.ManageUser, listSiteId);
 
-        var hashAssignFunctionPolicy = userService.GetUserListSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var hashAssignFunctionPolicy = UserService.GetUserListSiteFunctionKeyPolicy(
+            NapSession.UserId,
             FunctionKeys.AssignFunctionToUser,
             listSiteId);
 
-        var hashAssignSite = userService.GetUserListSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var hashAssignSite = UserService.GetUserListSiteFunctionKeyPolicy(
+            NapSession.UserId,
             FunctionKeys.AssignSiteToUser,
             listSiteId);
 
@@ -106,7 +107,7 @@ public class UserController(IUserService userService,
                 Environment = Environment
             };
 
-            var users = userService.GetAllByUsernameGroupSite(searchAllSiteCriteria);
+            var users = UserService.GetAllByUsernameGroupSite(searchAllSiteCriteria);
 
             return View(new PagerList<UserLevel>(page, size, searchAllSiteCriteria.TotalRows, users));
         }
@@ -124,7 +125,7 @@ public class UserController(IUserService userService,
                 Environment = Environment
             };
 
-            var users = userService.SearchUser(criteria);
+            var users = UserService.SearchUser(criteria);
             return View(new PagerList<UserLevel>(page, size, criteria.TotalRows, users));
         }
     }
@@ -156,7 +157,7 @@ public class UserController(IUserService userService,
         var hashLevel = new Hashtable();
         foreach (var item in listSiteId)
         {
-            var level = userService.GetUserSiteLevel(napSession.UserId, item);
+            var level = UserService.GetUserSiteLevel(NapSession.UserId, item);
             hashLevel.Add(item, level);
         }
 
@@ -168,7 +169,7 @@ public class UserController(IUserService userService,
         var listSite = UserIsPortalAdmin
             ? siteService.GetAllSelectListItem(Environment, true, siteIdValue).ToList()
             : siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.ManageUser,
                 Environment,
                 selectedSiteId: siteIdValue).ToList();
@@ -184,7 +185,6 @@ public class UserController(IUserService userService,
 
 
     #endregion Manage
-
 
     #region Assign Site
 
@@ -209,12 +209,12 @@ public class UserController(IUserService userService,
         else
         {
             siteList = siteService.GetByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment).ToList();
 
-            var assignSitePolicy = userService.GetUserSiteFunctionKeyPolicy(
-                napSession.UserId,
+            var assignSitePolicy = UserService.GetUserSiteFunctionKeyPolicy(
+                NapSession.UserId,
                 SiteId,
                 FunctionKeys.AssignSiteToUser);
 
@@ -224,14 +224,14 @@ public class UserController(IUserService userService,
             if (assignSitePolicy >= (int)AdminConstant.Policy.Host)
             {
                 editableSiteList = siteService.GetByUserAndFunctionKeyIncludeGroup(
-                    napSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.AssignSiteToUser,
                     Environment,
                     policy: AdminConstant.Policy.Host).ToList();
             }
         }
 
-        var currentUserSiteLevelList = siteService.GetSiteLevelByUser(napSession.UserId, Environment).ToList();
+        var currentUserSiteLevelList = siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
         var siteLevelList = siteService.GetSiteLevelByUser(id, Environment).ToList();
 
         var assignSiteVM = new AssignSiteVM
@@ -247,10 +247,10 @@ public class UserController(IUserService userService,
             CurrentUserSiteLevelList = currentUserSiteLevelList,
             SiteLevelList = siteLevelList,
             EditableSiteList = editableSiteList,
-            CurrentSessionLevel = napSession.Level,
+            CurrentSessionLevel = NapSession.Level,
             UserId = id,
-            UserName = userService.GetById(id).Username,
-            IsSelfEdit = napSession.UserId == id,
+            UserName = UserService.GetById(id).Username,
+            IsSelfEdit = NapSession.UserId == id,
             CurrentSiteId = SiteId,
             IsPortalAdmin = UserIsPortalAdmin
         };
@@ -277,16 +277,16 @@ public class UserController(IUserService userService,
         var hostRightSites = new List<Site>();
         var currentUserSiteLevelList = new List<SiteLevel>();
 
-        if (napSession.UserId != userId)
+        if (NapSession.UserId != userId)
         {
             availableSites = siteService.GetAvailableSitesForUser(userId, Environment).ToList();
-            currentUserSiteLevelList = siteService.GetSiteLevelByUser(napSession.UserId, Environment, true).ToList();
+            currentUserSiteLevelList = siteService.GetSiteLevelByUser(NapSession.UserId, Environment, true).ToList();
             var isHasAssignRight = HasRight(FunctionKeys.AssignSiteToUser, AdminConstant.Policy.Host);
 
             if (isHasAssignRight)
             {
                 hostRightSites = siteService.GetByUserAndFunctionKeyIncludeGroup(
-                    napSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.AssignSiteToUser,
                     Environment,
                     policy: AdminConstant.Policy.Host).ToList();
@@ -321,7 +321,7 @@ public class UserController(IUserService userService,
     [NapAuth(FunctionKey = FunctionKeys.ManageUser, Policy = Constant.Policy.Read)]
     public ActionResult UserInfo(int id)
     {
-        return View(userService.GetById(id));
+        return View(UserService.GetById(id));
     }
 
     #endregion User Info
@@ -363,7 +363,7 @@ public class UserController(IUserService userService,
 
         if (criteria.Username.Length > 0)
         {
-            var users = userService.SearchByUsername(criteria);
+            var users = UserService.SearchByUsername(criteria);
 
             userList = new PagerList<User>(criteria.PageIndex, criteria.PageSize, criteria.TotalRows, users);
 
@@ -439,7 +439,7 @@ public class UserController(IUserService userService,
 
         if (ModelState.IsValid)
         {
-            if (userService.CheckUsernameExist(criteria.Username))
+            if (UserService.CheckUsernameExist(criteria.Username))
             {
                 ModelState.AddModelError("Username", string.Format(ViewResources.DuplicateMsg, criteria.Username));
                 return View(addNewUserVM);
@@ -449,7 +449,7 @@ public class UserController(IUserService userService,
             criteria.LastName ??= string.Empty;
             criteria.Email ??= string.Empty;
 
-            var result = userService.Insert(criteria);
+            var result = UserService.Insert(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -482,7 +482,7 @@ public class UserController(IUserService userService,
     {
         var criteria = new UpdateCustCommand();
 
-        var user = userService.GetById(id);
+        var user = UserService.GetById(id);
 
         if (user == null)
         {
@@ -524,7 +524,7 @@ public class UserController(IUserService userService,
             criteria.LastName ??= string.Empty;
             criteria.Email ??= string.Empty;
 
-            var result = userService.InsertOrUpdate(criteria);
+            var result = UserService.InsertOrUpdate(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -551,7 +551,7 @@ public class UserController(IUserService userService,
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        var user = userService.GetById(id);
+        var user = UserService.GetById(id);
 
         if (user == null)
         {
@@ -587,14 +587,14 @@ public class UserController(IUserService userService,
 
         var criteria = resetPasswordVM.Criteria;
 
-        var user = userService.GetById(criteria.CustId);
+        var user = UserService.GetById(criteria.CustId);
 
         if (user == null)
         {
             return RedirectToAction("Manage");
         }
 
-        var result = userService.InsertOrUpdate(criteria);
+        var result = UserService.InsertOrUpdate(criteria);
 
         if (result is { IsSuccessful: true })
         {
@@ -623,7 +623,7 @@ public class UserController(IUserService userService,
         var assignPermissionVM = new AssignPermissionVM();
         var siteIdValue = siteId == 0 ? SiteId : siteId;
 
-        var user = userService.GetById(id);
+        var user = UserService.GetById(id);
         var site = siteService.GetById(siteIdValue);
 
         if (ReferenceEquals(user, null) || ReferenceEquals(site, null))
@@ -645,12 +645,12 @@ public class UserController(IUserService userService,
         }
 
         ViewFlags.HasAssignFunctionRight = HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToUser, AdminConstant.Policy.Host)
-                                           && id != napSession.UserId;
+                                           && id != NapSession.UserId;
 
-        assignPermissionVM.Sites = napSession.Level == (int)AdminConstant.Level.PortalAdmin ?
+        assignPermissionVM.Sites = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             siteService.GetAllSelectListItem(Environment, true, criteria.SiteId).ToList() :
             siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToUser,
                 Environment,
                 selectedSiteId: criteria.SiteId).ToList();
@@ -659,9 +659,9 @@ public class UserController(IUserService userService,
         assignPermissionVM.UserFuncPolicyList =
             functionService.GetByUserAndSite(criteria.UserId, criteria.SiteId, Environment).ToList();
         assignPermissionVM.CurrentUserFuncPolicyList =
-            functionService.GetByUserAndSiteIncludeGroup(napSession.UserId, criteria.SiteId, Environment).ToList();
-        assignPermissionVM.AdminLevel = napSession.Level;
-        assignPermissionVM.UserLevel = userService.GetUserSiteLevel(user.Id, site.Id);
+            functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
+        assignPermissionVM.AdminLevel = NapSession.Level;
+        assignPermissionVM.UserLevel = UserService.GetUserSiteLevel(user.Id, site.Id);
 
         assignPermissionVM.Criteria = criteria;
         assignPermissionVM.ReturnData = new ReturnData
@@ -681,7 +681,7 @@ public class UserController(IUserService userService,
     {
         var criteria = assignPermissionVM.Criteria;
 
-        var user = userService.GetById(criteria.UserId);
+        var user = UserService.GetById(criteria.UserId);
         var site = siteService.GetById(criteria.SiteId);
 
         if (user == null || site == null)
@@ -689,8 +689,8 @@ public class UserController(IUserService userService,
             return RedirectToAction("Manage");
         }
 
-        var policy = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var policy = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             criteria.SiteId,
             FunctionKeys.AssignFunctionToUser);
 
@@ -702,7 +702,7 @@ public class UserController(IUserService userService,
         ViewFlags.HasAssignFunctionRight = true;
 
         criteria.Username = user.Username;
-        criteria.ModifiedBy = napSession.UserId;
+        criteria.ModifiedBy = NapSession.UserId;
         criteria.ModifiedDate = DateTime.Now;
 
         var listFunc =
@@ -716,7 +716,7 @@ public class UserController(IUserService userService,
         listUserFuncRemove.AddRange(listUserFuncPolicy);
 
         var listCurrentUserFuncPolicy =
-            functionService.GetByUserAndSiteIncludeGroup(napSession.UserId, criteria.SiteId, Environment).ToList();
+            functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
 
         if (!criteria.FuncHost.IsNullOrDBNull())
         {
@@ -762,7 +762,7 @@ public class UserController(IUserService userService,
             }
         }
 
-        var result = userService.AssignFunction(criteria);
+        var result = UserService.AssignFunction(criteria);
 
         if (result is { IsSuccessful: true })
         {
@@ -778,10 +778,10 @@ public class UserController(IUserService userService,
                 functionService.GetByGroupAndSite(user.GroupId, criteria.SiteId, Environment).ToList();
         }
 
-        assignPermissionVM.Sites = napSession.Level == (int)AdminConstant.Level.PortalAdmin ?
+        assignPermissionVM.Sites = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             siteService.GetAllSelectListItem(Environment, true, criteria.SiteId).ToList() :
             siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToUser,
                 Environment,
                 selectedSiteId: criteria.SiteId).ToList();
@@ -789,8 +789,8 @@ public class UserController(IUserService userService,
         assignPermissionVM.FunctionList = listFunc;
         assignPermissionVM.UserFuncPolicyList = listUserFuncPolicy;
         assignPermissionVM.CurrentUserFuncPolicyList = listCurrentUserFuncPolicy;
-        assignPermissionVM.AdminLevel = napSession.Level;
-        assignPermissionVM.UserLevel = userService.GetUserSiteLevel(user.Id, site.Id);
+        assignPermissionVM.AdminLevel = NapSession.Level;
+        assignPermissionVM.UserLevel = UserService.GetUserSiteLevel(user.Id, site.Id);
 
         assignPermissionVM.Criteria = criteria;
 
@@ -802,7 +802,7 @@ public class UserController(IUserService userService,
     public ActionResult UnassignPermission(int userId, int functionId)
     {
 
-        var user = userService.GetById(userId);
+        var user = UserService.GetById(userId);
         var function = functionService.GetById(functionId);
         var listUserFuncPolicy = functionService.GetByUserAndSite(userId, function.SiteId, Environment).ToList();
 
@@ -810,14 +810,14 @@ public class UserController(IUserService userService,
         {
             FuncHost = listUserFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             FuncRead = listUserFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
-            ModifiedBy = napSession.UserId,
+            ModifiedBy = NapSession.UserId,
             ModifiedDate = DateTime.Now,
             SiteId = function.SiteId,
             Username = user.Username,
             UserId = userId
         };
 
-        var result = userService.AssignFunction(criteria);
+        var result = UserService.AssignFunction(criteria);
 
         return Json(result);
     }
@@ -828,7 +828,7 @@ public class UserController(IUserService userService,
     {
         var criteria = new AssignSiteUserCommand
         {
-            CreatedBy = napSession.UserId,
+            CreatedBy = NapSession.UserId,
             CreatedDate = DateTime.Now,
             UserId = userId,
             SiteId = siteId,
@@ -837,7 +837,7 @@ public class UserController(IUserService userService,
             IsNeverExpired = true
         };
 
-        var result = userService.AssignSite(criteria);
+        var result = UserService.AssignSite(criteria);
 
         if (result is not { IsSuccessful: true })
         {
@@ -845,7 +845,7 @@ public class UserController(IUserService userService,
         }
 
         return siteId == NapAdminSettings.OWPSiteID
-            ? userService.SyncUserToOWP(userId)
+            ? UserService.SyncUserToOWP(userId)
             : AdminConstant.Ok;
 
     }
@@ -853,7 +853,7 @@ public class UserController(IUserService userService,
     [HttpGet]
     public string SyncUserToOWP(int userId)
     {
-        userService.SyncUserToOWP(userId);
+        UserService.SyncUserToOWP(userId);
         return "OK";
     }
 
@@ -871,7 +871,7 @@ public class UserController(IUserService userService,
         {
             var criteria = new UpdateSiteToUserCommand
             {
-                ModifiedBy = napSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now,
                 UserId = userId,
                 SiteId = siteId,
@@ -881,7 +881,7 @@ public class UserController(IUserService userService,
                 IsNeverExpired = isNeverExpired
             };
 
-            var result = userService.UpdateSite(criteria);
+            var result = UserService.UpdateSite(criteria);
 
             if (result is { IsSuccessful: true })
             {
@@ -907,26 +907,26 @@ public class UserController(IUserService userService,
         int returnGroupId = 0,
         int returnPageIndex = 1)
     {
-        var loginUserAssignSitePolicy = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var loginUserAssignSitePolicy = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             SiteId,
             FunctionKeys.AssignSiteToUser);
 
-        var loginUserAssignFunctionPolicy = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var loginUserAssignFunctionPolicy = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             SiteId,
             FunctionKeys.AssignFunctionToUser);
 
         return View(new AssignSiteFunctionViewModel
         {
-            LoginUserId = napSession.UserId,
-            UserName = userService.GetById(id).Username,
+            LoginUserId = NapSession.UserId,
+            UserName = UserService.GetById(id).Username,
             UserId = id,
             LoginUserIsPortalAdmin = UserIsPortalAdmin,
             LoginUserHasAssignSitePermission = loginUserAssignSitePolicy >= (int)AdminConstant.Policy.Host,
             LoginUserHasAssignSiteReadPermission = loginUserAssignSitePolicy == (int)AdminConstant.Policy.Read,
             LoginUserAssignFunctionPermission = loginUserAssignFunctionPolicy,
-            IsSelfEdit = napSession.UserId == id,
+            IsSelfEdit = NapSession.UserId == id,
             CurrentSiteId = SiteId,
             ReturnData = new ReturnData
             {
@@ -944,7 +944,7 @@ public class UserController(IUserService userService,
     {
         foreach (var data in payload)
         {
-            var user = userService.GetById(data.UserId);
+            var user = UserService.GetById(data.UserId);
             var site = siteService.GetById(data.SiteId);
 
             if (user == null || site == null)
@@ -953,10 +953,10 @@ public class UserController(IUserService userService,
             }
 
             data.Username = user.Username;
-            data.ModifiedBy = napSession.UserId;
+            data.ModifiedBy = NapSession.UserId;
             data.ModifiedDate = DateTime.Now;
 
-            var result = userService.AssignFunction(data);
+            var result = UserService.AssignFunction(data);
 
             if (result is { IsSuccessful: true })
             {
@@ -971,10 +971,10 @@ public class UserController(IUserService userService,
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public JsonResult GetAllUserSites(int userId)
     {
-        IEnumerable<Site> siteList = UserIsPortalAdmin || napSession.UserId == userId ?
+        IEnumerable<Site> siteList = UserIsPortalAdmin || NapSession.UserId == userId ?
             siteService.GetAll(Environment, true).ToList() :
             siteService.GetByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment).ToList();
 
@@ -990,7 +990,7 @@ public class UserController(IUserService userService,
     private void GetUserHasFunctionPermissionSites(List<Site> userSiteList)
     {
         var loginUserHasFunctionPermissionSites = siteService.GetByUserAndFunctionKeyIncludeGroup(
-            napSession.UserId,
+            NapSession.UserId,
             FunctionKeys.AssignFunctionToUser,
             Environment);
 
@@ -1007,7 +1007,7 @@ public class UserController(IUserService userService,
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToUser, Policy = Constant.Policy.Read)]
     public JsonResult GetFunctions(int siteId, int userId)
     {
-        var user = userService.GetById(userId);
+        var user = UserService.GetById(userId);
         var groupFunctionPolicies = new List<FunctionPolicy>();
 
         if (user.GroupId > 0)
@@ -1017,14 +1017,14 @@ public class UserController(IUserService userService,
 
         var functions = functionService.GetBySiteInHierarchy(siteId, Environment, true).ToList();
         var functionPolicies = functionService.GetByUserAndSite(userId, siteId, Environment).ToList();
-        var loginUserFunctionPolicies = functionService.GetByUserAndSiteIncludeGroup(napSession.UserId, siteId, Environment).ToList();
-        var loginUserAssignFunctionPermission = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var loginUserFunctionPolicies = functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, siteId, Environment).ToList();
+        var loginUserAssignFunctionPermission = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             siteId,
             FunctionKeys.AssignFunctionToUser);
 
-        var loginUserAssignSitePermission = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var loginUserAssignSitePermission = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             siteId,
             FunctionKeys.AssignSiteToUser);
 
@@ -1053,8 +1053,8 @@ public class UserController(IUserService userService,
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Read)]
     public ActionResult GetLoginUserHasAssignSiteHostPermissionSites()
     {
-        var assignSitePolicy = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var assignSitePolicy = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             SiteId,
             FunctionKeys.AssignSiteToUser);
 
@@ -1063,7 +1063,7 @@ public class UserController(IUserService userService,
         if (assignSitePolicy >= (int)AdminConstant.Policy.Host)
         {
             editableSites = siteService.GetByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment,
                 policy: AdminConstant.Policy.Host).ToList();
@@ -1082,7 +1082,7 @@ public class UserController(IUserService userService,
     {
         if (Request.IsAjaxRequest())
         {
-            var userList = userService.GetByGroupAndSite(groupId, siteId);
+            var userList = UserService.GetByGroupAndSite(groupId, siteId);
 
             return View(userList);
         }
@@ -1127,15 +1127,15 @@ public class UserController(IUserService userService,
             {
                 UserId = userId,
                 GroupId = groupId,
-                CreatedBy = napSession.UserId,
+                CreatedBy = NapSession.UserId,
                 CreatedDate = DateTime.Now
             };
 
-            var user = userService.GetById(userId);
+            var user = UserService.GetById(userId);
 
             if (user == null)
             {
-                var result = userService.InsertOrUpdate(criteria);
+                var result = UserService.InsertOrUpdate(criteria);
 
                 if (result is { IsSuccessful: true })
                 {
@@ -1153,7 +1153,7 @@ public class UserController(IUserService userService,
     {
         if (Request.IsAjaxRequest())
         {
-            var listUser = userService.GetByGroupAndSite(groupId);
+            var listUser = UserService.GetByGroupAndSite(groupId);
 
             return Json(listUser);
         }
@@ -1173,7 +1173,7 @@ public class UserController(IUserService userService,
             return false;
         }
 
-        if (napSession.UserId != userId)
+        if (NapSession.UserId != userId)
         {
             if (UserIsPortalAdmin)
             {
@@ -1186,7 +1186,7 @@ public class UserController(IUserService userService,
             }
 
             var editableSiteList = siteService.GetByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignSiteToUser,
                 Environment,
                 policy: AdminConstant.Policy.Host).ToList();
@@ -1196,7 +1196,7 @@ public class UserController(IUserService userService,
                 return false;
             }
 
-            var currentUserSiteLevelList = siteService.GetSiteLevelByUser(napSession.UserId, Environment).ToList();
+            var currentUserSiteLevelList = siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
 
             if (currentUserSiteLevelList.TrueForAll(s => s.SiteId != siteId))
             {
@@ -1225,9 +1225,9 @@ public class UserController(IUserService userService,
 
     private IEnumerable<Site> GetUserUnassignedSites(int userId)
     {
-        var loginUserSiteLevelList = siteService.GetSiteLevelByUser(napSession.UserId, Environment).ToList();
+        var loginUserSiteLevelList = siteService.GetSiteLevelByUser(NapSession.UserId, Environment).ToList();
         var loginUserHasAssignSiteHostRightSites = siteService.GetByUserAndFunctionKeyIncludeGroup(
-            napSession.UserId,
+            NapSession.UserId,
             FunctionKeys.AssignSiteToUser,
             Environment,
             policy: AdminConstant.Policy.Host).ToList();
@@ -1291,11 +1291,14 @@ public class UserController(IUserService userService,
             System = system,
             IgnoreOTP = ignoreOTP,
             LoginIP = loggedUserContext.GetIp(),
-            Modifier = napSession.UserId
+            Modifier = NapSession.UserId
         };
 
         var repository = new DynamicRepository();
+
         repository.Execute(command);
+
+        DataCachingJobCommands.Instance.AddUserOtpCommand();
 
         return string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
     }
@@ -1314,11 +1317,13 @@ public class UserController(IUserService userService,
             System = system,
             IgnoreOTP = ignoreOTP,
             LoginIP = loggedUserContext.GetIp(),
-            Modifier = napSession.UserId
+            Modifier = NapSession.UserId
         };
 
         var repository = new DynamicRepository();
         repository.Execute(command);
+
+        DataCachingJobCommands.Instance.AddUserOtpCommand();
 
         var errMsg = string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
 
