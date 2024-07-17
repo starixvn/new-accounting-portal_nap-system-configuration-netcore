@@ -50,19 +50,7 @@ public class BatchUserFunctionPolicy
 
     public int FunctionId { get; set; }
 
-    public string FunctionKey { get; set; }
-
-    public string FunctionName { get; set; }
-
-    public int ParentId { get; set; }
-
-    public string ParentName { get; set; }
-
     public int Policy { get; set; }
-
-    public string Environment { get; set; }
-
-    public string ParentKey { get; set; }
 }
 
 public class BatchMenuItem

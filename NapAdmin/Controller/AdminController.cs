@@ -13,7 +13,6 @@ public class AdminController(ICache cache, DataCachingService dataCachingService
         return View();
     }
 
-
     public ActionResult Cache()
     {
         var connectionString = configuration.GetSection("AuthSettings:RedisConfig").Value;
