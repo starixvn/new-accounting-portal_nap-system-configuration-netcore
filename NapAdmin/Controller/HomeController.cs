@@ -1,11 +1,8 @@
-using System.Net.Sockets;
-using System.Net;
 using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Fanex.Data;
-using Fanex.Logging;
 using System.Diagnostics;
 using System.Runtime;
 using System.Text;
@@ -24,30 +21,13 @@ public class HomeController(INapSession napSession,
     public IActionResult Index()
     {
         return View();
-    }
-
-    [Authorize]
-    public IActionResult Test()
-    {
-        ViewBag.IsSessionAvailable = HttpContext.Session.IsAvailable;
-        ViewBag.UserId = NapSession.UserId;
-        ViewBag.Username = NapSession.UserName;
-        var instanceName = Dns.GetHostName();
-        var ip = Dns.GetHostEntry(instanceName).AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
-        ViewBag.InstanceName = instanceName;
-        ViewBag.InstanceIp = ip;
-
-        Logger.Log.Info("Test Log");
-
-        return View();
-    }
+    }   
 
     [AllowAnonymous]
     [HttpGet]
     [SkipUMFilter]
     public IActionResult Gc()
-    {
-        GC.Collect(2, GCCollectionMode.Aggressive | GCCollectionMode.Forced, true, true);
+    {        
         const int megabyte = 1024 * 1024;
         var stringBuilder = new StringBuilder();
         var sw = Stopwatch.StartNew();
@@ -81,5 +61,4 @@ public class HomeController(INapSession napSession,
         var result = await CacheManager.ClearCache(count);
 
         return Ok(result);
-    }
 }

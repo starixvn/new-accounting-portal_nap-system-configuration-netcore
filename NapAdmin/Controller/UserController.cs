@@ -424,7 +424,7 @@ public class UserController(IGroupService groupService,
         return View(new AddNewUserVM
         {
             ReturnData = returnData,
-            Criteria = new InsertCustCommand()
+            Criteria = new InsertCust0Command()
         });
     }
 

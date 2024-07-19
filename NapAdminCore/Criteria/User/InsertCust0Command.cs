@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Fanex.Data;
 using Web;
 
-public class InsertCustCommand : UpdateCommandBase
+public class InsertCust0Command : UpdateCommandBase
 {
     public int CustId { get; set; }
 
