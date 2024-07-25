@@ -27,6 +27,11 @@
 
 
   <ItemGroup>
+    <None Remove="App_Data\SpNames.xml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
     <PackageReference Include="Fanex.Caching.Redis" Version="2.2.4" />
     <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.4" />
     <PackageReference Include="Fanex.Common" Version="1.1.1.1" />
@@ -48,6 +53,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NapAdminCore\NapAdminCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="App_Data\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
