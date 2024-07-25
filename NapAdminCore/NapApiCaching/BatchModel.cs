@@ -2,7 +2,6 @@
 
 using Helpers;
 
-
 public class JobCommand(string command, int siteId)
 {
     public const string Site = "SiteCommand";

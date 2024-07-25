@@ -84,16 +84,5 @@ public class DataCachingJobCommands
         }
     }
 
-    public bool IsEmpty
-    {
-        get
-        {
-            lock (lockObject)
-            {
-                return commands.Count == 0;
-            }
-        }
-    }
-
     public static DataCachingJobCommands Instance { get; } = new();
 }

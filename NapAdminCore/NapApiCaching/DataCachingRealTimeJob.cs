@@ -8,43 +8,43 @@ public class DataCachingRealTimeJob(DataCachingService dataCachingService) : Bac
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var jobCommands = DataCachingJobCommands.Instance;
-
         while (!stoppingToken.IsCancellationRequested)
         {
-            await ProcessAllCommands(jobCommands, stoppingToken);
+            await ProcessAllCommands(stoppingToken);
 
             await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
     }
 
-    private async Task  ProcessAllCommands(DataCachingJobCommands jobCommands, CancellationToken stoppingToken)
+    private async Task ProcessAllCommands(CancellationToken stoppingToken)
     {
         var hasJob = false;
-        while (!jobCommands.IsEmpty && !stoppingToken.IsCancellationRequested)
+        var jobCommands = DataCachingJobCommands.Instance;
+        var command = jobCommands.PickCommand();
+        while (command != null && !stoppingToken.IsCancellationRequested)
         {
-            var command = jobCommands.PickCommand();
-            await TryResolveCommand(command);
             hasJob = true;
+            await TryResolveCommand(command);
+            command = jobCommands.PickCommand();
         }
 
         if (hasJob)
         {
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
     }
 
     private async Task TryResolveCommand(JobCommand command)
     {
+        var commandJson = JsonConvert.SerializeObject(command);
+        var message = $"DataCachingRealTimeJob.TryResolveCommand({commandJson})";
         try
         {
             await ResolveCommand(command);
+            Console.WriteLine(message);
         }
         catch (Exception e)
         {
-            var commandJson = JsonConvert.SerializeObject(command);
-            var message = $"DataCachingRealTimeJob.TryResolveCommand({commandJson})";
-
             await LogService.ErrorAsync(message, e);
         }
     }
