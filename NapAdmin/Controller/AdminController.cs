@@ -6,7 +6,7 @@ using NapAdminCore.NapApiCaching;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-public class AdminController(ICache cache, DataCachingService dataCachingService, IConfiguration configuration) : Controller
+public class AdminController(ICache cache, ApiClientService apiClientService, IConfiguration configuration) : Controller
 {
     public ActionResult Index()
     {
@@ -66,7 +66,7 @@ public class AdminController(ICache cache, DataCachingService dataCachingService
 
     public async Task<IActionResult> ReloadNapApiCache()
     {
-        await dataCachingService.ReloadAll();
+        await apiClientService.ReloadAllCache();
         return Redirect("Cache");
     }
 }

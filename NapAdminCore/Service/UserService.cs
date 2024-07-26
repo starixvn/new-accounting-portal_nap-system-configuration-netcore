@@ -143,9 +143,9 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
 
         var result = repository.Execute(criteria, logCriteria);
 
-        DataCachingJobCommands.Instance.AddUserCommand();
+        DataCachingJobCommands.Instance.AddUserSiteLevelCommand();
         DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
-
+        
         return result;
     }
 
@@ -155,6 +155,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
 
         var result = repository.Execute(criteria, logCriteria);
 
+        DataCachingJobCommands.Instance.AddSiteCommand();
         DataCachingJobCommands.Instance.AddUserSiteLevelCommand();
         DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
 

@@ -3,7 +3,7 @@
 using Fanex.Logging;
 using Microsoft.Extensions.Hosting;
 
-public class DataCachingDailyJob(DataCachingService dataCachingService, ILogger logger) : BackgroundService
+public class DataCachingDailyJob(ApiClientService apiClientService, ILogger logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -13,15 +13,16 @@ public class DataCachingDailyJob(DataCachingService dataCachingService, ILogger 
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }
     }
-
+   
     private async Task TryReloadAllCache(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        var done = false;
+        while (!done && !stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await dataCachingService.ReloadAll();
-                return;
+                await apiClientService.ReloadAllCache();
+                done = true;
             }
             catch (Exception e)
             {

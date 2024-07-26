@@ -42,12 +42,6 @@ public class DataCachingJobCommands
         AddCommand(command);
     }
 
-    public void AddUserOtpCommand()
-    {
-        var command = new JobCommand(JobCommand.UserOtp, 0);
-        AddCommand(command);
-    }
-
     public void AddUserCommand()
     {
         var command = new JobCommand(JobCommand.User, 0);
@@ -79,7 +73,7 @@ public class DataCachingJobCommands
 
         lock (lockObject)
         {
-            commands = commands.Where(cmd => cmd.Command != command.Command || cmd.Version <= command.Version)
+            commands = commands.Where(cmd => cmd.Command != command.Command || cmd.Version < command.Version)
                 .ToList();
         }
     }

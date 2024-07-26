@@ -1298,8 +1298,6 @@ public class UserController(IGroupService groupService,
 
         repository.Execute(command);
 
-        DataCachingJobCommands.Instance.AddUserOtpCommand();
-
         return string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
     }
 
@@ -1322,8 +1320,6 @@ public class UserController(IGroupService groupService,
 
         var repository = new DynamicRepository();
         repository.Execute(command);
-
-        DataCachingJobCommands.Instance.AddUserOtpCommand();
 
         var errMsg = string.IsNullOrEmpty(command.ErrMsg) ? string.Empty : command.ErrMsg;
 

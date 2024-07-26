@@ -4,7 +4,7 @@ using Fanex.Logging;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
-public class DataCachingRealTimeJob(DataCachingService dataCachingService) : BackgroundService
+public class DataCachingRealTimeJob(ApiClientService apiClientService) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -16,7 +16,7 @@ public class DataCachingRealTimeJob(DataCachingService dataCachingService) : Bac
         }
     }
 
-    private async Task ProcessAllCommands(CancellationToken stoppingToken)
+    private async Task ProcessAllCommands( CancellationToken stoppingToken)
     {
         var hasJob = false;
         var jobCommands = DataCachingJobCommands.Instance;
@@ -30,7 +30,7 @@ public class DataCachingRealTimeJob(DataCachingService dataCachingService) : Bac
 
         if (hasJob)
         {
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
         }
     }
 
@@ -40,46 +40,25 @@ public class DataCachingRealTimeJob(DataCachingService dataCachingService) : Bac
         var message = $"DataCachingRealTimeJob.TryResolveCommand({commandJson})";
         try
         {
-            await ResolveCommand(command);
+            var cacheVersion =await ResolveCommand(command);
+            message += $" . Cache version:{cacheVersion}";
             Console.WriteLine(message);
         }
         catch (Exception e)
         {
             await LogService.ErrorAsync(message, e);
+            await Task.Delay(TimeSpan.FromSeconds(5));
         }
     }
 
-    private async Task ResolveCommand(JobCommand command)
+    private async Task<string> ResolveCommand(JobCommand command)
     {
         var jobCommands = DataCachingJobCommands.Instance;
-        switch (command.Command)
-        {
-            case JobCommand.Site:
-                await dataCachingService.ReloadSites();
-                break;
-            case JobCommand.Function:
-                await dataCachingService.ReloadFunctions();
-                break;
-            case JobCommand.Group:
-                await dataCachingService.ReloadGroups();
-                break;
-            case JobCommand.Menu:
-                await dataCachingService.ReloadSiteMenu();
-                break;
-            case JobCommand.UserFunctionPolicy:
-                await dataCachingService.ReloadUserFunctionPolicy(command.SiteId);
-                break;
-            case JobCommand.User:
-                await dataCachingService.ReloadUsers();
-                break;
-            case JobCommand.UserOtp:
-                await dataCachingService.ReloadUserOtp();
-                break;
-            case JobCommand.UserSiteLevel:
-                await dataCachingService.ReloadUserSiteLevels();
-                break;
-        }
+        var cacheVersion = await apiClientService.ReloadCache(command);
 
         jobCommands.ResolveCommand(command);
+        return cacheVersion;
     }
+
+    
 }
