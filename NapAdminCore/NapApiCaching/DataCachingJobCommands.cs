@@ -42,12 +42,6 @@ public class DataCachingJobCommands
         AddCommand(command);
     }
 
-    public void AddUserCommand()
-    {
-        var command = new JobCommand(JobCommand.User, 0);
-        AddCommand(command);
-    }
-
     public void AddCommand(JobCommand command)
     {
         lock (lockObject)

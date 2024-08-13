@@ -8,7 +8,6 @@ public class JobCommand(string command, int siteId)
     public const string Menu = "MenuCommand";
     public const string UserFunctionPolicy = "UserFunctionPolicyCommand";
     public const string UserSiteLevel = "UserSiteLevelCommand";
-    public const string User = "UserCommand";
 
     private static readonly Dictionary<string, int> priorityMap = new()
     {
@@ -17,8 +16,7 @@ public class JobCommand(string command, int siteId)
         { Group, 2 },
         { Menu, 3 },
         { UserSiteLevel, 4 },
-        { UserFunctionPolicy, 5 },
-        { User, 6 }
+        { UserFunctionPolicy, 5 }
     };
 
     public string Command { get; set; } = command;

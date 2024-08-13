@@ -15,8 +15,7 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
 
     public ActionResult Cache()
     {
-        var connectionString = configuration.GetSection("AuthSettings:RedisConfig").Value;
-        var options = ConfigurationOptions.Parse(connectionString);
+        var options = ReadConfigurationOptions();
         var redis = ConnectionMultiplexer.Connect(options);
         var endPoints = redis.GetEndPoints();
         var appName = configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value;
@@ -33,6 +32,28 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
 
         ViewBag.CacheKeys = keys;
         return View("Cache");
+    }
+
+    private ConfigurationOptions ReadConfigurationOptions()
+    {
+        var redisConfigSection = configuration.GetSection("Fanex.Caching.Redis:ConnectionOptions");
+        var endPoints = redisConfigSection.GetSection("EndPoints").Get<string[]>();
+        var password = redisConfigSection["Password"];
+        var defaultDatabase = int.Parse(redisConfigSection["DefaultDatabase"]);
+
+        var configOptions = new ConfigurationOptions
+        {
+            Password = password,
+            DefaultDatabase = defaultDatabase,
+            EndPoints = new EndPointCollection()
+        };
+
+        foreach (var endPoint in endPoints)
+        {
+            configOptions.EndPoints.Add(endPoint);
+        }
+
+        return configOptions;
     }
 
     public ActionResult DeleteCache(string cacheKey)
