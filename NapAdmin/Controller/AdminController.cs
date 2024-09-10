@@ -1,6 +1,7 @@
 namespace NapAdmin.Controller;
 
 using Fanex.Caching;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.NapApiCaching;
 using Newtonsoft.Json;
@@ -85,6 +86,7 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
         return View("CacheContent");
     }
 
+    [AllowAnonymous]
     public async Task<IActionResult> ReloadNapApiCache()
     {
         await apiClientService.ReloadAllCache();
