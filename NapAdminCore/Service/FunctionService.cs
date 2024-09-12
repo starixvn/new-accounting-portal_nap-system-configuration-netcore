@@ -258,7 +258,7 @@ public class FunctionService(UpdateRepository repository, IDynamicRepository dyn
         var result= repository.Execute(criteria, logCriteria);
 
         DataCachingJobCommands.Instance.AddFunctionCommand();
-
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
         return result;
     }
 
@@ -268,6 +268,7 @@ public class FunctionService(UpdateRepository repository, IDynamicRepository dyn
         var result = repository.Execute(criteria, logCriteria);
 
         DataCachingJobCommands.Instance.AddFunctionCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
         return result;
     }
 
