@@ -1,5 +1,6 @@
 namespace NapAdmin.Controller;
 
+using System.Text;
 using Fanex.Caching;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -91,5 +92,20 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
     {
         await apiClientService.ReloadAllCache();
         return Redirect("Cache");
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllCache()
+    {
+        var data =await apiClientService.GetAllCache();
+        var stringBuilder = new StringBuilder();
+        foreach (var key in data.Keys)
+        {
+            stringBuilder.AppendLine(key);
+            stringBuilder.AppendLine(data[key]);
+            stringBuilder.AppendLine();
+        }
+
+        return Content(stringBuilder.ToString());
     }
 }
