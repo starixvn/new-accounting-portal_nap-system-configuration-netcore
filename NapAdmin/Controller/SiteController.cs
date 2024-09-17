@@ -1,7 +1,6 @@
 namespace NapAdmin.Controller;
 
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
@@ -17,9 +16,9 @@ using NapAdminCore.Web;
 
 [NapSuperAuth]
 public class SiteController(ISiteService siteService,
-        IUserService userService,
         INapSession napSession,
-        INapSettings napSettings)
+        INapSettings napSettings,
+        IUserService userService)
     : BaseController(napSession, napSettings, userService)
 {
     #region Manage
@@ -31,7 +30,7 @@ public class SiteController(ISiteService siteService,
         ViewFlags.HasManageUserRight = HasRight(FunctionKeys.ManageUser, AdminConstant.Policy.Read);
 
         ViewBag.Site = siteService.GetByUserAndFunctionKeyIncludeGroup(
-            napSession.UserId,
+            NapSession.UserId,
             FunctionKeys.ManageUser,
             Environment).Select(s => s.Id).ToList();
         ViewBag.SiteList = siteService.GetAllWithNumOfUsers(Environment).OrderByDescending(s => s.IsActive).ThenBy(s => s.Id).ToList();
@@ -51,14 +50,14 @@ public class SiteController(ISiteService siteService,
         var criteria = new InsertSiteCommand
         {
             Environment = Environment,
-            Urls = new List<SiteUrl>
-            {
-                new()
+            Urls =
+            [
+                new SiteUrl
                 {
                     IsActive = true,
                     IsDefault = true
                 }
-            }
+            ]
         };
 
         return View(criteria);
@@ -215,8 +214,8 @@ public class SiteController(ISiteService siteService,
         ViewBag.SiteId = site.Id;
         ViewBag.SiteName = site.Name;
         ViewBag.Urls = siteService.GetSiteUrlBySiteId(id, string.Empty).ToList();
-        ViewFlags.SetEditRight(userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        ViewFlags.SetEditRight(UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             SiteId,
             FunctionKeys.ManageSite));
 

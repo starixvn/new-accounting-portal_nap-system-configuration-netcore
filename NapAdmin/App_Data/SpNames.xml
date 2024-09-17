@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Functions>
-  <Function Name="Site">
+  <Function Name="Site_Read">
     <Setting Key="NAP_Site_GetAll" SpName="NAP_Site_GetAll" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
@@ -16,7 +16,7 @@
     <Setting Key="NAP_Site_GetByName" SpName="NAP_Site_GetByName" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
-    </Setting>    
+    </Setting>
     <Setting Key="NAP_Site_GetSiteURLBySiteId" SpName="NAP_Site_GetSiteURLBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="Id" ObjectProperty="SiteId" />
       <Mapping DataField="Name" ObjectProperty="SiteName" />
@@ -33,8 +33,18 @@
       <Mapping DataField="SiteId" ObjectProperty="Id" />
       <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
+    <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="DBPOL.NAP_UserControl.wsv_nap">
+    </Setting>
   </Function>
-  <Function Name="Function">
+  <Function Name="Site_Update">
+    <Setting Key="NAP_Site_InsertSiteURL" SpName="NAP_Site_InsertSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_InsertWithSiteURL" SpName="NAP_Site_InsertWithSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_Update" SpName="NAP_Site_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_UpdateSiteURL" SpName="NAP_Site_UpdateSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_UpdateStatus" SpName="NAP_Site_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Site_UpdateDefaultSiteURL" SpName="NAP_Site_UpdateDefaultSiteURL" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+  </Function>
+  <Function Name="Function_Read">
     <Setting Key="NAP_Function_GetAll" SpName="NAP_Function_GetAll" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="FunctionId" ObjectProperty="Id" />
       <Mapping DataField="FunctionName" ObjectProperty="Name" />
@@ -99,7 +109,14 @@
     <Setting Key="NAP_Function_AssignFunctionToGroups" SpName="NAP_Function_AssignFunctionToGroups" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
     <Setting Key="NAP_Function_AssignFunctionToUsers" SpName="NAP_Function_AssignFunctionToUsers" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
   </Function>
-  <Function Name="MenuItem">    
+  <Function Name="Function_Update">
+    <Setting Key="NAP_Function_Duplicate" SpName="NAP_Function_Duplicate" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_CopyPermission" SpName="NAP_Function_CopyPermission" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_Insert" SpName="NAP_Function_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_Update" SpName="NAP_Function_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Function_UpdateStatus" SpName="NAP_Function_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+  </Function>
+  <Function Name="MenuItem_Read">
     <Setting Key="NAP_MenuItem_GetById" SpName="NAP_MenuItem_GetById" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="MenuItemId" ObjectProperty="Id" />
       <Mapping DataField="MenuItemName" ObjectProperty="Name" />
@@ -109,7 +126,16 @@
       <Mapping DataField="MenuItemName" ObjectProperty="Name" />
     </Setting>
   </Function>
-  <Function Name="Group">
+  <Function Name="MenuItem_Update">
+    <Setting Key="NAP_MenuItem_Insert" SpName="NAP_MenuItem_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_MenuItem_Update" SpName="NAP_MenuItem_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_MenuItem_UpdateStatus" SpName="NAP_MenuItem_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_MenuItem_GetParentById" SpName="NAP_MenuItem_GetParentById" DbName="DBPOL.NAP_UserControl.wsv_nap">
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
+    </Setting>
+  </Function>
+  <Function Name="Group_Read">
     <Setting Key="NAP_Group_GetAll" SpName="NAP_Group_GetAll" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="GroupId" ObjectProperty="Id" />
       <Mapping DataField="GroupName" ObjectProperty="Name" />
@@ -148,6 +174,12 @@
 
     </Setting>
   </Function>
+  <Function Name="Group_Update">
+    <Setting Key="NAP_Group_AssignFunction" SpName="NAP_Group_AssignFunction" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Group_Insert" SpName="NAP_Group_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Group_Update" SpName="NAP_Group_Update" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+    <Setting Key="NAP_Group_UpdateStatus" SpName="NAP_Group_UpdateStatus" DbName="DBPOL.NAP_UserControl.wsv_nap"></Setting>
+  </Function>
   <Function Name="User">
     <Setting Key="NAP_User_GetById" SpName="NAP_User_GetById" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="UserId" ObjectProperty="Id" />
@@ -165,7 +197,7 @@
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
     </Setting>
-    
+
     <Setting Key="NAP_User_GetByGroupAndSite" SpName="NAP_User_GetByGroupAndSite" DbName="DBPOL.NAP_UserControl.wsv_nap">
       <Mapping DataField="UserId" ObjectProperty="Id" />
       <Mapping DataField="userpwd" ObjectProperty="Password" />
@@ -186,12 +218,26 @@
     </Setting>
     <Setting Key="NAP_User_GetAllByUsernameGroupSite" SpName="NAP_User_GetAllByUsernameGroupSite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
   </Function>
-  <Function Name="Site">
-    <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="DBPOL.NAP_UserControl.wsv_nap">
+  <Function Name="User_Update">
+    <Setting Key="NAP_User_AssignFunction" SpName="NAP_User_AssignFunction" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_AssignNewSite" SpName="NAP_User_AssignNewSite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_UpdateSite" SpName="NAP_User_UpdateSite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_Insert" SpName="NAP_User_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_User_GetAvailableSites" SpName="NAP_User_GetAvailableSites" DbName="DBPOL.NAP_UserControl.wsv_nap">
+      <Mapping DataField="SiteId" ObjectProperty="Id" />
+      <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
   </Function>
-  <Function Name="Cust">
+  <Function Name="Cust_Read">
     <Setting Key="NAP_Cust_GetByUsername" SpName="NAP_Cust_GetByUsername" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+  </Function>
+  <Function Name="Cust_Update">
+    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Cust_Update" SpName="NAP_Cust_Update" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Cust_UpdatePassword" SpName="NAP_Cust_UpdatePassword" DbName="DBCUST.CustDB.wsv_nap" />
+    <Setting Key="NAP_Admin_OTPSel" SpName="NAP_Admin_OTPSel" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Admin_GetOTP" SpName="NAP_Admin_GetOTP" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Admin_OTPUpd" SpName="NAP_Admin_OTPUpd" DbName="DBPOL.NAP_UserControl.wsv_nap" />
   </Function>
   <Function Name="LogExecSp">
     <Setting Key="NAP_LogExecSp_Search" SpName="NAP_LogExecSp_Search" DbName="DBNAP.bodb_NAPLOG.wsv_nap" />
@@ -201,5 +247,17 @@
     <Setting Key="NAP_LogUserLogin_Search" SpName="NAP_LogUserLogin_Search" DbName="DBNAP.bodb_NAPLOG.wsv_nap">
 
     </Setting>
+  </Function>
+  <Function Name="NapApiCaching">
+
+    <Setting Key="NAP_Caching_GetUserFunctionsBySite" SpName="NAP_Caching_GetUserFunctionsBySite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_Caching_GetUserSiteLevel" SpName="NAP_Caching_GetUserSiteLevel" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="NAP_MenuItem_GetAll" SpName="NAP_MenuItem_GetAll" DbName="DBPOL.NAP_UserControl.wsv_nap" >
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
+    </Setting>
+  </Function>      
+  <Function Name="OWP">
+    <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.wsv_nap" />
   </Function>
 </Functions>

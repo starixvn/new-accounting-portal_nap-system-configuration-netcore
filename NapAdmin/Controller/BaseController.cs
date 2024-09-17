@@ -14,6 +14,11 @@ public class BaseController(INapSession napSession, INapSettings napSettings, IU
 {
     protected const string EmptyString = "";
 
+    protected INapSession NapSession => napSession;
+    protected INapSettings NapSettings => napSettings;
+
+    protected IUserService UserService => userService;
+
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         base.OnActionExecuting(context);

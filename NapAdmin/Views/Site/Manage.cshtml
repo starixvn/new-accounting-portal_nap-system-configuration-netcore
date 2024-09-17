@@ -4,7 +4,7 @@
     var siteList = ViewBag.SiteList as List<Site>;
     var siteUrlList = ViewBag.SiteUrlList as List<SiteUrl>;
     var viewFlags = (ViewFlags)ViewBag.ViewFlags;
-    var listSiteHasManageUser = ViewBag.Site as List<byte> ?? new List<byte>();
+    var listSiteHasManageUser = ViewBag.Site as List<byte> ?? [];
 }
 @section Head {
     <link type="text/css" rel="stylesheet" href="~/themes/nap/site/manage.css" />

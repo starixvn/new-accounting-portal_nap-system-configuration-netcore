@@ -6,7 +6,7 @@ public static class UserAgentTools
 {
     public static string[] GetArray(string a, string b)
     {
-        return new[] { a, b };
+        return [a, b];
     }
 
     public static string[] GetBotName(string userAgentValue)
@@ -38,7 +38,7 @@ public static class UserAgentTools
         {
             return GetArray("Inktomi", "Inktomi");
         }
-        return userAgent.Contains("teoma") ? GetArray("Teoma", "Teoma") : Array.Empty<string>();
+        return userAgent.Contains("teoma") ? GetArray("Teoma", "Teoma") : [];
     }
 
     private const string WindowsNtPattern = @"Windows NT (\d+)";

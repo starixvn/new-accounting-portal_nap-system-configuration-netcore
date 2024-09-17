@@ -20,9 +20,9 @@ using NapAdminCore.Web;
 public class GroupController(IGroupService groupService,
         ISiteService siteService,
         IFunctionService functionService,
-        IUserService userService,
         INapSession napSession,
-        INapSettings napSettings)
+        INapSettings napSettings,
+        IUserService userService)
     : BaseController(napSession, napSettings, userService)
 {
     #region Manage
@@ -80,7 +80,7 @@ public class GroupController(IGroupService groupService,
                 return View(criteria);
             }
 
-            criteria.CreatedBy = napSession.UserId;
+            criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
 
             var result = groupService.Insert(criteria);
@@ -135,7 +135,7 @@ public class GroupController(IGroupService groupService,
                 return View(criteria);
             }
 
-            criteria.ModifiedBy = napSession.UserId;
+            criteria.ModifiedBy = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
 
             var result = groupService.Update(criteria);
@@ -162,7 +162,7 @@ public class GroupController(IGroupService groupService,
             {
                 GroupId = id,
                 IsActive = isActive,
-                ModifiedBy = napSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
@@ -185,7 +185,7 @@ public class GroupController(IGroupService groupService,
     [NapAuth(FunctionKey = FunctionKeys.AssignFunctionToGroup, Policy = Constant.Policy.Read)]
     public ActionResult AssignPermission(int id, int siteId = 0)
     {
-        var siteIdValue = siteId == 0 || SiteId != napSettings.SiteId ? SiteId : siteId;
+        var siteIdValue = siteId == 0 || SiteId != NapSettings.SiteId ? SiteId : siteId;
 
         var group = groupService.GetById(id);
         var site = siteService.GetById(siteIdValue);
@@ -205,9 +205,9 @@ public class GroupController(IGroupService groupService,
         ViewFlags.HasAssignFunctionRight =
             HasRightOnSite(criteria.SiteId, FunctionKeys.AssignFunctionToGroup, AdminConstant.Policy.Host);
 
-        ViewBag.SiteSelectList = napSession.Level == (int)AdminConstant.Level.PortalAdmin ?
+        ViewBag.SiteSelectList = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
-            siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(napSession.UserId,
+            siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(NapSession.UserId,
                 FunctionKeys.AssignFunctionToGroup,
                 Environment,
                 selectedSiteId: criteria.SiteId);
@@ -216,8 +216,8 @@ public class GroupController(IGroupService groupService,
         ViewBag.GroupFuncPolicyList =
             functionService.GetByGroupAndSite(criteria.GroupId, criteria.SiteId, Environment);
         ViewBag.UserFuncPolicyList =
-            functionService.GetByUserAndSiteIncludeGroup(napSession.UserId, criteria.SiteId, Environment);
-        ViewBag.UserLevel = napSession.Level;
+            functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment);
+        ViewBag.UserLevel = NapSession.Level;
 
         return View(criteria);
     }
@@ -234,8 +234,8 @@ public class GroupController(IGroupService groupService,
             return RedirectToAction("Manage");
         }
 
-        var policy = userService.GetUserSiteFunctionKeyPolicy(
-            napSession.UserId,
+        var policy = UserService.GetUserSiteFunctionKeyPolicy(
+            NapSession.UserId,
             criteria.SiteId,
             FunctionKeys.AssignFunctionToGroup);
 
@@ -246,7 +246,7 @@ public class GroupController(IGroupService groupService,
 
         ViewFlags.HasAssignFunctionRight = true;
 
-        criteria.ModifiedBy = napSession.UserId;
+        criteria.ModifiedBy = NapSession.UserId;
         criteria.ModifiedDate = DateTime.Now;
 
         var listFunc =
@@ -259,7 +259,7 @@ public class GroupController(IGroupService groupService,
         listGroupFuncRemove.AddRange(listGroupFuncPolicy);
 
         var listCurrentUserFuncPolicy =
-            functionService.GetByUserAndSiteIncludeGroup(napSession.UserId, criteria.SiteId, Environment).ToList();
+            functionService.GetByUserAndSiteIncludeGroup(NapSession.UserId, criteria.SiteId, Environment).ToList();
 
         if (!criteria.FuncHost.IsNullOrDBNull())
         {
@@ -301,7 +301,7 @@ public class GroupController(IGroupService groupService,
         ViewBag.SiteSelectList = UserIsPortalAdmin ?
             siteService.GetAllSelectListItem(Environment, true, criteria.SiteId) :
             siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.AssignFunctionToGroup,
                 Environment,
                 selectedSiteId: criteria.SiteId);
@@ -309,7 +309,7 @@ public class GroupController(IGroupService groupService,
         ViewBag.FunctionList = listFunc;
         ViewBag.GroupFuncPolicyList = listGroupFuncPolicy;
         ViewBag.UserFuncPolicyList = listCurrentUserFuncPolicy;
-        ViewBag.UserLevel = napSession.Level;
+        ViewBag.UserLevel = NapSession.Level;
 
         return View(criteria);
     }
@@ -330,7 +330,7 @@ public class GroupController(IGroupService groupService,
         {
             FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
-            ModifiedBy = napSession.UserId,
+            ModifiedBy = NapSession.UserId,
             ModifiedDate = DateTime.Now,
             GroupId = groupId,
             GroupName = group.Name,

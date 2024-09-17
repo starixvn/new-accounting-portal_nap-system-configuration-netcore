@@ -1,6 +1,7 @@
 namespace NapAdmin.AppStart;
 
 using Fanex.Caching;
+using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using Fanex.Logging.Extensions;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using NapAdminCore.NapApiCaching;
 using NapAdminCore.Repository;
 using NapAdminCore.Service;
 using SharpRaven;
@@ -71,7 +73,7 @@ public static class IServiceCollectionExtensions
     public static void AddNapAdminCore(this IServiceCollection services)
     {
         services.AddScoped<IDynamicRepository, DynamicRepository>();
-        services.AddScoped<ISimpleRepository, SimpleSimpleRepository>();
+        services.AddScoped<UpdateRepository, UpdateRepositoryImp>();
         services.AddScoped<IFunctionService, FunctionService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IMenuItemService, MenuItemService>();
@@ -106,6 +108,11 @@ public static class IServiceCollectionExtensions
 
     }
 
+    public static void AddFanexCaching(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
+    }
+
     public static void AddNapAuthorization(this IServiceCollection services)
     {
         services.AddControllers(config =>
@@ -137,5 +144,14 @@ public static class IServiceCollectionExtensions
                 };
             });
     }
-    
+
+    public static void AddNapApiCaching(this IServiceCollection services)
+    {
+        services.AddSingleton<ApiClientService, ApiClientServiceImp>();
+        services.AddSingleton<DataCachingDailyJob>();
+        services.AddSingleton<DataCachingRealTimeJob>();
+
+        services.AddHostedService<DataCachingDailyJob>();
+        services.AddHostedService<DataCachingRealTimeJob>();
+    }
 }

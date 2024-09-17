@@ -3,7 +3,6 @@ namespace NapAdminCore.Service;
 using System.Collections;
 using Fanex.Data.Repository;
 using Fanex.Logging;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Criteria.User;
 using Models.ValueObject;
@@ -11,6 +10,7 @@ using Repository;
 using ONEbook.OTP.Services;
 using Criteria;
 using Criteria.OTP;
+using NapApiCaching;
 
 public interface IUserService
 {
@@ -57,7 +57,7 @@ public interface IUserService
     CommandResult InsertOrUpdate(UpdateCommandBase criteria);
 }
 
-public class UserService(ISimpleRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
+public class UserService(UpdateRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     : IUserService
 {
     public User GetById(int id)
@@ -129,7 +129,10 @@ public class UserService(ISimpleRepository repository, IDynamicRepository dynami
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        
+        return result;
     }
 
 
@@ -137,21 +140,35 @@ public class UserService(ISimpleRepository repository, IDynamicRepository dynami
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddUserSiteLevelCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+        
+        return result;
     }
 
     public CommandResult UpdateSite(UpdateSiteToUserCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddSiteCommand();
+        DataCachingJobCommands.Instance.AddUserSiteLevelCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     public CommandResult AssignFunction(AssignFunctionUserCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+        return result;
     }
 
     public int GetUserFunctionPolicy(int userId, int functionId)
@@ -185,8 +202,9 @@ public class UserService(ISimpleRepository repository, IDynamicRepository dynami
     public CommandResult InsertOrUpdate(UpdateCommandBase criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
-
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+        
+        return result;
     }
 
     public IList<UserPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -273,8 +291,6 @@ public class UserService(ISimpleRepository repository, IDynamicRepository dynami
             System = system
         };
 
-        var repository = new DynamicRepository();
-
-        return repository.Get<SetupOTPItem>(criteria);
+        return dynamicRepository.Get<SetupOTPItem>(criteria);
     }
 }

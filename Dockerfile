@@ -1,4 +1,14 @@
+ARG CI_REGISTRY_IMAGE
+
+FROM $CI_REGISTRY_IMAGE:builder as deps
+
+RUN mkdir -p /src/packages
+
 FROM hub.nexdev.net/base/dotnet/core/sdk:8.0-alpine AS builder
+
+ENV NUGET_PACKAGES=/src/packages
+COPY --from=deps $NUGET_PACKAGES/. $NUGET_PACKAGES/
+
 WORKDIR /src
 
 COPY NapAdminCore/*.csproj ./NapAdminCore/
@@ -6,15 +16,13 @@ COPY NapAdmin/*.csproj ./NapAdmin/
 
 
 RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
-RUN --mount=type=cache,target=/root/.nuget/packages \
-	dotnet restore NapAdmin/NapAdmin.csproj
+RUN dotnet restore -v n -r linux-x64  NapAdmin/NapAdmin.csproj
 
 COPY NapAdminCore/. ./NapAdminCore/
 COPY NapAdmin/. ./NapAdmin/
 
 WORKDIR /src/NapAdmin
-RUN --mount=type=cache,target=/root/.nuget/packages \
-	dotnet publish -c release -o /app
+RUN dotnet publish -r linux-x64 --self-contained false -o /app
 
 FROM hub.nexdev.net/base/dotnet/core/aspnet:8.0-alpine AS base
 

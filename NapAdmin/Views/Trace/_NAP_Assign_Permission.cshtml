@@ -2,7 +2,7 @@
 @{
     Layout = null;
     var functionList = ViewBag.FunctionList as List<Function>;
-    var groupFuncPolicyOldList = ViewBag.ListOldData as List<FunctionPolicy> ?? new List<FunctionPolicy>();
+    var groupFuncPolicyOldList = ViewBag.ListOldData as List<FunctionPolicy> ?? [];
     var groupFuncPolicyNewDic = ViewBag.ListNewData as Hashtable ?? new Hashtable();
 }
 <h1>@ViewResources.Site : <span class="title">@ViewBag.SiteName</span></h1>

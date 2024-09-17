@@ -7,7 +7,8 @@ using Criteria.MenuItem;
 using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
-using NapAdminCore.Criteria;
+using Criteria;
+using NapApiCaching;
 using Repository;
 
 public interface IMenuItemService
@@ -34,7 +35,7 @@ public interface IMenuItemService
 
     CommandResult UpdateStatus(UpdateStatusMenuItemCommand command);
 }
-public class MenuItemService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
+public class MenuItemService(UpdateRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
     : IMenuItemService
 {
@@ -134,22 +135,31 @@ public class MenuItemService(ISimpleRepository repository, IDynamicRepository dy
     public CommandResult Insert(InsertMenuItemCriteria criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
+        var result= repository.Execute(criteria, logCriteria);
+        
+        DataCachingJobCommands.Instance.AddMenuCommand();
 
-        return repository.Execute(criteria, logCriteria);
+        return result;
     }
 
     public CommandResult Update(UpdateMenuItemCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
+        var result = repository.Execute(criteria, logCriteria);
 
-        return repository.Execute(criteria, logCriteria);
+        DataCachingJobCommands.Instance.AddMenuCommand();
+
+        return result;
     }
 
     public CommandResult UpdateStatus(UpdateStatusMenuItemCommand command)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
+        var result = repository.Execute(command, logCriteria);
 
-        return repository.Execute(command, logCriteria);
+        DataCachingJobCommands.Instance.AddMenuCommand();
+
+        return result;
     }
 
     private IEnumerable<MenuItem> SortMenuItemsInHierarchy(IEnumerable<MenuItem> menuItemList, int parentId = 0)

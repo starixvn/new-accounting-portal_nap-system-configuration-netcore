@@ -8,7 +8,8 @@ using Fanex.Data.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ValueObject;
-using NapAdminCore.Criteria;
+using Criteria;
+using NapApiCaching;
 using Repository;
 
 public interface IGroupService
@@ -34,7 +35,7 @@ public interface IGroupService
     CommandResult Update(UpdateGroupCommand criteria);
 }
 
-public class GroupService(ISimpleRepository repository, IDynamicRepository dynamicRepository,
+public class GroupService(UpdateRepository repository, IDynamicRepository dynamicRepository,
         LoggedUserContext loggedUserContext)
     : IGroupService
 {
@@ -91,28 +92,41 @@ public class GroupService(ISimpleRepository repository, IDynamicRepository dynam
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(criteria.SiteId);
+
+        return result;
     }
 
     public CommandResult UpdateStatus(UpdateStatusGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(0);
+
+        return result;
     }
 
     public CommandResult Insert(InsertGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+        DataCachingJobCommands.Instance.AddGroupCommand();
+
+        return result;
     }
 
     public CommandResult Update(UpdateGroupCommand criteria)
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        return repository.Execute(criteria, logCriteria);
+        var result = repository.Execute(criteria, logCriteria);
+        DataCachingJobCommands.Instance.AddGroupCommand();
+        DataCachingJobCommands.Instance.AddUserFunctionPolicyCommand(0);
+        return result;
     }
 
     public IEnumerable<GroupPolicy> GetByFunctionAndSite(int functionId, int siteId)
@@ -123,7 +137,8 @@ public class GroupService(ISimpleRepository repository, IDynamicRepository dynam
             SiteId = siteId
         };
 
-        return repository.GetGroupPolicy(criteria).OrderBy(g => g.Name);
+        var userLevelList = dynamicRepository.Fetch<GroupPolicy>(criteria);
+        return userLevelList.OrderBy(g => g.Name).ToList();
     }
 
     public IEnumerable<Group> SearchGroupExcludeFunction(string groupName, int siteId = 0, int functionId = 0)

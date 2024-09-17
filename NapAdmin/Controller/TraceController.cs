@@ -143,62 +143,35 @@ public class TraceController(ITraceService traceService,
     public ActionResult GetLogInsertDetail(int id)
     {
         var log = traceService.GetById(id);
-        switch (log.ActionId)
+        return log.ActionId switch
         {
-            case (int)LogAction.NAP_Cust_Insert:
-                return NAPCustInsert(log);
-            case (int)LogAction.NAP_User_Insert:
-                return NAPUserInsert(log);
-            case (int)LogAction.NAP_Function_Insert:
-                return NAPFunctionInsert(log);
-            case (int)LogAction.NAP_Group_Insert:
-                return NAPGroupInsert(log);
-            case (int)LogAction.NAP_MenuItem_Insert:
-                return NAPMenuItemInsert(log);
-            case (int)LogAction.NAP_Site_InsertWithSiteURL:
-                return NAPSiteInsertWithSiteUrl(log);
-            case (int)LogAction.NAP_MenuItem_Update:
-                return NAPMenuItemUpdate(log);
-            case (int)LogAction.NAP_MenuItem_UpdateStatus:
-                return NAPMenuItemUpdateStatus(log);
-            case (int)LogAction.NAP_Function_Update:
-            case (int)LogAction.NAP_Function_Duplicate:
-                return NAPFunctionUpdate(log);
-            case (int)LogAction.NAP_Function_UpdateStatus:
-                return NAPFunctionUpdateStatus(log);
-            case (int)LogAction.NAP_Site_Update:
-                return NAPSiteUpdate(log);
-            case (int)LogAction.NAP_Site_UpdateStatus:
-                return NAPSiteUpdateStatus(log);
-            case (int)LogAction.NAP_Group_Update:
-                return NAPGroupUpdate(log);
-            case (int)LogAction.NAP_Group_UpdateStatus:
-                return NAPGroupUpdateStatus(log);
-            case (int)LogAction.NAP_Cust_Update:
-                return NAPCustUpdate(log);
-            case (int)LogAction.NAP_Site_UpdateSiteURL:
-            case (int)LogAction.NAP_Site_InsertSiteURL:
-            case (int)LogAction.NAP_Site_UpdateDefaultSiteURL:
-                return NAPSiteUrl(log);
-            case (int)LogAction.NAP_Group_AssignFunction:
-            case (int)LogAction.NAP_User_AssignFunction:
-            case (int)LogAction.NAP_Function_CopyPermission:
-                return NAPAssignPermission(log);
-            case (int)LogAction.NAP_User_AssignNewSite:
-                return NAPAssignNewSite(log);
-            case (int)LogAction.NAP_User_UpdateSite:
-                return NAPUpdateSite(log);
-            case (int)LogAction.NAP_User_AssignSite:
-                return NAPAssignSite(log);
-            case (int)LogAction.NAP_Function_AssignFunctionToUsers:
-                return NAPFunctionAssignToUsers(log);
-            case (int)LogAction.NAP_Function_AssignFunctionToGroups:
-                return NAPFunctionAssignFunctionToGroups(log);
-            case (int)LogAction.Task_NAP_RevokeUserPermission:
-                return TaskNAPRevokeUserPermission(log);
-            default:
-                return View("~/Views/Trace/_NAP_Empty_LogDetail.cshtml");
-        }
+            (int)LogAction.NAP_Cust_Insert => NAPCustInsert(log),
+            (int)LogAction.NAP_User_Insert => NAPUserInsert(log),
+            (int)LogAction.NAP_Function_Insert => NAPFunctionInsert(log),
+            (int)LogAction.NAP_Group_Insert => NAPGroupInsert(log),
+            (int)LogAction.NAP_MenuItem_Insert => NAPMenuItemInsert(log),
+            (int)LogAction.NAP_Site_InsertWithSiteURL => NAPSiteInsertWithSiteUrl(log),
+            (int)LogAction.NAP_MenuItem_Update => NAPMenuItemUpdate(log),
+            (int)LogAction.NAP_MenuItem_UpdateStatus => NAPMenuItemUpdateStatus(log),
+            (int)LogAction.NAP_Function_Update or (int)LogAction.NAP_Function_Duplicate => NAPFunctionUpdate(log),
+            (int)LogAction.NAP_Function_UpdateStatus => NAPFunctionUpdateStatus(log),
+            (int)LogAction.NAP_Site_Update => NAPSiteUpdate(log),
+            (int)LogAction.NAP_Site_UpdateStatus => NAPSiteUpdateStatus(log),
+            (int)LogAction.NAP_Group_Update => NAPGroupUpdate(log),
+            (int)LogAction.NAP_Group_UpdateStatus => NAPGroupUpdateStatus(log),
+            (int)LogAction.NAP_Cust_Update => NAPCustUpdate(log),
+            (int)LogAction.NAP_Site_UpdateSiteURL or (int)LogAction.NAP_Site_InsertSiteURL
+                or (int)LogAction.NAP_Site_UpdateDefaultSiteURL => NAPSiteUrl(log),
+            (int)LogAction.NAP_Group_AssignFunction or (int)LogAction.NAP_User_AssignFunction
+                or (int)LogAction.NAP_Function_CopyPermission => NAPAssignPermission(log),
+            (int)LogAction.NAP_User_AssignNewSite => NAPAssignNewSite(log),
+            (int)LogAction.NAP_User_UpdateSite => NAPUpdateSite(log),
+            (int)LogAction.NAP_User_AssignSite => NAPAssignSite(log),
+            (int)LogAction.NAP_Function_AssignFunctionToUsers => NAPFunctionAssignToUsers(log),
+            (int)LogAction.NAP_Function_AssignFunctionToGroups => NAPFunctionAssignFunctionToGroups(log),
+            (int)LogAction.Task_NAP_RevokeUserPermission => TaskNAPRevokeUserPermission(log),
+            _ => View("~/Views/Trace/_NAP_Empty_LogDetail.cshtml")
+        };
     }
     
 

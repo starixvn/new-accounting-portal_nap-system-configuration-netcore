@@ -76,7 +76,7 @@ public class MenuController(IMenuItemService menuitemService,
 
         if (ModelState.IsValid)
         {
-            criteria.CreatedBy = napSession.UserId;
+            criteria.CreatedBy = NapSession.UserId;
             criteria.CreatedDate = DateTime.Now;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is 0 or null ? null : criteria.ParentName;
@@ -153,7 +153,7 @@ public class MenuController(IMenuItemService menuitemService,
 
         if (ModelState.IsValid)
         {
-            criteria.ModifierId = napSession.UserId;
+            criteria.ModifierId = NapSession.UserId;
             criteria.ModifiedDate = DateTime.Now;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is 0 or null ? null
@@ -221,7 +221,7 @@ public class MenuController(IMenuItemService menuitemService,
             {
                 IsActive = isActive,
                 MenuItemId = id,
-                ModifiedBy = napSession.UserId,
+                ModifiedBy = NapSession.UserId,
                 ModifiedDate = DateTime.Now
             };
 
@@ -240,7 +240,7 @@ public class MenuController(IMenuItemService menuitemService,
 
     private void PrepareManageData(GetBySiteMenuItemCriteria criteria)
     {
-        if (napSession.Level == (int)AdminConstant.Level.PortalAdmin)
+        if (NapSession.Level == (int)AdminConstant.Level.PortalAdmin)
         {
             ViewBag.Site = siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId);
             ViewFlags.HasEditRight = true;
@@ -249,7 +249,7 @@ public class MenuController(IMenuItemService menuitemService,
         {
             ViewBag.Site =
                 siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                    napSession.UserId,
+                    NapSession.UserId,
                     FunctionKeys.ManageMenu,
                     criteria.Environment,
                     selectedSiteId: criteria.SiteId);
@@ -266,10 +266,10 @@ public class MenuController(IMenuItemService menuitemService,
         ViewBag.Parent = menuitemService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
         ViewBag.Function = functionService.GetSelectListItemBySite(criteria.SiteId, Environment, isActive: true);
 
-        ViewBag.Site = napSession.Level == (int)AdminConstant.Level.PortalAdmin ?
+        ViewBag.Site = NapSession.Level == (int)AdminConstant.Level.PortalAdmin ?
             siteService.GetAllSelectListItem(criteria.Environment, true, criteria.SiteId) :
             siteService.GetSelectListItemByUserAndFunctionKeyIncludeGroup(
-                napSession.UserId,
+                NapSession.UserId,
                 FunctionKeys.ManageMenu,
                 criteria.Environment,
                 policy: AdminConstant.Policy.Host,
