@@ -9,10 +9,17 @@ public interface ApiClientService
     Task<string> ReloadCache(JobCommand command);
 }
 
-public class ApiClientServiceImp(IConfiguration configuration) : ApiClientService, IDisposable
+public class ApiClientServiceImp : ApiClientService
 {
-    private readonly HttpClient httpClient = CreateHttpClient(configuration);
+    private readonly HttpClient httpClient;
 
+    public ApiClientServiceImp(HttpClient httpClient, IConfiguration configuration)
+    {
+        var serviceUrl = configuration.GetSection("Fanex.NAP.Client:ServiceUrls").Value;
+        this.httpClient = httpClient;
+        this.httpClient.BaseAddress = new Uri(serviceUrl);
+    }
+    
     public async Task<string> ReloadAllCache()
     {
         using var response = await httpClient.GetAsync("cache/reload");
@@ -25,27 +32,5 @@ public class ApiClientServiceImp(IConfiguration configuration) : ApiClientServic
         using var response = await httpClient.GetAsync($"cache?command={command.Command}&siteId={command.SiteId}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
-    }
-
-    private static HttpClient CreateHttpClient(IConfiguration configuration)
-    {
-        var serviceUrl = configuration.GetSection("Fanex.NAP.Client:ServiceUrls").Value;
-        var client = new HttpClient
-        {
-            BaseAddress = new Uri(serviceUrl)
-        };
-
-        return client;
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        httpClient?.Dispose();
     }
 }

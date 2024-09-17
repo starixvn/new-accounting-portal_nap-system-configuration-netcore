@@ -21,7 +21,8 @@ public class DataCachingDailyJob(ApiClientService apiClientService, ILogger logg
         {
             try
             {
-                await apiClientService.ReloadAllCache();
+                var cacheKey =await apiClientService.ReloadAllCache();
+                await logger.InfoAsync($"Finish reloading all cache. New cache key: {cacheKey}");
                 done = true;
             }
             catch (Exception e)

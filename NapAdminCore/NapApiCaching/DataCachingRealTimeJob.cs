@@ -16,7 +16,7 @@ public class DataCachingRealTimeJob(ApiClientService apiClientService) : Backgro
         }
     }
 
-    private async Task ProcessAllCommands( CancellationToken stoppingToken)
+    private async Task ProcessAllCommands(CancellationToken stoppingToken)
     {
         var hasJob = false;
         var jobCommands = DataCachingJobCommands.Instance;
@@ -40,7 +40,7 @@ public class DataCachingRealTimeJob(ApiClientService apiClientService) : Backgro
         var message = $"DataCachingRealTimeJob.TryResolveCommand({commandJson})";
         try
         {
-            var cacheVersion =await ResolveCommand(command);
+            var cacheVersion = await ResolveCommand(command);
             message += $" . Cache version:{cacheVersion}";
             Console.WriteLine(message);
         }
@@ -60,5 +60,5 @@ public class DataCachingRealTimeJob(ApiClientService apiClientService) : Backgro
         return cacheVersion;
     }
 
-    
+
 }

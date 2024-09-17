@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NapAdmin.AppStart;
 using ONEbook.UM.AspNetCore.Filters;
 using NapAdminCore.Helpers;
+using NapAdminCore.NapApiCaching;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -22,6 +23,7 @@ services.AddNapAuthorization();
 services.AddNapAuthentication(configuration);
 services.AddMaintenance(configuration);
 services.AddNapApiCaching();
+services.AddHttpClient<ApiClientServiceImp>();
 
 services.AddRazorPages();
 services.AddControllersWithViews(options =>
