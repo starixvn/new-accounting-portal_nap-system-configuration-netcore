@@ -7,12 +7,21 @@ public interface ApiClientService
     Task<string> ReloadAllCache();
 
     Task<string> ReloadCache(JobCommand command);
+
+    Task<Dictionary<string, string>> GetAllCache();
 }
 
-public class ApiClientServiceImp(IConfiguration configuration) : ApiClientService, IDisposable
+public class ApiClientServiceImp : ApiClientService
 {
-    private readonly HttpClient httpClient = CreateHttpClient(configuration);
+    private readonly HttpClient httpClient;
 
+    public ApiClientServiceImp(HttpClient httpClient, IConfiguration configuration)
+    {
+        var serviceUrl = configuration.GetSection("Fanex.NAP.Client:ServiceUrls").Value;
+        this.httpClient = httpClient;
+        this.httpClient.BaseAddress = new Uri(serviceUrl);
+    }
+    
     public async Task<string> ReloadAllCache()
     {
         using var response = await httpClient.GetAsync("cache/reload");
@@ -27,25 +36,34 @@ public class ApiClientServiceImp(IConfiguration configuration) : ApiClientServic
         return await response.Content.ReadAsStringAsync();
     }
 
-    private static HttpClient CreateHttpClient(IConfiguration configuration)
+
+    public async Task<Dictionary<string, string>> GetAllCache()
     {
-        var serviceUrl = configuration.GetSection("Fanex.NAP.Client:ServiceUrls").Value;
-        var client = new HttpClient
+        string[] keys = ["SiteUserFunctionPoliciesCache", 
+            "SiteUserMenuItemsCache",
+            "FunctionsCache",
+            "GroupsCache",
+            "UserSiteLevelsByUserCache",
+            "UserSiteLevelsBySiteCache",
+            "SiteMenuItemsCache",
+            "UserOtpCache",
+            "UsersCache"
+        ];
+
+        var result = new Dictionary<string, string>();
+        foreach (var key in keys)
         {
-            BaseAddress = new Uri(serviceUrl)
-        };
+            var data = await GetData(key);
+            result.Add(key, data);
+        }
 
-        return client;
+        return result;
     }
 
-    public void Dispose()
+    private async Task<string> GetData(string key)
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        httpClient?.Dispose();
+        using var response = await httpClient.GetAsync($"cache/{key}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
     }
 }
