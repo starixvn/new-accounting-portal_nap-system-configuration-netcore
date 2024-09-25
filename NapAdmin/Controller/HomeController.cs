@@ -17,7 +17,8 @@ namespace NapAdmin.Controller;
 
 public class HomeController(INapSession napSession,
         INapSettings napSettings,
-        IUserService userService)
+        IUserService userService,
+        IConfiguration configuration)
     : BaseController(napSession, napSettings, userService)
 {
     [Authorize]
