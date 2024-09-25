@@ -12,22 +12,23 @@ using ONEbook.UM.AspNetCore.Filters;
 
 namespace NapAdmin.Controller;
 
-public class HomeController(INapSession napSession,
-        INapSettings napSettings,
-        IUserService userService)
+public class HomeController(
+    INapSession napSession,
+    INapSettings napSettings,
+    IUserService userService)
     : BaseController(napSession, napSettings, userService)
 {
     [Authorize]
     public IActionResult Index()
     {
         return View();
-    }   
+    }
 
     [AllowAnonymous]
     [HttpGet]
     [SkipUMFilter]
     public IActionResult Gc()
-    {        
+    {
         const int megabyte = 1024 * 1024;
         var stringBuilder = new StringBuilder();
         var sw = Stopwatch.StartNew();
@@ -61,4 +62,5 @@ public class HomeController(INapSession napSession,
         var result = await CacheManager.ClearCache(count);
 
         return Ok(result);
+    }
 }
