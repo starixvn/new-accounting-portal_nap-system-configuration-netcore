@@ -32,23 +32,23 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Fanex.Caching.Redis" Version="2.2.4" />
-    <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.4" />
+    <PackageReference Include="Fanex.Caching.Redis" Version="2.2.5" />
+    <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.5" />
     <PackageReference Include="Fanex.Common" Version="1.1.1.1" />
-    <PackageReference Include="Fanex.Data.ProxyClient" Version="0.0.4-beta3" />
+    <PackageReference Include="Fanex.Data.ProxyClient" Version="0.0.4" />
     <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.1" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.2" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.0.11" />
-    <PackageReference Include="Fanex.NAP.Client" Version="2.0.1.3-beta1" />
-    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.1.3-beta1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.5" />
+    <PackageReference Include="Fanex.NAP.Client" Version="2.0.1.3" />
+    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.8" />
     <PackageReference Include="ONEbook.OTP" Version="2.0.0" />
     <PackageReference Include="ONEbook.UM" Version="3.1.6" />
     <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.AspNetCore.Filters" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
-    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
   </ItemGroup>
 
   <ItemGroup>

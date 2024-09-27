@@ -98,7 +98,7 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
     }
 
     [AllowAnonymous]
-    public async Task<IActionResult> TestCache(string key = "MyKey")
+    public async Task<IActionResult> SetCache(string key = "MyKey")
     {
         var cacheOptions = new CacheItemOptions().SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1));
         await cache.SetAsync(key, DateTimeOffset.Now.ToString(), cacheOptions);
