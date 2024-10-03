@@ -7,10 +7,6 @@ using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.AspNetCore;
 using Fanex.Logging.Sentry.RavenClient;
-using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Web;
-using Fanex.NAP.Client.Services;
-using Fanex.NAP.Client.Session;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -27,18 +23,9 @@ using IUserService = NapAdminCore.Service.IUserService;
 using SiteService = NapAdminCore.Service.SiteService;
 using UserService = NapAdminCore.Service.UserService;
 
-using GroupServiceClient = Fanex.NAP.Client.Services.GroupService;
-using IGroupServiceClient = Fanex.NAP.Client.Services.IGroupService;
-using ISiteServiceClient = Fanex.NAP.Client.Services.ISiteService;
-using IUserServiceClient = Fanex.NAP.Client.Services.IUserService;
-using SiteServiceClient = Fanex.NAP.Client.Services.SiteService;
-using UserServiceClient = Fanex.NAP.Client.Services.UserService;
-
 public static class IServiceCollectionExtensions
 {
-    public static NapSettings NapSettings { get; private set; }
-
-    public static void AddFanex(this IServiceCollection services, IConfiguration configuration)
+    public static void AddFanexLog(this IServiceCollection services, IConfiguration configuration)
     {
         LogManager
             .SetDefaultLogCategory(configuration.GetSection("LogCategory").Value)
@@ -52,22 +39,8 @@ public static class IServiceCollectionExtensions
 
         ExceptionHandler
             .UseConfig(new LoggingConfiguration());
-    }
 
-    public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)
-    {
-        var napSettings = new NapSettings(configuration);
-        NapSettings = napSettings;
-
-        services.AddSingleton<INapSettings>(napSettings);
         services.AddSingleton<ILogger, Logger>();
-        services.AddSingleton<INapSession, NapSession>();
-        services.AddSingleton<ICacheService, CacheService>();
-
-        services.AddSingleton<IGroupServiceClient, GroupServiceClient>();
-        services.AddSingleton<IUserServiceClient, UserServiceClient>();
-        services.AddSingleton<ISiteServiceClient, SiteServiceClient>();
-        services.AddSingleton<ISecurityService, SecurityService>();
     }
 
     public static void AddNapAdminCore(this IServiceCollection services)
@@ -81,6 +54,12 @@ public static class IServiceCollectionExtensions
         services.AddScoped<ITraceService, TraceService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<LoggedUserContext, LoggedUserContextImp>();
+    }
+
+    public static void AddFanexCaching(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<ICacheService, CacheService>();
+        services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
     }
 
     public static void AddNapSession(this IServiceCollection services, IConfiguration configuration)
@@ -107,12 +86,7 @@ public static class IServiceCollectionExtensions
         });
 
     }
-
-    public static void AddFanexCaching(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
-    }
-
+    
     public static void AddNapAuthorization(this IServiceCollection services)
     {
         services.AddControllers(config =>
@@ -147,6 +121,7 @@ public static class IServiceCollectionExtensions
 
     public static void AddNapApiCaching(this IServiceCollection services)
     {
+        services.AddHttpClient<ApiClientServiceImp>();
         services.AddSingleton<ApiClientService, ApiClientServiceImp>();
         services.AddSingleton<DataCachingRealTimeJob>();
 

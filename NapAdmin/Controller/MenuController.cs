@@ -2,10 +2,10 @@ namespace NapAdmin.Controller;
 
 using System;
 using System.Collections.Generic;
+using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Business;
-using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.MenuItem;
@@ -13,7 +13,7 @@ using NapAdminCore.Models;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 
-[NapSuperAuth]
+[SessionAuthorize]
 public class MenuController(IMenuItemService menuitemService,
         ISiteService siteService,
         IFunctionService functionService,

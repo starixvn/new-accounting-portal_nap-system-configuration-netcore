@@ -1,8 +1,8 @@
 namespace NapAdmin.Controller;
 
 using System.Text;
+using Fanex.NAP.Client;
 using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NapAdminCore.Service;

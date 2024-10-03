@@ -162,7 +162,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
             return new CommandResult
             {
                 Code = e.ErrorCode,
-                Message = e.Message,
+                Message = e.Message
             };
         }
         
@@ -255,7 +255,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
             GroupId = command.GroupId,
             Language = "en-us",
             LogDate = logExec.LogDate,
-            LoginIP = logExec.LoginIp,
+            LoginIP = logExec.LoginIp
         };
 
         try

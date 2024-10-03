@@ -1,6 +1,8 @@
-﻿@{
+﻿@inject INapSettings napSettings
+@{
     var menuList = (List<Fanex.NAP.Client.Models.MenuItem>)ViewBag?.NapSession?.MenuItemList;
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,7 +68,7 @@
     <script type="text/ecmascript" src="~/scripts/_Layout.js"></script>
     <script type="text/ecmascript" src="~/scripts/lib/respond.min.js"></script>
     <script type="text/ecmascript" src="~/scripts/lib/pagination.js"></script>
-    @if (IServiceCollectionExtensions.NapSettings.EnableReCheckIn)
+    @if (napSettings.EnableReCheckIn)
     {
         <script src="~/nap-auth/re-checkin.js" type="text/javascript"></script>
     }

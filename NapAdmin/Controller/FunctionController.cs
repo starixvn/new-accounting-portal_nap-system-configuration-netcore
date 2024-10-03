@@ -2,10 +2,10 @@ namespace NapAdmin.Controller;
 
 using System;
 using System.Linq;
+using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Business;
-using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Configuration;
@@ -17,7 +17,7 @@ using NapAdminCore.Models.ValueObject;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 
-[NapSuperAuth]
+[SessionAuthorize]
 public class FunctionController(IFunctionService functionService,
         ISiteService siteService,
         IGroupService groupService,

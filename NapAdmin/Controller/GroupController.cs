@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fanex.Common.Extensions;
+using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Business;
-using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.Group;
@@ -16,7 +16,7 @@ using NapAdminCore.Models.ValueObject;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 
-[NapSuperAuth]
+[SessionAuthorize]
 public class GroupController(IGroupService groupService,
         ISiteService siteService,
         IFunctionService functionService,

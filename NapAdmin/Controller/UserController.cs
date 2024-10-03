@@ -8,7 +8,7 @@ using Fanex.Common.Extensions;
 using Fanex.Data.Repository;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Configuration;
@@ -17,7 +17,6 @@ using NapAdminCore.Criteria.User;
 using NapAdminCore.Helpers;
 using NapAdminCore.Models;
 using NapAdminCore.Models.ValueObject;
-using NapAdminCore.NapApiCaching;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 using Newtonsoft.Json;
@@ -25,7 +24,7 @@ using ONEbook.OTP.Services;
 using ViewModels.User;
 using Constant = Fanex.NAP.Client.Helpers.Business.Constant;
 
-[NapSuperAuth]
+[SessionAuthorize]
 public class UserController(IGroupService groupService,
         ISiteService siteService,
         IFunctionService functionService,

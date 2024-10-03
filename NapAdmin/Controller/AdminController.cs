@@ -3,12 +3,11 @@ namespace NapAdmin.Controller;
 using System.Text;
 using Fanex.Caching;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.NapApiCaching;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 
+[AllowAnonymous]
 public class AdminController(ICache cache, ApiClientService apiClientService, IConfiguration configuration) : Controller
 {
     public ActionResult Index()

@@ -2,10 +2,10 @@ namespace NapAdmin.Controller;
 
 using System;
 using System.Security.Cryptography;
+using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Business;
-using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.Site;
@@ -14,7 +14,7 @@ using NapAdminCore.Models.ValueObject;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 
-[NapSuperAuth]
+[SessionAuthorize]
 public class SiteController(ISiteService siteService,
         INapSession napSession,
         INapSettings napSettings,

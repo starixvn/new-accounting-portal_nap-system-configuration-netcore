@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapAdminCore.Configuration;

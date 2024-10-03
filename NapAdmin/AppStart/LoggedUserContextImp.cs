@@ -2,7 +2,7 @@ using Fanex.NAP.Client.Configuration;
 
 namespace NapAdmin.AppStart;
 
-using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client;
 using NapAdminCore.Criteria.Misc;
 using NapAdminCore.Service;
 

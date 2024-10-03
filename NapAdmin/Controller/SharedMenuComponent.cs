@@ -1,10 +1,10 @@
 //namespace NapAdmin.Controller;
 
 //using Fanex.NAP.Client.Attributes;
-//using Fanex.NAP.Client.Helpers.Web;
+//using Fanex.NAP.Client;
 //using Microsoft.AspNetCore.Mvc;
 
-//[NapSuperAuth]
+//[SessionAuthorize]
 //public class SharedMenuComponent : ViewComponent
 //{
 //    private readonly INapSession napSession;
