@@ -3,6 +3,7 @@ namespace NapAdmin.Controller;
 using System.Text;
 using Fanex.Caching;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.NapApiCaching;
 using Newtonsoft.Json;
@@ -65,25 +66,12 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
         return Redirect("Cache");
     }
 
-    public ActionResult CacheContent(string cacheKey, string typeName = null)
+    public async Task<IActionResult> CacheContent(string cacheKey, string typeName = null)
     {
-        string cacheContent;
-        if (string.IsNullOrEmpty(typeName))
-        {
-            cache.TryGet(cacheKey, out cacheContent);
-        }
-        else
-        {
-            var type = Type.GetType(typeName);
-            var method = typeof(ICache).GetMethod(nameof(ICache.TryGet));
-            var generic = method.MakeGenericMethod(type);
-            var parameters = new object[] { cacheKey, null };
-            generic.Invoke(cache, parameters);
+        var (_, value) = await cache.TryGetAsync<string>(cacheKey);
 
-            cacheContent = JsonConvert.SerializeObject(parameters[1]);
-        }
+        ViewBag.CacheContent = value;
 
-        ViewBag.CacheContent = cacheContent;
         return View("CacheContent");
     }
 
@@ -97,7 +85,7 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
     [AllowAnonymous]
     public async Task<IActionResult> GetAllCache()
     {
-        var data =await apiClientService.GetAllCache();
+        var data = await apiClientService.GetAllCache();
         var stringBuilder = new StringBuilder();
         foreach (var key in data.Keys)
         {
@@ -107,5 +95,16 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
         }
 
         return Content(stringBuilder.ToString());
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> SetCache(string key = "MyKey")
+    {
+        var cacheOptions = new CacheItemOptions().SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1));
+        await cache.SetAsync(key, DateTimeOffset.Now.ToString(), cacheOptions);
+
+        var (_, value) = await cache.TryGetAsync<string>(key);
+
+        return Content(value);
     }
 }
