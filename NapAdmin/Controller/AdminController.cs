@@ -16,17 +16,16 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
         return View();
     }
 
-    public ActionResult Cache()
+    public async Task<ActionResult> Cache()
     {
         var options = ReadConfigurationOptions();
-        var redis = ConnectionMultiplexer.Connect(options);
-        var endPoints = redis.GetEndPoints();
+        await using var redis = await ConnectionMultiplexer.ConnectAsync(options);
+        var endPoint = redis.GetEndPoints()[0];
         var appName = configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value;
         var keyPrefix = $"{{{appName}}}:{{";
         var database = options.DefaultDatabase ?? 1;
 
-        var keys = endPoints.Select(e => redis.GetServer(e).Keys(database, $"{{{appName}}}:*"))
-            .SelectMany(k => k)
+        var keys = redis.GetServer(endPoint).Keys(database, $"{{{appName}}}:*")
             .Select(k => k.ToString().Replace(keyPrefix, string.Empty))
             .Select(k => k.Remove(k.Length - 1))
             .Distinct()
@@ -34,6 +33,7 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
             .ToArray();
 
         ViewBag.CacheKeys = keys;
+        await redis.CloseAsync();
         return View("Cache");
     }
 
@@ -66,7 +66,7 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
         return Redirect("Cache");
     }
 
-    public async Task<IActionResult> CacheContent(string cacheKey, string typeName = null)
+    public async Task<IActionResult> CacheContent(string cacheKey)
     {
         var (_, value) = await cache.TryGetAsync<string>(cacheKey);
 
