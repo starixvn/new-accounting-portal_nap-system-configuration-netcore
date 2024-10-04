@@ -78,8 +78,8 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
     [AllowAnonymous]
     public async Task<IActionResult> ReloadNapApiCache()
     {
-        await apiClientService.ReloadAllCache();
-        return Redirect("Cache");
+        var value = await apiClientService.ReloadAllCache();
+        return Content($"Debug data: {value}");
     }
 
     [AllowAnonymous]
