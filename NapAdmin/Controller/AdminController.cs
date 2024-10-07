@@ -24,8 +24,9 @@ public class AdminController(ICache cache, ApiClientService apiClientService, IC
         var appName = configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value;
         var keyPrefix = $"{{{appName}}}:{{";
         var database = options.DefaultDatabase ?? 1;
+        var redisKeys = await redis.GetServer(endPoint).KeysAsync(database, $"{{{appName}}}:*").ToArrayAsync();
 
-        var keys = redis.GetServer(endPoint).Keys(database, $"{{{appName}}}:*")
+        var keys = redisKeys
             .Select(k => k.ToString().Replace(keyPrefix, string.Empty))
             .Select(k => k.Remove(k.Length - 1))
             .Distinct()
