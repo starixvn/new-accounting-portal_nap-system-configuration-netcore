@@ -24,6 +24,7 @@ services.AddNapAuthentication(configuration);
 services.AddMaintenance(configuration);
 services.AddNapApiCaching();
 services.AddHttpClient<ApiClientServiceImp>();
+services.AddRevokePermissionJob();
 
 services.AddRazorPages();
 services.AddControllersWithViews(options =>
