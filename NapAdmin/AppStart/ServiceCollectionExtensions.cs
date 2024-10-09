@@ -148,10 +148,15 @@ public static class IServiceCollectionExtensions
     public static void AddNapApiCaching(this IServiceCollection services)
     {
         services.AddSingleton<ApiClientService, ApiClientServiceImp>();
-        services.AddSingleton<DataCachingDailyJob>();
         services.AddSingleton<DataCachingRealTimeJob>();
 
-        services.AddHostedService<DataCachingDailyJob>();
         services.AddHostedService<DataCachingRealTimeJob>();
+    }
+
+    public static void AddRevokePermissionJob(this IServiceCollection services)
+    {
+        services.AddSingleton<RevokePermissionJob>();
+
+        services.AddHostedService<RevokePermissionJob>();
     }
 }

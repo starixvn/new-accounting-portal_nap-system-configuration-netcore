@@ -260,4 +260,8 @@
   <Function Name="OWP">
     <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.wsv_nap" />
   </Function>
+  <Function Name="RevokePermission">
+    <Setting Key="RevokeUserPermission" SpName="Task_NAP_RevokeUserPermission" DbName="DBPOL.NAP_UserControl.wsv_nap" Plain="0">
+    </Setting>
+  </Function>
 </Functions>

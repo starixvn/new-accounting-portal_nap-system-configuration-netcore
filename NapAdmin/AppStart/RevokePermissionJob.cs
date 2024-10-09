@@ -1,19 +1,36 @@
-﻿namespace NapAdminCore.NapApiCaching;
+﻿namespace NapAdmin.AppStart;
 
+using Fanex.Data.Repository;
 using Fanex.Logging;
-using Microsoft.Extensions.Hosting;
+using NapAdminCore.Criteria;
+using NapAdminCore.NapApiCaching;
 
-public class DataCachingDailyJob(ApiClientService apiClientService, ILogger logger) : BackgroundService
+public class RevokePermissionJob(IDynamicRepository repository, ApiClientService apiClientService, ILogger logger) :  BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var command = new RevokePermissionCommand();
         while (!stoppingToken.IsCancellationRequested)
         {
+            await TryToRevokePermission(command);
             await TryReloadAllCache(stoppingToken);
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }
     }
-   
+
+    private async Task TryToRevokePermission(RevokePermissionCommand command)
+    {
+        try
+        {
+            await repository.ExecuteAsync(command);
+            await logger.InfoAsync($"Finish revoke permission at {DateTimeOffset.Now}");
+        }
+        catch (Exception e)
+        {
+            await logger.ErrorAsync($"Error: {e.Message} when revoke permission", e);
+        }
+    }
+
     private async Task TryReloadAllCache(CancellationToken stoppingToken)
     {
         var done = false;
@@ -21,7 +38,7 @@ public class DataCachingDailyJob(ApiClientService apiClientService, ILogger logg
         {
             try
             {
-                var cacheKey =await apiClientService.ReloadAllCache();
+                var cacheKey = await apiClientService.ReloadAllCache();
                 await logger.InfoAsync($"Finish reloading all cache. New cache key: {cacheKey}");
                 done = true;
             }
