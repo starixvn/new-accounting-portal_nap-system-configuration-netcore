@@ -5,8 +5,9 @@ using Fanex.Logging;
 using NapAdminCore.Criteria;
 using NapAdminCore.NapApiCaching;
 
-public class RevokePermissionJob(IDynamicRepository repository, ApiClientService apiClientService, ILogger logger) :  BackgroundService
+public class RevokePermissionJob(ApiClientService apiClientService, ILogger logger) :  BackgroundService
 {
+    private IDynamicRepository repository = new DynamicRepository();
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var command = new RevokePermissionCommand();
