@@ -119,7 +119,7 @@ public class FunctionController(IFunctionService functionService,
 
     [HttpGet]
     [NapAuth(FunctionKey = FunctionKeys.ManageFunction, Policy = Constant.Policy.Host)]
-    public ActionResult Duplicate(int id, int? siteId = null)
+    public ActionResult Duplicate(int id, int siteId )
     {
         var function = functionService.GetById(id);
 
@@ -137,14 +137,14 @@ public class FunctionController(IFunctionService functionService,
             FunctionId = function.Id,
             FunctionName = function.Name + " Copy",
             Description = function.Description,
-            SiteId = SiteId,
+            SiteId = siteId,
             SiteName = site.Name,
             Readonly = function.Readonly,
             ParentId = function.ParentId,
             DisplayOrder = function.DisplayOrder,
             IsActive = function.IsActive,
             Environment = function.Environment,
-            ReturnSiteId = siteId ?? function.SiteId
+            ReturnSiteId = siteId
         };
 
         GetSitesAndFunctionsForAddNew(criteria, getSiteList: false);
