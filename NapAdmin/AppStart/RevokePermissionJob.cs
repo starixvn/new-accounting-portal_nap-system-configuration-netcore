@@ -7,7 +7,7 @@ using NapAdminCore.NapApiCaching;
 
 public class RevokePermissionJob(ApiClientService apiClientService, ILogger logger) :  BackgroundService
 {
-    private IDynamicRepository repository = new DynamicRepository();
+    private readonly IDynamicRepository repository = new DynamicRepository();
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

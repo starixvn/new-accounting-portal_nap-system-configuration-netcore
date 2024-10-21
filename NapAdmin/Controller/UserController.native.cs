@@ -702,7 +702,7 @@ public class UserController(IGroupService groupService,
 
         criteria.Username = user.Username;
         criteria.ModifiedBy = NapSession.UserId;
-        criteria.ModifiedDate = DateTime.Now;
+        criteria.ModifiedDate = DateTimeOffset.Now.DateTime;
 
         var listFunc =
             functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true).ToList();
@@ -810,7 +810,7 @@ public class UserController(IGroupService groupService,
             FuncHost = listUserFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             FuncRead = listUserFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             ModifiedBy = NapSession.UserId,
-            ModifiedDate = DateTime.Now,
+            ModifiedDate = DateTimeOffset.Now.DateTime,
             SiteId = function.SiteId,
             Username = user.Username,
             UserId = userId
@@ -828,7 +828,7 @@ public class UserController(IGroupService groupService,
         var criteria = new AssignSiteUserCommand
         {
             CreatedBy = NapSession.UserId,
-            CreatedDate = DateTime.Now,
+            CreatedDate = DateTimeOffset.Now.DateTime,
             UserId = userId,
             SiteId = siteId,
             Level = level,
@@ -871,7 +871,7 @@ public class UserController(IGroupService groupService,
             var criteria = new UpdateSiteToUserCommand
             {
                 ModifiedBy = NapSession.UserId,
-                ModifiedDate = DateTime.Now,
+                ModifiedDate = DateTimeOffset.Now.DateTime,
                 UserId = userId,
                 SiteId = siteId,
                 Level = level,
@@ -953,7 +953,7 @@ public class UserController(IGroupService groupService,
 
             data.Username = user.Username;
             data.ModifiedBy = NapSession.UserId;
-            data.ModifiedDate = DateTime.Now;
+            data.ModifiedDate = DateTimeOffset.Now.DateTime;
 
             var result = UserService.AssignFunction(data);
 
@@ -1127,7 +1127,7 @@ public class UserController(IGroupService groupService,
                 UserId = userId,
                 GroupId = groupId,
                 CreatedBy = NapSession.UserId,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTimeOffset.Now.DateTime
             };
 
             var user = UserService.GetById(userId);

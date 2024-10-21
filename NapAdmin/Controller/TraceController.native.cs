@@ -46,8 +46,8 @@ public class TraceController(ITraceService traceService,
             PageSize = size,
             Name = q ?? string.Empty,
             Username = username,
-            From = from ?? DateTime.Now,
-            To = to ?? DateTime.Now.AddDays(1),
+            From = from ?? DateTimeOffset.Now.DateTime,
+            To = to ?? DateTimeOffset.Now.DateTime.AddDays(1),
             FilterType = filterBy,
             TotalRows = 0
         };
@@ -93,8 +93,8 @@ public class TraceController(ITraceService traceService,
             PageIndex = page,
             PageSize = size,
             Name = q ?? string.Empty,
-            From = from ?? DateTime.Now,
-            To = to ?? DateTime.Now.AddDays(1),
+            From = from ?? DateTimeOffset.Now.DateTime,
+            To = to ?? DateTimeOffset.Now.DateTime.AddDays(1),
             SiteId = siteId,
             TotalRows = 0
         };

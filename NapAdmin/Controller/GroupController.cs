@@ -81,7 +81,7 @@ public class GroupController(IGroupService groupService,
             }
 
             criteria.CreatedBy = NapSession.UserId;
-            criteria.CreatedDate = DateTime.Now;
+            criteria.CreatedDate = DateTimeOffset.Now.DateTime;
 
             var result = groupService.Insert(criteria);
 
@@ -136,7 +136,7 @@ public class GroupController(IGroupService groupService,
             }
 
             criteria.ModifiedBy = NapSession.UserId;
-            criteria.ModifiedDate = DateTime.Now;
+            criteria.ModifiedDate = DateTimeOffset.Now.DateTime;
 
             var result = groupService.Update(criteria);
 
@@ -163,7 +163,7 @@ public class GroupController(IGroupService groupService,
                 GroupId = id,
                 IsActive = isActive,
                 ModifiedBy = NapSession.UserId,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTimeOffset.Now.DateTime
             };
 
             var result = groupService.UpdateStatus(criteria);
@@ -247,7 +247,7 @@ public class GroupController(IGroupService groupService,
         ViewFlags.HasAssignFunctionRight = true;
 
         criteria.ModifiedBy = NapSession.UserId;
-        criteria.ModifiedDate = DateTime.Now;
+        criteria.ModifiedDate = DateTimeOffset.Now.DateTime;
 
         var listFunc =
             functionService.GetBySiteInHierarchy(criteria.SiteId, Environment, true).ToList();
@@ -283,7 +283,7 @@ public class GroupController(IGroupService groupService,
         }
 
         listGroupFuncRemove.Remove(f => f.Policy > 0);
-        if (listGroupFuncRemove.Any(itemFunc => !listCurrentUserFuncPolicy.Any(f => f.Id == itemFunc.Id && f.Policy >= itemFunc.Policy)))
+        if (listGroupFuncRemove.Exists(itemFunc => !listCurrentUserFuncPolicy.Any(f => f.Id == itemFunc.Id && f.Policy >= itemFunc.Policy)))
         {
             return RedirectToAction("Error", "Common");
         }
@@ -331,7 +331,7 @@ public class GroupController(IGroupService groupService,
             FuncHost = listGroupFuncPolicy.Where(p => p.Policy == 2 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             FuncRead = listGroupFuncPolicy.Where(p => p.Policy == 1 && p.Id != functionId).Select(p => (int)p.Id).ToArray(),
             ModifiedBy = NapSession.UserId,
-            ModifiedDate = DateTime.Now,
+            ModifiedDate = DateTimeOffset.Now.DateTime,
             GroupId = groupId,
             GroupName = group.Name,
             SiteId = function.SiteId

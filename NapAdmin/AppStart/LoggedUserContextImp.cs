@@ -16,7 +16,7 @@ public class LoggedUserContextImp(INapSession napSession, INapSettings napSettin
         {
             CurrentUserId = napSession.UserId,
             CurrentSiteId = napSettings.SiteId,
-            LogDate = DateTime.Now,
+            LogDate = DateTimeOffset.Now.DateTime,
             LoginIp = GetIp()
         };
     }

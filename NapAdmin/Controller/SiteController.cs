@@ -74,7 +74,7 @@ public class SiteController(ISiteService siteService,
 
         if (!ReferenceEquals(criteria.Urls, null))
         {
-            if (criteria.Urls.Any(itemUrl => !Uri.IsWellFormedUriString(itemUrl.Url, UriKind.Absolute)))
+            if (criteria.Urls.Exists(itemUrl => !Uri.IsWellFormedUriString(itemUrl.Url, UriKind.Absolute)))
             {
                 ModelState.AddModelError("SiteUrls", string.Format(ViewResources.InvalidURLValidationMsg, criteria.SiteUrls));
 

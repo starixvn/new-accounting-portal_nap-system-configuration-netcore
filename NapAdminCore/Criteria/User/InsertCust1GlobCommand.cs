@@ -12,7 +12,7 @@ public class InsertCust1GlobCommand : NonQueryCommand
 
     public int CustId { get; set; }
 
-    public int ErrCode { get; set; } = 0;
+    public int ErrCode { get; set; }
 
     public string ErrMsg { get; set; } = string.Empty;
 

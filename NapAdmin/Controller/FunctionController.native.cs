@@ -100,7 +100,7 @@ public class FunctionController(IFunctionService functionService,
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
             criteria.CreatedBy = NapSession.UserId;
-            criteria.CreatedDate = DateTime.Now;
+            criteria.CreatedDate = DateTimeOffset.Now.DateTime;
 
             var result = functionService.Insert(criteria);
 
@@ -189,7 +189,7 @@ public class FunctionController(IFunctionService functionService,
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
             criteria.CreatedBy = NapSession.UserId;
-            criteria.CreatedDate = DateTime.Now;
+            criteria.CreatedDate = DateTimeOffset.Now.DateTime;
 
             var result = functionService.Duplicate(criteria);
 
@@ -249,7 +249,7 @@ public class FunctionController(IFunctionService functionService,
         if (ModelState.IsValid)
         {
             criteria.ModifiedBy = NapSession.UserId;
-            criteria.ModifiedDate = DateTime.Now;
+            criteria.ModifiedDate = DateTimeOffset.Now.DateTime;
 
             var result = functionService.CopyPermission(criteria);
 
@@ -378,7 +378,7 @@ public class FunctionController(IFunctionService functionService,
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is null or 0 ? null : criteria.ParentName;
             criteria.ModifiedBy = NapSession.UserId;
-            criteria.ModifiedDate = DateTime.Now;
+            criteria.ModifiedDate = DateTimeOffset.Now.DateTime;
 
             var result = functionService.Update(criteria);
 
@@ -405,7 +405,7 @@ public class FunctionController(IFunctionService functionService,
                 FunctionId = id,
                 IsActive = isActive,
                 ModifiedBy = NapSession.UserId,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTimeOffset.Now.DateTime
             };
 
             var result = functionService.UpdateStatus(criteria);
@@ -517,7 +517,7 @@ public class FunctionController(IFunctionService functionService,
                 UserRead = readList.Split(',').ToList(),
                 UserHost = hostList.Split(',').ToList(),
                 ModifiedBy = NapSession.UserId,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTimeOffset.Now.DateTime
             };
 
             var result = functionService.AssignFunctionToUsers(criteria);
@@ -575,7 +575,7 @@ public class FunctionController(IFunctionService functionService,
                 GroupRead = readList.Split(',').ToList(),
                 GroupHost = hostList.Split(',').ToList(),
                 ModifiedBy = NapSession.UserId,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTimeOffset.Now.DateTime
             };
 
             var result = functionService.AssignFunctionToGroups(criteria);
