@@ -1,29 +1,24 @@
 using Fanex.Data;
-using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Web;
-using Fanex.NAP.Client;
-using Fanex.NAP.SignIn.Attribute;
+using Fanex.NAP.Client.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using NapAdmin.AppStart;
 using ONEbook.UM.AspNetCore.Filters;
 using NapAdminCore.Helpers;
-using NapAdminCore.NapApiCaching;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+services.AddFanexLog(configuration);
 services.AddFanexCaching(configuration);
 services.AddFanexData(configuration);
-services.AddFanex(configuration);
-services.AddNapServices(configuration);
+services.AddNapClient(configuration);
 services.AddNapAdminCore();
 services.AddNapSession(configuration);
 services.AddNapAuthorization();
 services.AddNapAuthentication(configuration);
-services.AddMaintenance(configuration);
+services.AddOneBookUm(configuration);
 services.AddNapApiCaching();
-services.AddHttpClient<ApiClientServiceImp>();
 services.AddRevokePermissionJob();
 
 services.AddRazorPages();
@@ -47,9 +42,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-NapClientManager
-    .UseConfig(app.Services.GetRequiredService<INapSettings>())
-    .UseSession(app.Services.GetRequiredService<INapSession>());
 NapAdminSettings.LoadSettings(configuration);
 
 app.MapControllerRoute(

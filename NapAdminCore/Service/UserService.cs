@@ -11,6 +11,7 @@ using ONEbook.OTP.Services;
 using Criteria;
 using Criteria.OTP;
 using NapApiCaching;
+using NapAdminCore.Criteria.Misc;
 
 public interface IUserService
 {
@@ -46,7 +47,7 @@ public interface IUserService
 
     Hashtable GetUserListSiteFunctionKeyPolicy(int userId, string functionKey, List<int> listSite);
 
-    CommandResult Insert(InsertCustCommand criteria);
+    CommandResult Insert(InsertCust0Command command);
 
     CommandResult AssignSite(AssignSiteUserCommand criteria);
 
@@ -60,6 +61,14 @@ public interface IUserService
 public class UserService(UpdateRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
     : IUserService
 {
+
+    private class InsertCustException(int code, string message, Exception e) : Exception(message, e)
+    {
+        public int ErrorCode { get; } = code;
+
+        public string ErrorMessage { get; } = message;
+    }
+
     public User GetById(int id)
     {
         var criteria = new GetByIdUserCriteria
@@ -125,16 +134,163 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
         return dynamicRepository.Get<int>(criteria);
     }
 
-    public CommandResult Insert(InsertCustCommand criteria)
+    public CommandResult Insert(InsertCust0Command command)
     {
+        var globCommand = InsertStep1GlobDatabase(command);
+        if (globCommand.ErrCode != 0)
+        {
+            return new CommandResult
+            {
+                Code = globCommand.ErrCode,
+                Message = globCommand.ErrMsg
+            };
+        }
+
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
 
-        var result = repository.Execute(criteria, logCriteria);
-
+        try
+        {
+            InsertStep2AdminDatabase(command, globCommand.CustId, logCriteria.CurrentUserId);
+            InsertStep3DotAdminDatabase(command, globCommand.CustId, logCriteria.CurrentUserId);
+            InsertStep4PolDatabase(command, globCommand.CustId, logCriteria);
+            command.CustId = globCommand.CustId;
+        }
+        catch (InsertCustException e)
+        {
+            InsertStep5RollbackCustDatabase(globCommand.CustId);
+            InsertStep6RollbackGlobDatabase(globCommand.CustId);
+            return new CommandResult
+            {
+                Code = e.ErrorCode,
+                Message = e.Message
+            };
+        }
         
-        return result;
+        return new CommandResult
+        {
+            Code = 0,
+            Message = string.Empty
+        };
     }
 
+    private InsertCust1GlobCommand InsertStep1GlobDatabase(InsertCust0Command command)
+    {
+        var globCommand = new InsertCust1GlobCommand
+        {
+            Username = command.Username
+        };
+        try
+        {
+            dynamicRepository.Execute(globCommand);
+        }
+        catch (Exception e)
+        {
+            globCommand.ErrCode = 1;
+            globCommand.ErrMsg = e.Message;
+        }
+
+        return globCommand;
+    }
+
+
+    private void InsertStep2AdminDatabase(InsertCust0Command command, int custId, int currentUserId)
+    {
+        var adminCommand = new InsertCust2AdminCommand
+        {
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            Email = command.Email,
+            UserName = command.Username,
+            UserPwd = command.UserPwd,
+            CustId = custId,
+            CurrentUserId = currentUserId
+        };
+
+        try
+        {
+            dynamicRepository.Execute(adminCommand);
+            if (adminCommand.ErrCode > 0)
+            {
+                throw new InsertCustException(adminCommand.ErrCode, adminCommand.ErrMsg, null);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new InsertCustException(1, e.Message, e);
+        }
+    }
+
+    private void InsertStep3DotAdminDatabase(InsertCust0Command command, int custId, int currentUserId)
+    {
+        var dotAdminCommand = new InsertCust3DotAdminCommand
+        {
+            CustID = custId,
+            UserName = command.Username,
+            UserPWD = command.UserPwd,
+            Creator = currentUserId
+        };
+
+        try
+        {
+            dynamicRepository.Execute(dotAdminCommand);
+        }
+        catch (Exception e)
+        {
+            throw new InsertCustException(1, e.Message, e);
+        }
+    }
+
+    private void InsertStep4PolDatabase(InsertCust0Command command, int custId, LogExecSpCriteria logExec)
+    {
+        var adminCommand = new InsertCust4Command
+        {
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            Email = command.Email,
+            Username = command.Username,
+            UserPwd = command.UserPwd,
+            CustId = custId,
+            CurrentUserId = logExec.CurrentUserId,
+            CurrentSiteId = logExec.CurrentSiteId,
+            GroupId = command.GroupId,
+            Language = "en-us",
+            LogDate = logExec.LogDate,
+            LoginIP = logExec.LoginIp
+        };
+
+        try
+        {
+            dynamicRepository.Execute(adminCommand);
+            if (adminCommand.ErrCode != 0)
+            {
+                throw new InsertCustException(adminCommand.ErrCode, adminCommand.ErrMsg, null);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new InsertCustException(1, e.Message, e);
+        }
+    }
+
+    private void InsertStep5RollbackCustDatabase(int custId)
+    {
+        var command = new InsertCust5RollbackAdminCommand
+        {
+            CustID = custId
+        };
+
+        dynamicRepository.Execute(command);
+    }
+
+    private void InsertStep6RollbackGlobDatabase(int custId)
+    {
+        var command = new InsertCust6RollbackGlobCommand
+        {
+            CustID = custId
+        };
+
+        dynamicRepository.Execute(command);
+    }
 
     public CommandResult AssignSite(AssignSiteUserCommand criteria)
     {
@@ -203,7 +359,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
     {
         var logCriteria = loggedUserContext.GetLogExecSpCriteria();
         var result = repository.Execute(criteria, logCriteria);
-        
+
         return result;
     }
 
@@ -237,7 +393,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
                 hashTable.Add(model.SiteId, model.Policy);
             }
         }
-        
+
         return hashTable;
     }
 

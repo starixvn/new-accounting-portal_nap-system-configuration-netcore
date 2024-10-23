@@ -231,13 +231,20 @@
   <Function Name="Cust_Read">
     <Setting Key="NAP_Cust_GetByUsername" SpName="NAP_Cust_GetByUsername" DbName="DBPOL.NAP_UserControl.wsv_nap" />
   </Function>
-  <Function Name="Cust_Update">
-    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+  <Function Name="Cust_Update">    
     <Setting Key="NAP_Cust_Update" SpName="NAP_Cust_Update" DbName="DBPOL.NAP_UserControl.wsv_nap" />
     <Setting Key="NAP_Cust_UpdatePassword" SpName="NAP_Cust_UpdatePassword" DbName="DBCUST.CustDB.wsv_nap" />
     <Setting Key="NAP_Admin_OTPSel" SpName="NAP_Admin_OTPSel" DbName="DBPOL.NAP_UserControl.wsv_nap" />
     <Setting Key="NAP_Admin_GetOTP" SpName="NAP_Admin_GetOTP" DbName="DBPOL.NAP_UserControl.wsv_nap" />
     <Setting Key="NAP_Admin_OTPUpd" SpName="NAP_Admin_OTPUpd" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+  </Function>
+  <Function Name="CustInsert">
+    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="Acc_CustomerIns_Register" SpName="Acc_CustomerIns_Register" DbName="DBGLOB.GlobCustDB.wsv_nap" />
+    <Setting Key="Acc_CustomerIns_Rollback" SpName="Acc_CustomerIns_Rollback" DbName="DBGLOB.GlobCustDB.wsv_nap" />
+    <Setting Key="NAP_Admin_Ins" SpName="NAP_Admin_Ins" DbName="DBCUST.CustDB.wsv_nap" />
+    <Setting Key="Acc_CustomerInsUserInfo_Rollback" SpName="Acc_CustomerInsUserInfo_Rollback" DbName="DBCUST.CustDB.wsv_nap" />
+    <Setting Key="Dot_Admin_Add_AdminSiteUser" SpName="Dot_Admin_Add_AdminSiteUser" DbName="DBPRO.bodb02.wsv_nap" />
   </Function>
   <Function Name="LogExecSp">
     <Setting Key="NAP_LogExecSp_Search" SpName="NAP_LogExecSp_Search" DbName="DBNAP.bodb_NAPLOG.wsv_nap" />
@@ -247,16 +254,7 @@
     <Setting Key="NAP_LogUserLogin_Search" SpName="NAP_LogUserLogin_Search" DbName="DBNAP.bodb_NAPLOG.wsv_nap">
 
     </Setting>
-  </Function>
-  <Function Name="NapApiCaching">
-
-    <Setting Key="NAP_Caching_GetUserFunctionsBySite" SpName="NAP_Caching_GetUserFunctionsBySite" DbName="DBPOL.NAP_UserControl.wsv_nap" />
-    <Setting Key="NAP_Caching_GetUserSiteLevel" SpName="NAP_Caching_GetUserSiteLevel" DbName="DBPOL.NAP_UserControl.wsv_nap" />
-    <Setting Key="NAP_MenuItem_GetAll" SpName="NAP_MenuItem_GetAll" DbName="DBPOL.NAP_UserControl.wsv_nap" >
-      <Mapping DataField="MenuItemId" ObjectProperty="Id" />
-      <Mapping DataField="MenuItemName" ObjectProperty="Name" />
-    </Setting>
-  </Function>      
+  </Function>   
   <Function Name="OWP">
     <Setting Key="OWP_UserInsert" SpName="OWP_UserInsert" DbName="DBOWP.bodb_OWP.wsv_nap" />
   </Function>

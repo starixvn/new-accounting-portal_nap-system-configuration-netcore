@@ -42,7 +42,6 @@ public class DataCachingRealTimeJob(ApiClientService apiClientService) : Backgro
         {
             var cacheVersion = await ResolveCommand(command);
             message += $" . Cache version:{cacheVersion}";
-            Console.WriteLine(message);
         }
         catch (Exception e)
         {

@@ -2,7 +2,7 @@ using Fanex.NAP.Client.Configuration;
 
 namespace NapAdmin.AppStart;
 
-using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client;
 using NapAdminCore.Criteria.Misc;
 using NapAdminCore.Service;
 
@@ -16,7 +16,7 @@ public class LoggedUserContextImp(INapSession napSession, INapSettings napSettin
         {
             CurrentUserId = napSession.UserId,
             CurrentSiteId = napSettings.SiteId,
-            LogDate = DateTime.Now,
+            LogDate = DateTimeOffset.Now.DateTime,
             LoginIp = GetIp()
         };
     }

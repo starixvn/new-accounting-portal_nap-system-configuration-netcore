@@ -14,7 +14,7 @@
 // </summary>
 //
 // <history>
-// Lasted generated date: <#= DateTime.Now.ToString() #>
+// Lasted generated date: <#= DateTimeOffset.Now.DateTime.ToString() #>
 // </history>
 
 namespace Fanex.NAP.Admin.Core.Configuration

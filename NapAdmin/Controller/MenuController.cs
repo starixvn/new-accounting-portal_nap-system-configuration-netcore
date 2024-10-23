@@ -2,10 +2,10 @@ namespace NapAdmin.Controller;
 
 using System;
 using System.Collections.Generic;
+using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
 using Fanex.NAP.Client.Configuration;
 using Fanex.NAP.Client.Helpers.Business;
-using Fanex.NAP.Client.Helpers.Web;
 using Microsoft.AspNetCore.Mvc;
 using NapAdminCore.Configuration;
 using NapAdminCore.Criteria.MenuItem;
@@ -13,7 +13,7 @@ using NapAdminCore.Models;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 
-[NapSuperAuth]
+[SessionAuthorize]
 public class MenuController(IMenuItemService menuitemService,
         ISiteService siteService,
         IFunctionService functionService,
@@ -77,7 +77,7 @@ public class MenuController(IMenuItemService menuitemService,
         if (ModelState.IsValid)
         {
             criteria.CreatedBy = NapSession.UserId;
-            criteria.CreatedDate = DateTime.Now;
+            criteria.CreatedDate = DateTimeOffset.Now.DateTime;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is 0 or null ? null : criteria.ParentName;
 
@@ -154,7 +154,7 @@ public class MenuController(IMenuItemService menuitemService,
         if (ModelState.IsValid)
         {
             criteria.ModifierId = NapSession.UserId;
-            criteria.ModifiedDate = DateTime.Now;
+            criteria.ModifiedDate = DateTimeOffset.Now.DateTime;
             criteria.ParentId = criteria.ParentId == 0 ? null : criteria.ParentId;
             criteria.ParentName = criteria.ParentId is 0 or null ? null
                 : criteria.ParentName;
@@ -222,7 +222,7 @@ public class MenuController(IMenuItemService menuitemService,
                 IsActive = isActive,
                 MenuItemId = id,
                 ModifiedBy = NapSession.UserId,
-                ModifiedDate = DateTime.Now
+                ModifiedDate = DateTimeOffset.Now.DateTime
             };
 
             var result = menuitemService.UpdateStatus(criteria);
