@@ -239,10 +239,10 @@
     <Setting Key="NAP_Admin_OTPUpd" SpName="NAP_Admin_OTPUpd" DbName="DBPOL.NAP_UserControl.wsv_nap" />
   </Function>
   <Function Name="CustInsert">
-    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert_UAT2" DbName="DBPOL.NAP_UserControl.wsv_nap" />
-    <Setting Key="Acc_CustomerIns_Register" SpName="Acc_CustomerIns_Register_UAT2" DbName="DBGLOB.GlobCustDB.wsv_nap" />
-    <Setting Key="Acc_CustomerIns_Rollback" SpName="Acc_CustomerIns_Rollback_UAT2" DbName="DBGLOB.GlobCustDB.wsv_nap" />
-    <Setting Key="NAP_Admin_Ins" SpName="NAP_Admin_Ins_UAT2" DbName="DBCUST.CustDB.wsv_nap" />
+    <Setting Key="NAP_Cust_Insert" SpName="NAP_Cust_Insert" DbName="DBPOL.NAP_UserControl.wsv_nap" />
+    <Setting Key="Acc_CustomerIns_Register" SpName="Acc_CustomerIns_Register" DbName="DBGLOB.GlobCustDB.wsv_nap" />
+    <Setting Key="Acc_CustomerIns_Rollback" SpName="Acc_CustomerIns_Rollback" DbName="DBGLOB.GlobCustDB.wsv_nap" />
+    <Setting Key="NAP_Admin_Ins" SpName="NAP_Admin_Ins" DbName="DBCUST.CustDB.wsv_nap" />
     <Setting Key="Acc_CustomerInsUserInfo_Rollback" SpName="Acc_CustomerInsUserInfo_Rollback" DbName="DBCUST.CustDB.wsv_nap" />
     <Setting Key="Dot_Admin_Add_AdminSiteUser" SpName="Dot_Admin_Add_AdminSiteUser" DbName="DBPRO.bodb02.wsv_nap" />
   </Function>
