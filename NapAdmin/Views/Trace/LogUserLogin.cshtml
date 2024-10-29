@@ -67,9 +67,6 @@
             <th>
                 @ViewResources.Platform
             </th>
-            <th>
-                @ViewResources.Country_Code
-            </th>
         </tr>
     </thead>
     <tbody>
@@ -117,9 +114,6 @@
                         @item.Platform.GetOperatingSystem()
                     </span>
                 </td>
-                <td>
-                    @item.CountryCode.GetGeoName()
-                </td>
             </tr>
                     i++;
             }
@@ -127,7 +121,7 @@
         else
         {
             <tr class="no-info">
-                <td colspan="12" class="text-center">
+                <td colspan="11" class="text-center">
                     @ViewResources.NoInformationAvailable
                 </td>
             </tr>
