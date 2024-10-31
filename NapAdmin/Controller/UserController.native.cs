@@ -852,8 +852,7 @@ public class UserController(IGroupService groupService,
     [HttpGet]
     public string SyncUserToOWP(int userId)
     {
-        UserService.SyncUserToOWP(userId);
-        return "OK";
+       return UserService.SyncUserToOWP(userId);
     }
 
     #endregion Assign Permission
