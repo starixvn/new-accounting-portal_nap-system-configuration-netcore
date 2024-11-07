@@ -51,29 +51,6 @@ public static class HtmlHelperExtensions
         return value;
     }
 
-    public static string GetGeoName(this string geoId)
-    {
-        var listCulture = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-
-        foreach (var culture in listCulture)
-        {
-            try
-            {
-                var region = new RegionInfo(culture.ToString());
-
-                if (region.GeoId.ToString().Equals(geoId))
-                {
-                    return region.DisplayName;
-                }
-            }
-            catch(Exception) 
-            {
-            }
-        }
-
-        return geoId;
-    }
-
     public static string GetOperatingSystem(this string platform)
     {
         var array = UserAgentTools.GetOS(platform);

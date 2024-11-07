@@ -24,9 +24,9 @@ public class HomeController(
     [AllowAnonymous]
     [HttpGet]
     [SkipUMFilter]
-    public async Task<IActionResult> ClearCache(int count = 10)
+    public async Task<IActionResult> ClearCache()
     {
-        var result = await CacheManager.ClearCache(count);
+        var result = await CacheManager.ClearCacheAsync();
 
         return Ok(result);
     }
