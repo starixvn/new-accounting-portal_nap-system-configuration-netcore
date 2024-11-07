@@ -25,26 +25,15 @@ using UserService = NapAdminCore.Service.UserService;
 
 public static class IServiceCollectionExtensions
 {
-    public static void AddFanexLog(this IServiceCollection services, IConfiguration configuration)
+    public static void AddExceptionHandler(this IServiceCollection services, IConfiguration configuration)
     {
-        LogManager
-            .SetDefaultLogCategory(configuration.GetSection("LogCategory").Value)
-            .Use(new List<ILogEngine>
-            {
-                new SentryLogging(new SentryEngineOptions
-                {
-                    Dsn = new Dsn(configuration.GetSection("SentryEngineOptions:Dsn").Value)
-                })
-            });
-
         ExceptionHandler
             .UseConfig(new LoggingConfiguration());
-
-        services.AddSingleton<ILogger, Logger>();
     }
 
     public static void AddNapAdminCore(this IServiceCollection services)
     {
+        services.AddSingleton<ICacheService, CacheService>();
         services.AddScoped<IDynamicRepository, DynamicRepository>();
         services.AddScoped<UpdateRepository, UpdateRepositoryImp>();
         services.AddScoped<IFunctionService, FunctionService>();
@@ -55,13 +44,7 @@ public static class IServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<LoggedUserContext, LoggedUserContextImp>();
     }
-
-    public static void AddFanexCaching(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddSingleton<ICacheService, CacheService>();
-        services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
-    }
-
+    
     public static void AddNapSession(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSession(options =>
