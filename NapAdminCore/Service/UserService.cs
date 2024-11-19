@@ -7,11 +7,11 @@ using Models;
 using Criteria.User;
 using Models.ValueObject;
 using Repository;
-using ONEbook.OTP.Services;
 using Criteria;
 using Criteria.OTP;
 using NapApiCaching;
 using NapAdminCore.Criteria.Misc;
+using ONEbook.OTP;
 
 public interface IUserService
 {
@@ -435,7 +435,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
             return false;
         }
 
-        var otpService = new OtpServiceImpl();
+        var otpService = new OtpServiceImp();
         return otpService.VerifyOtp(userOTP.SecretKey, otp);
     }
 

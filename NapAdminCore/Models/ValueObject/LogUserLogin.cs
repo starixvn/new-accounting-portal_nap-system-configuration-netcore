@@ -18,8 +18,6 @@ public class LogUserLogin
 
     public string Platform { get; set; }
 
-    public string CountryCode { get; set; }
-
     public int Duration { get; set; }
 
     public byte SiteId { get; set; }
