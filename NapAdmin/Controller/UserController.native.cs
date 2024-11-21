@@ -20,7 +20,7 @@ using NapAdminCore.Models.ValueObject;
 using NapAdminCore.Service;
 using NapAdminCore.Web;
 using Newtonsoft.Json;
-using ONEbook.OTP.Services;
+using ONEbook.OTP;
 using ViewModels.User;
 using Constant = Fanex.NAP.Client.Helpers.Business.Constant;
 
@@ -1303,7 +1303,7 @@ public class UserController(IGroupService groupService,
     [NapAuth(FunctionKey = FunctionKeys.SetupOTP, Policy = Constant.Policy.Host)]
     public ActionResult SetupOTPGenerateKey(int custId, string system, bool ignoreOTP)
     {
-        var otpService = new OtpServiceImpl();
+        var otpService = new OtpServiceImp();
         var secretKey = otpService.GenerateSecretKey();
 
         var command = new SetupOTPUpdateCommand

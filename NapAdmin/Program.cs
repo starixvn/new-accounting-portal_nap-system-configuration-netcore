@@ -4,13 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using NapAdmin.AppStart;
 using ONEbook.UM.AspNetCore.Filters;
 using NapAdminCore.Helpers;
+using Fanex.Caching.Redis;
+using Fanex.Logging.Sentry.RavenClient;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddFanexLog(configuration);
-services.AddFanexCaching(configuration);
+services.AddExceptionHandler(configuration);
+services.AddFanexLogSentry(configuration);
+services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
 services.AddFanexData(configuration);
 services.AddNapClient(configuration);
 services.AddNapAdminCore();
