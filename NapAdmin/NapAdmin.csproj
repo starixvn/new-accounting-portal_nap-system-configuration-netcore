@@ -34,12 +34,12 @@
   <ItemGroup>
     <PackageReference Include="Fanex.Caching.Redis" Version="2.2.6" />
     <PackageReference Include="Fanex.Common" Version="1.1.2.1" />
-    <PackageReference Include="Fanex.Data.ProxyClient" Version="1.0.1" />
+    <PackageReference Include="Fanex.Data.ProxyClient" Version="1.0.2" />
     <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.1.0" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.1.0" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.0.11" />
     <PackageReference Include="Fanex.NAP.Client" Version="2.0.2" />
-    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.2.4" />
+    <PackageReference Include="Fanex.NAP.SignIn" Version="2.0.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0" />
     <PackageReference Include="ONEbook.OTP" Version="2.1.0" />
@@ -47,7 +47,7 @@
     <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.AspNetCore.Filters" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
-    <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.22" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
 
