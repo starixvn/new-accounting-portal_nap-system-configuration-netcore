@@ -6,6 +6,7 @@ using ONEbook.UM.AspNetCore.Filters;
 using NapAdminCore.Helpers;
 using Fanex.Caching.Redis;
 using Fanex.Logging.Sentry.RavenClient;
+using Fanex.NAP.SignIn;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
