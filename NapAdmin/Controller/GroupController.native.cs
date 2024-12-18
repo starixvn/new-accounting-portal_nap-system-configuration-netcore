@@ -265,7 +265,7 @@ public class GroupController(IGroupService groupService,
         {
             foreach (var itemFunc in criteria.FuncHost)
             {
-                if (listFunc.All(f => f.Id != itemFunc))
+                if (listFunc.TrueForAll(f => f.Id != itemFunc))
                 {
                     return RedirectToAction("Error", "Common");
                 }
@@ -283,7 +283,7 @@ public class GroupController(IGroupService groupService,
         }
 
         listGroupFuncRemove.Remove(f => f.Policy > 0);
-        if (listGroupFuncRemove.Exists(itemFunc => !listCurrentUserFuncPolicy.Any(f => f.Id == itemFunc.Id && f.Policy >= itemFunc.Policy)))
+        if (listGroupFuncRemove.Exists(itemFunc => !listCurrentUserFuncPolicy.Exists(f => f.Id == itemFunc.Id && f.Policy >= itemFunc.Policy)))
         {
             return RedirectToAction("Error", "Common");
         }
@@ -344,6 +344,7 @@ public class GroupController(IGroupService groupService,
     }
 
     #endregion
+
     #region Group Info
 
     [HttpPost]

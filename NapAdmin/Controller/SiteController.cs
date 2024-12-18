@@ -72,14 +72,12 @@ public class SiteController(ISiteService siteService,
             return View(criteria);
         }
 
-        if (!ReferenceEquals(criteria.Urls, null))
+        var exists = !ReferenceEquals(criteria.Urls, null)
+                     && criteria.Urls.Exists(itemUrl => !Uri.IsWellFormedUriString(itemUrl.Url, UriKind.Absolute));
+        if (exists)
         {
-            if (criteria.Urls.Exists(itemUrl => !Uri.IsWellFormedUriString(itemUrl.Url, UriKind.Absolute)))
-            {
-                ModelState.AddModelError("SiteUrls", string.Format(ViewResources.InvalidURLValidationMsg, criteria.SiteUrls));
-
-                return View(criteria);
-            }
+            ModelState.AddModelError("SiteUrls", string.Format(ViewResources.InvalidURLValidationMsg, criteria.SiteUrls));
+            return View(criteria);
         }
 
         criteria.SiteName = criteria.SiteName.Trim();

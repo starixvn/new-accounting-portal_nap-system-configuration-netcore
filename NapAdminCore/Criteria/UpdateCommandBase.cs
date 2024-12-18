@@ -13,7 +13,7 @@ public abstract class UpdateCommandBase: NonQueryCommand
 
     public string LoginIp { get; set; }
 
-    public int ErrCode { get; set; } = 0;
+    public int ErrCode { get; set; }
 
     public string ErrMsg { get; set; } = string.Empty;
 

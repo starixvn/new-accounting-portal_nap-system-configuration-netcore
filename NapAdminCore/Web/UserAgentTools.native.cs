@@ -47,12 +47,7 @@ public static class UserAgentTools
             return GetArray("Linux", "Linux");
         }
 
-        if (userAgent == "Win32NT")
-        {
-            return GetArray("Win32NT", "Win32NT");
-        }
-
-        return GetArray("<b>?</b>", "<b>?</b>");
+        return userAgent == "Win32NT" ? GetArray("Win32NT", "Win32NT") : GetArray("<b>?</b>", "<b>?</b>");
     }
 
     private static string[] GetArray(string a, string b)

@@ -10,7 +10,7 @@ using Repository;
 using Criteria;
 using Criteria.OTP;
 using NapApiCaching;
-using NapAdminCore.Criteria.Misc;
+using Criteria.Misc;
 using ONEbook.OTP;
 
 public interface IUserService
@@ -62,7 +62,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
     : IUserService
 {
 
-    private class InsertCustException(int code, string message, Exception e) : Exception(message, e)
+    public sealed class InsertCustException(int code, string message, Exception e) : Exception(message, e)
     {
         public int ErrorCode { get; } = code;
 

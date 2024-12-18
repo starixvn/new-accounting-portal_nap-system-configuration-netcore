@@ -2,7 +2,7 @@
 
 public class DataCachingJobCommands
 {
-    private readonly object lockObject = new();
+    private readonly Lock lockObject = new();
 
     private List<JobCommand> commands = [];
 
