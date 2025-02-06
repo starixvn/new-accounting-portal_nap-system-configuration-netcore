@@ -159,6 +159,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
         {
             InsertStep5RollbackCustDatabase(globCommand.CustId);
             InsertStep6RollbackGlobDatabase(globCommand.CustId);
+            InsertStep7RollbackAdminSiteDatabase(globCommand.CustId);
             return new CommandResult
             {
                 Code = e.ErrorCode,
@@ -285,6 +286,16 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
     private void InsertStep6RollbackGlobDatabase(int custId)
     {
         var command = new InsertCust6RollbackGlobCommand
+        {
+            CustID = custId
+        };
+
+        dynamicRepository.Execute(command);
+    }
+
+    private void InsertStep7RollbackAdminSiteDatabase(int custId)
+    {
+        var command = new InsertCust7RollbackAdminSiteCommand
         {
             CustID = custId
         };
