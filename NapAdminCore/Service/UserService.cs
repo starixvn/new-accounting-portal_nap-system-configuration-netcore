@@ -10,7 +10,7 @@ using Repository;
 using Criteria;
 using Criteria.OTP;
 using NapApiCaching;
-using NapAdminCore.Criteria.Misc;
+using Criteria.Misc;
 using ONEbook.OTP;
 
 public interface IUserService
@@ -62,7 +62,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
     : IUserService
 {
 
-    private class InsertCustException(int code, string message, Exception e) : Exception(message, e)
+    public sealed class InsertCustException(int code, string message, Exception e) : Exception(message, e)
     {
         public int ErrorCode { get; } = code;
 
@@ -159,6 +159,7 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
         {
             InsertStep5RollbackCustDatabase(globCommand.CustId);
             InsertStep6RollbackGlobDatabase(globCommand.CustId);
+            InsertStep7RollbackAdminSiteDatabase(globCommand.CustId);
             return new CommandResult
             {
                 Code = e.ErrorCode,
@@ -285,6 +286,16 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
     private void InsertStep6RollbackGlobDatabase(int custId)
     {
         var command = new InsertCust6RollbackGlobCommand
+        {
+            CustID = custId
+        };
+
+        dynamicRepository.Execute(command);
+    }
+
+    private void InsertStep7RollbackAdminSiteDatabase(int custId)
+    {
+        var command = new InsertCust7RollbackAdminSiteCommand
         {
             CustID = custId
         };

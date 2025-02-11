@@ -245,6 +245,7 @@
     <Setting Key="NAP_Admin_Ins" SpName="NAP_Admin_Ins" DbName="DBCUST.CustDB.wsv_nap" />
     <Setting Key="Acc_CustomerInsUserInfo_Rollback" SpName="Acc_CustomerInsUserInfo_Rollback" DbName="DBCUST.CustDB.wsv_nap" />
     <Setting Key="Dot_Admin_Add_AdminSiteUser" SpName="Dot_Admin_Add_AdminSiteUser" DbName="DBPRO.bodb02.wsv_nap" />
+    <Setting Key="Acc_AdminSiteUserIns_Rollback" SpName="Acc_AdminSiteUserIns_Rollback" DbName="DBPRO.bodb02.wsv_nap" />
   </Function>
   <Function Name="LogExecSp">
     <Setting Key="NAP_LogExecSp_Search" SpName="NAP_LogExecSp_Search" DbName="DBNAP.bodb_NAPLOG.wsv_nap" />

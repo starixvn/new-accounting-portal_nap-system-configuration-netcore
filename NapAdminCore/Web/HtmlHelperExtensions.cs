@@ -1,7 +1,6 @@
 namespace NapAdminCore.Web;
 
 using System;
-using System.Globalization;
 using Microsoft.AspNetCore.Html;
 using Models;
 

@@ -1,12 +1,9 @@
 namespace NapAdmin.AppStart;
 
 using Fanex.Caching;
-using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
-using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.AspNetCore;
-using Fanex.Logging.Sentry.RavenClient;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -14,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using NapAdminCore.NapApiCaching;
 using NapAdminCore.Repository;
 using NapAdminCore.Service;
-using SharpRaven;
 using StackExchange.Redis;
 using GroupService = NapAdminCore.Service.GroupService;
 using IGroupService = NapAdminCore.Service.IGroupService;

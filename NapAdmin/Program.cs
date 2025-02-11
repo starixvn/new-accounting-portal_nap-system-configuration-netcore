@@ -2,11 +2,11 @@ using Fanex.Data;
 using Fanex.NAP.Client.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using NapAdmin.AppStart;
-using ONEbook.UM.AspNetCore.Filters;
 using NapAdminCore.Helpers;
 using Fanex.Caching.Redis;
 using Fanex.Logging.Sentry.RavenClient;
-using Fanex.NAP.SignIn;
+using ONEbook.UM.DependencyInjection;
+using ONEbook.UM.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
