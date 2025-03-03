@@ -7,7 +7,7 @@ using Fanex.Caching.Redis;
 using Fanex.Logging.Sentry.RavenClient;
 using ONEbook.UM.DependencyInjection;
 using ONEbook.UM.Filters;
-
+Environment.SetEnvironmentVariable("DOTNET_hostBuilder:reloadConfigOnChange", "true");
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
