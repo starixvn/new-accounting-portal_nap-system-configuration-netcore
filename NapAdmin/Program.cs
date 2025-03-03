@@ -21,7 +21,7 @@ services.AddNapAdminCore();
 services.AddNapSession(configuration);
 services.AddNapAuthorization();
 services.AddNapAuthentication(configuration);
-services.AddOneBookUm(configuration);
+services.AddOneBookUmForWeb(configuration);
 services.AddNapApiCaching();
 services.AddRevokePermissionJob();
 
