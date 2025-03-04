@@ -585,6 +585,7 @@ public class UserController(IGroupService groupService,
         ModelState.Clear();
 
         var criteria = resetPasswordVM.Criteria;
+        criteria.PasswordExpiry = new DateTimeOffset(1900, 1, 1, 0, 0, 0, TimeSpan.Zero).Date;
 
         var user = UserService.GetById(criteria.CustId);
 
