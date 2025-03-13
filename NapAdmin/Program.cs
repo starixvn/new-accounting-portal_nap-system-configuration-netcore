@@ -5,6 +5,7 @@ using NapAdmin.AppStart;
 using NapAdminCore.Helpers;
 using Fanex.Caching.Redis;
 using Fanex.Logging.Sentry.RavenClient;
+using Fanex.NAP.Client;
 using ONEbook.UM.DependencyInjection;
 using ONEbook.UM.Filters;
 Environment.SetEnvironmentVariable("DOTNET_hostBuilder:reloadConfigOnChange", "true");

@@ -1,12 +1,9 @@
 ﻿@{
     Layout = null;
 }
-@using Fanex.NAP.SignIn
 @model Fanex.NAP.SignIn.ViewModel.IndexViewModel
 <!DOCTYPE html>
-<!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
 <html lang="en">
-<!--<![endif]-->
 <head>
     <base href="/">
     <meta charset="utf-8" />
@@ -41,7 +38,7 @@
                     <input id="loginToken" name="loginToken" value="@Model.FormToken" type="hidden" />
                     <input type="submit" id="submit" value="Sign In" />
                     <div class="bestview">
-                        <span>Best view in </span><span class="ff4">Firefox 116+</span><span class="chrome">Chrome 115+</span>
+                        <span>Best view in </span><span class="ff4">Firefox 136+</span><span class="chrome">Chrome 134+</span>
                     </div>
                 </div>
             </div>
@@ -119,8 +116,8 @@
 
         function checkBrowser() {
             var browser = detectBrowser();
-            var isSuitableChrome = browser.chrome && browser.version >= 67;
-            var isSuitableFirefox = browser.firefox && browser.version >= 60;
+            var isSuitableChrome = browser.chrome && browser.version >= 134;
+            var isSuitableFirefox = browser.firefox && browser.version >= 136;
 
             if (!isSuitableChrome && !isSuitableFirefox) {
                 var warnPnl = document.getElementById('not-supported-browser-panel');
