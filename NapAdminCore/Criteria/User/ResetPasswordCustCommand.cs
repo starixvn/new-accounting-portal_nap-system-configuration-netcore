@@ -41,6 +41,8 @@ public class ResetPasswordCustCommand : UpdateCommandBase
     [SpParam(Ignored = true)]
     public string Token { get; set; }
 
+    public DateTime PasswordExpiry { get; set; }
+
     public override string GetSettingKey() => "NAP_Cust_UpdatePassword";
 
     public override bool IsValid() => true;
