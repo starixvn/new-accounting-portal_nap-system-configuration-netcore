@@ -40,7 +40,7 @@ public static class IServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<LoggedUserContext, LoggedUserContextImp>();
     }
-    
+
     public static void AddNapSession(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSession(options =>
@@ -65,7 +65,7 @@ public static class IServiceCollectionExtensions
         });
 
     }
-    
+
     public static void AddNapAuthorization(this IServiceCollection services)
     {
         services.AddControllers(config =>
@@ -98,13 +98,27 @@ public static class IServiceCollectionExtensions
             });
     }
 
-    public static void AddNapApiCaching(this IServiceCollection services)
+    public static void AddNapApiCaching(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpClient<ApiClientServiceImp>();
-        services.AddSingleton<ApiClientService, ApiClientServiceImp>();
-        services.AddSingleton<DataCachingRealTimeJob>();
+        services.AddHttpClient<ApiClientService, ApiClientServiceImp>(c =>
+        {
+            var serviceUrl = configuration.GetSection("Fanex.NAP.Client:ServiceUrls").Value;
+            c.BaseAddress = new Uri(serviceUrl);
+        });
 
         services.AddHostedService<DataCachingRealTimeJob>();
+    }
+
+    public static void AddOwpApi(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHttpClient<OwpService>(c =>
+        {
+            var serviceUrl = configuration.GetSection("OWP:Api").Value;
+            if (!string.IsNullOrEmpty(serviceUrl))
+            {
+                c.BaseAddress = new Uri(serviceUrl);
+            }
+        });
     }
 
     public static void AddRevokePermissionJob(this IServiceCollection services)

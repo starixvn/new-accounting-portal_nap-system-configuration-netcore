@@ -31,7 +31,8 @@ public class UserController(IGroupService groupService,
         LoggedUserContext loggedUserContext,
         INapSession napSession,
         INapSettings napSettings,
-        IUserService userService)
+        IUserService userService,
+        OwpService owpService)
     : BaseController(napSession, napSettings, userService)
 {
     #region Manage
@@ -824,7 +825,7 @@ public class UserController(IGroupService groupService,
 
     [HttpPost]
     [NapAuth(FunctionKey = FunctionKeys.AssignSiteToUser, Policy = Constant.Policy.Host)]
-    public string AssignSiteToUser(int userId, int siteId, int level, bool isActive)
+    public async Task<string> AssignSiteToUser(int userId, int siteId, int level, bool isActive)
     {
         var criteria = new AssignSiteUserCommand
         {
@@ -844,18 +845,15 @@ public class UserController(IGroupService groupService,
             return result.Message;
         }
 
-        return siteId == NapAdminSettings.OWPSiteID
-            ? UserService.SyncUserToOWP(userId)
-            : AdminConstant.Ok;
+        if (siteId == NapAdminSettings.OwpSiteId)
+        {
+            var user = UserService.GetById(userId);
+            return await owpService.CreateUser(userId, user.Username);
+        }
 
+        return "OK";
     }
-
-    [HttpGet]
-    public string SyncUserToOWP(int userId)
-    {
-       return UserService.SyncUserToOWP(userId);
-    }
-
+    
     #endregion Assign Permission
 
     #region Update Site To User

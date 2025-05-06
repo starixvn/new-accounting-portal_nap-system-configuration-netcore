@@ -1,7 +1,5 @@
 ﻿namespace NapAdminCore.NapApiCaching;
 
-using Microsoft.Extensions.Configuration;
-
 public interface ApiClientService
 {
     Task<string> ReloadAllCache();
@@ -11,17 +9,8 @@ public interface ApiClientService
     Task<Dictionary<string, string>> GetAllCache();
 }
 
-public class ApiClientServiceImp : ApiClientService
+public class ApiClientServiceImp(HttpClient httpClient) : ApiClientService
 {
-    private readonly HttpClient httpClient;
-
-    public ApiClientServiceImp(HttpClient httpClient, IConfiguration configuration)
-    {
-        var serviceUrl = configuration.GetSection("Fanex.NAP.Client:ServiceUrls").Value;
-        this.httpClient = httpClient;
-        this.httpClient.BaseAddress = new Uri(serviceUrl);
-    }
-    
     public async Task<string> ReloadAllCache()
     {
         using var response = await httpClient.GetAsync("cache/reload");

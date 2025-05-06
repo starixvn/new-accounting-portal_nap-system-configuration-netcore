@@ -23,7 +23,8 @@ services.AddNapSession(configuration);
 services.AddNapAuthorization();
 services.AddNapAuthentication(configuration);
 services.AddOneBookUmForWeb(configuration);
-services.AddNapApiCaching();
+services.AddNapApiCaching(configuration);
+services.AddOwpApi(configuration);
 services.AddRevokePermissionJob();
 
 services.AddRazorPages();
