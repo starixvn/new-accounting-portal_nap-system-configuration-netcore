@@ -2,7 +2,6 @@ namespace NapAdminCore.Service;
 
 using System.Collections;
 using Fanex.Data.Repository;
-using Fanex.Logging;
 using Models;
 using Criteria.User;
 using Models.ValueObject;
@@ -15,8 +14,6 @@ using ONEbook.OTP;
 
 public interface IUserService
 {
-    string SyncUserToOWP(int userId);
-
     bool IgnoredOTP(int userId, string system);
 
     bool VerifyOTP(int userId, string system, string otp);
@@ -58,7 +55,10 @@ public interface IUserService
     CommandResult InsertOrUpdate(UpdateCommandBase criteria);
 }
 
-public class UserService(UpdateRepository repository, IDynamicRepository dynamicRepository, LoggedUserContext loggedUserContext)
+public class UserService(
+    UpdateRepository repository, 
+    IDynamicRepository dynamicRepository, 
+    LoggedUserContext loggedUserContext)
     : IUserService
 {
 
@@ -406,23 +406,6 @@ public class UserService(UpdateRepository repository, IDynamicRepository dynamic
         }
 
         return hashTable;
-    }
-
-    public string SyncUserToOWP(int userId)
-    {
-
-        var command = new InsertUserToOWPCommand(userId);
-        dynamicRepository.Execute(command);
-
-        if (command.ErrCode > 0)
-        {
-            var message = $"SyncUserToOWP error: UserId: {userId}; Message: {command.ErrMsg}";
-
-            Logger.Log.Error(message);
-            return message;
-        }
-
-        return AdminConstant.Ok;
     }
 
     public bool IgnoredOTP(int userId, string system)

@@ -19,6 +19,12 @@ var AddNewFunction = (function ($) {
 				dataType: 'json',
 				cache: false,
 				async: false,
+				beforeSend: function () {
+					NAP.loadingBox.show();
+				},
+				complete: function () {
+					NAP.loadingBox.close();
+				},
 				success: function (result) {
 					AddNewFunction.parentId.html('');
 
@@ -44,7 +50,12 @@ var AddNewFunction = (function ($) {
 				type: 'POST',
 				dataType: 'JSON',
 				cache: false,
-				async: false,
+				async: false, beforeSend: function () {
+					NAP.loadingBox.show();
+				},
+				complete: function () {
+					NAP.loadingBox.close();
+				},
 				success: function (result) {
 					AddNewFunction.parentId.html('');
 
