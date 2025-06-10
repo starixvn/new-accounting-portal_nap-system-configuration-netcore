@@ -28,13 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="App_Data\SpNames.xml" />
-    <Content Update="App_Data\SpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
 
     <Content Remove="wwwroot\scripts\User\assign-site-function\**" />
     <Content Include="wwwroot\scripts\User\assign-site-function\dist\css\main.css" />
@@ -43,6 +36,10 @@
     <AdditionalFiles Include="wwwroot\scripts\User\assign-site-function\dist\main.js.map" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="App_Data\**" />
+    <None Remove="Always\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="App_Data\**">
