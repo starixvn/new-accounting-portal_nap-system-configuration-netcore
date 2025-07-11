@@ -114,7 +114,7 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<SiteLevel>(criteria).OrderBy(sl => sl.SiteName).ToList();
+        return [.. dynamicRepository.Fetch<SiteLevel>(criteria).OrderBy(sl => sl.SiteName)];
     }
 
     public IList<Site> GetAvailableSitesForUser(int userId, string env = AdminConstant.Uat, bool? isActive = null)
@@ -126,7 +126,7 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name).ToList();
+        return [.. dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name)];
     }
 
     public IList<Site> GetAll(string env = AdminConstant.Uat, bool? isActive = null)
@@ -137,7 +137,7 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name).ToList();
+        return [.. dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name)];
     }
 
     public IList<SelectListItem> GetAllSelectListItem(
@@ -153,12 +153,12 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
 
         var siteList = dynamicRepository.Fetch<Site>(criteria).OrderBy(s => s.Name).ToList();
 
-        return siteList.Select(s => new SelectListItem
+        return [.. siteList.Select(s => new SelectListItem
         {
             Text = s.Name,
             Value = s.Id.ToString(),
             Selected = s.Id == selectedSiteId
-        }).ToList();
+        })];
     }
 
     public IList<Site> GetAllWithNumOfUsers(string env = AdminConstant.Uat, bool? isActive = null)
@@ -169,7 +169,7 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
             IsActive = isActive
         };
 
-        return dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name).ToList();
+        return [.. dynamicRepository.Fetch<Site>(criteria).OrderBy(site => site.Name)];
     }
 
     public IList<Site> GetByUserAndFunctionKeyIncludeGroup(
@@ -189,13 +189,13 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
         var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
         var functionPolicyList = policies.OrderBy(s => s.SiteName)
                     .ToList();
-
-        return functionPolicyList.Where(f => f.Policy >= (int)policy)
+        var result = functionPolicyList.Where(f => f.Policy >= (int)policy)
             .Select(s => new Site
             {
                 Id = s.SiteId,
                 Name = s.SiteName
-            }).ToList();
+            });
+        return [.. result];
     }
 
     public IList<SelectListItem> GetSelectListItemByUserAndFunctionKeyIncludeGroup(
@@ -215,13 +215,15 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
         var policies = dynamicRepository.Fetch<FunctionPolicy>(criteria);
         var functionPolicyList = policies.OrderBy(f => f.SiteName).ToList();
 
-        return functionPolicyList.Where(f => f.Policy >= (int)policy)
+        var result = functionPolicyList.Where(f => f.Policy >= (int)policy)
             .Select(s => new SelectListItem
             {
                 Text = s.SiteName,
                 Value = s.SiteId.ToString(),
                 Selected = s.SiteId == selectedSiteId
-            }).ToList();
+            });
+
+        return [.. result];
     }
 
     #endregion
@@ -269,7 +271,7 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
             Environment = env
         };
 
-        return dynamicRepository.Fetch<SiteUrl>(criteria).ToList();
+        return [.. dynamicRepository.Fetch<SiteUrl>(criteria)];
     }
 
     public IList<SiteUrl> GetSiteUrlBySiteId(int siteId, string env)
@@ -281,7 +283,7 @@ public class SiteService(UpdateRepository repository, IDynamicRepository dynamic
         };
 
 
-        return dynamicRepository.Fetch<SiteUrl>(criteria).OrderBy(su => su.SiteName).ToList();
+        return [.. dynamicRepository.Fetch<SiteUrl>(criteria).OrderBy(su => su.SiteName)];
     }
 
     public SiteUrl GetSiteUrlById(int siteUrlId)

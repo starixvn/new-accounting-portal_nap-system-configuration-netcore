@@ -29,7 +29,7 @@ public class TraceService(IDynamicRepository dynamicRepository) : ITraceService
         {
             var logExec = dynamicRepository.Get<LogExecSp>(criteria);
 
-            if (!ReferenceEquals(logExec, null))
+            if (logExec is not null)
             {
                 var hashItems = new Hashtable();
                 var hashSubItems = new Hashtable();
@@ -156,15 +156,15 @@ public class TraceService(IDynamicRepository dynamicRepository) : ITraceService
 
     public IList<LogExecSp> SearchExecSp(GetAllLogCriteria criteria)
     {
-        return dynamicRepository.Fetch<LogExecSp>(criteria).ToList();
+        return [.. dynamicRepository.Fetch<LogExecSp>(criteria)];
     }
 
     public IList<LogUserLogin> SearchUserLogin(GetAllLogUserLoginCriteria criteria)
     {
-        return dynamicRepository.Fetch<LogUserLogin>(criteria).ToList();
+        return [.. dynamicRepository.Fetch<LogUserLogin>(criteria)];
     }
     
-    private string EncodeXMLValue(string value)
+    private static string EncodeXMLValue(string value)
     {
         if (!string.IsNullOrEmpty(value))
         {
@@ -173,8 +173,6 @@ public class TraceService(IDynamicRepository dynamicRepository) : ITraceService
             value = value.Replace(">", "&gt;");
             value = value.Replace("\"", "&quot;");
             value = value.Replace("''", "&apos;");
-
-            return value;
         }
 
         return value;

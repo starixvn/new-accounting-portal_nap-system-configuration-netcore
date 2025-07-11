@@ -35,7 +35,7 @@ services.AddControllersWithViews(options =>
 });
 
 services.AddControllersWithViews();
-
+services.AddHealthChecks();
 var app = builder.Build();
 
 app.UseStaticFiles();
@@ -47,7 +47,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapHealthChecks("/healthz");
 NapAdminSettings.LoadSettings(configuration);
 
 app.MapControllerRoute(
