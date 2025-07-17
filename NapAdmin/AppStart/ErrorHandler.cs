@@ -50,14 +50,17 @@ public class ErrorHandler(RequestDelegate next, ILogger logger, IConfiguration c
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         }
 
-        await context.Response.WriteAsync(exception.Message);
-
         var env = configuration.GetSection("Fanex.NAP.Client:Environment").Value;
 
         if (exception.StackTrace != null && !env.Equals("LIVE", StringComparison.CurrentCultureIgnoreCase))
         {
+            await context.Response.WriteAsync(exception.Message);
             await context.Response.WriteAsync(Environment.NewLine);
             await context.Response.WriteAsync(exception.StackTrace);
+        }
+        else
+        {
+            await context.Response.WriteAsync("An error occurred while processing your request. Please try again later.");
         }
     }
 }
